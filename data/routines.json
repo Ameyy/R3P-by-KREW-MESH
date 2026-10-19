@@ -1,0 +1,1762 @@
+[
+  {
+    "id": "RTN-001",
+    "title": "Chest & Triceps Hypertrophy",
+    "category": "Strength & Muscle",
+    "duration": "35 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Chest / Triceps",
+    "exercises": [
+      "Flat Bench",
+      "Incline DB Press",
+      "Cable Flyes",
+      "Dips",
+      "Rope Pushdowns",
+      "Skull Crushers"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-002",
+    "title": "Back & Biceps Thickness",
+    "category": "Strength & Muscle",
+    "duration": "40 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Lats / Biceps",
+    "exercises": [
+      "Deadlifts",
+      "Barbell Rows",
+      "Lat Pulldown",
+      "Seated Cable Row",
+      "Hammer Curls",
+      "Preacher Curls"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-003",
+    "title": "Leg Day Quad Focus",
+    "category": "Strength & Muscle",
+    "duration": "45 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Quads / Calves",
+    "exercises": [
+      "Back Squats",
+      "Leg Press",
+      "Walking Lunges",
+      "Leg Extensions",
+      "Standing Calf Raises",
+      "Seated Calf Raises"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-004",
+    "title": "Leg Day Posterior Chain",
+    "category": "Strength & Muscle",
+    "duration": "45 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Hamstrings / Glutes",
+    "exercises": [
+      "Romanian Deadlifts",
+      "Hip Thrusts",
+      "Lying Leg Curls",
+      "Bulgarian Split Squats",
+      "Kettlebell Swings"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-005",
+    "title": "Shoulder Boulder Blast",
+    "category": "Strength & Muscle",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Delts / Traps",
+    "exercises": [
+      "Overhead Press",
+      "Dumbbell Lateral Raises",
+      "Face Pulls",
+      "Front Plate Raises",
+      "DB Shrugs"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-006",
+    "title": "Arm Annihilator Super-set",
+    "category": "Strength & Muscle",
+    "duration": "30 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Biceps / Triceps",
+    "exercises": [
+      "Barbell Curls",
+      "Close Grip Bench",
+      "Incline DB Curls",
+      "Overhead Triceps Extension",
+      "Cable 21s"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-007",
+    "title": "Chest & Back Antagonist",
+    "category": "Strength & Muscle",
+    "duration": "45 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Chest / Back",
+    "exercises": [
+      "Incline Bench Press",
+      "Pull-ups",
+      "DB Flat Flyes",
+      "T-Bar Rows",
+      "Dips",
+      "Chest-supported Rows"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-008",
+    "title": "Upper Body Power Builder",
+    "category": "Strength & Muscle",
+    "duration": "40 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Upper Body",
+    "exercises": [
+      "Standing Military Press",
+      "Barbell Bench Press",
+      "Weighted Pull-ups",
+      "Pendlay Rows",
+      "Push Press"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-009",
+    "title": "Lower Body Strength Test",
+    "category": "Strength & Muscle",
+    "duration": "45 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Lower Body",
+    "exercises": [
+      "Front Squats",
+      "Sumo Deadlifts",
+      "Bulgarian Split Squats",
+      "Calf Raises",
+      "Nordic Curls"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-010",
+    "title": "Push Day Volume Focus",
+    "category": "Strength & Muscle",
+    "duration": "40 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Push",
+    "exercises": [
+      "DB Incline Press",
+      "Standing OHP",
+      "Cable Crossovers",
+      "Dips",
+      "Lateral Raises",
+      "Tricep Kickbacks"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-011",
+    "title": "Pull Day Lat Width",
+    "category": "Strength & Muscle",
+    "duration": "40 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Pull",
+    "exercises": [
+      "Wide-grip Lat Pulldowns",
+      "Single Arm DB Rows",
+      "Straight Arm Pulldowns",
+      "Barbell Shrugs",
+      "Incline Curls"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-012",
+    "title": "Glute Sculptor Pro",
+    "category": "Strength & Muscle",
+    "duration": "35 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Glutes",
+    "exercises": [
+      "Barbell Hip Thrusts",
+      "Cable Kickbacks",
+      "Romanian Deadlifts",
+      "Step Ups",
+      "Abductor Machine"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-013",
+    "title": "Full Body Calorie Torch",
+    "category": "Fat Loss & HIIT",
+    "duration": "25 mins",
+    "exercisesCount": "7 exercises",
+    "targetMuscles": "Full Body",
+    "exercises": [
+      "Burpees",
+      "Kettlebell Swings",
+      "Box Jumps",
+      "Mountain Climbers",
+      "Battle Ropes",
+      "Jump Squats"
+    ],
+    "difficulty": "All Levels",
+    "completed": 0
+  },
+  {
+    "id": "RTN-014",
+    "title": "Tabata Core & Conditioning",
+    "category": "Fat Loss & HIIT",
+    "duration": "20 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Abs & Cardio",
+    "exercises": [
+      "Plank Jacks",
+      "High Knees",
+      "Bicycle Crunches",
+      "Russian Twists",
+      "Hollow Body Hold",
+      "Sprint Burpees"
+    ],
+    "difficulty": "All Levels",
+    "completed": 0
+  },
+  {
+    "id": "RTN-015",
+    "title": "Sprint Interval Treadmill Blast",
+    "category": "Fat Loss & HIIT",
+    "duration": "20 mins",
+    "exercisesCount": "5 rounds",
+    "targetMuscles": "Cardio",
+    "exercises": [
+      "30s 14km/h Sprint",
+      "60s Walking Rest",
+      "Incline Jog",
+      "Sled Push Finisher"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-016",
+    "title": "Kettlebell Chaos Complex",
+    "category": "Fat Loss & HIIT",
+    "duration": "25 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Conditioning",
+    "exercises": [
+      "KB Clean & Press",
+      "Goblet Squats",
+      "KB Swings",
+      "Snatch",
+      "Turkish Get-up"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-017",
+    "title": "Rowing Ergometer Metcon",
+    "category": "Fat Loss & HIIT",
+    "duration": "20 mins",
+    "exercisesCount": "4 rounds",
+    "targetMuscles": "Cardio Endurance",
+    "exercises": [
+      "500m Row",
+      "20 Wall Balls",
+      "15 Push-ups",
+      "10 Box Jumps"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-018",
+    "title": "Bodyweight Burner Zero Gear",
+    "category": "Fat Loss & HIIT",
+    "duration": "20 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Bodyweight",
+    "exercises": [
+      "Air Squats",
+      "Push-ups",
+      "Lunges",
+      "Plank",
+      "Burpees",
+      "Jumping Jacks"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-019",
+    "title": "Stair Climber Metabolic Ladder",
+    "category": "Fat Loss & HIIT",
+    "duration": "25 mins",
+    "exercisesCount": "Intervals",
+    "targetMuscles": "Legs & Heart Rate",
+    "exercises": [
+      "Level 8 Steady",
+      "Level 14 Sprint",
+      "Skip Step",
+      "Side Step",
+      "Reverse Climb"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-020",
+    "title": "Assault Bike Lung Buster",
+    "category": "Fat Loss & HIIT",
+    "duration": "15 mins",
+    "exercisesCount": "Tabata",
+    "targetMuscles": "Cardio",
+    "exercises": [
+      "10s All-out Max Wattage",
+      "20s Active Recovery x 16 Rounds"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-021",
+    "title": "Jump Rope & Shadow Boxing",
+    "category": "Fat Loss & HIIT",
+    "duration": "25 mins",
+    "exercisesCount": "6 rounds",
+    "targetMuscles": "Speed & Agility",
+    "exercises": [
+      "Speed Rope",
+      "1-2-Hook Combos",
+      "Double Unders",
+      "Slip & Roll Drills"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-022",
+    "title": "Dumbbell Complex Fat Melter",
+    "category": "Fat Loss & HIIT",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Full Body",
+    "exercises": [
+      "DB Romanian Deadlift",
+      "Hang Clean",
+      "Front Squat",
+      "Push Press",
+      "Bent Row"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-023",
+    "title": "Speed & Agility Ladder Drills",
+    "category": "Fat Loss & HIIT",
+    "duration": "20 mins",
+    "exercisesCount": "8 drills",
+    "targetMuscles": "Agility",
+    "exercises": [
+      "Ickey Shuffle",
+      "In-and-Outs",
+      "Linear Sprints",
+      "Lateral Shuffles",
+      "Cone Drills"
+    ],
+    "difficulty": "All Levels",
+    "completed": 0
+  },
+  {
+    "id": "RTN-024",
+    "title": "Boxing Bag Power Intervals",
+    "category": "Fat Loss & HIIT",
+    "duration": "25 mins",
+    "exercisesCount": "5 rounds",
+    "targetMuscles": "Full Body / Stamina",
+    "exercises": [
+      "Heavy Bag Combos",
+      "Speed Bag",
+      "Body Snatchers",
+      "Push-up Burpees"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-025",
+    "title": "Athletic Explosiveness",
+    "category": "Functional & Athletic",
+    "duration": "35 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Power",
+    "exercises": [
+      "Power Cleans",
+      "Medicine Ball Slams",
+      "Broad Jumps",
+      "Plyo Push-ups",
+      "Trap Bar Jumps"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-026",
+    "title": "Prowler Sled & Turf Circuit",
+    "category": "Functional & Athletic",
+    "duration": "30 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Legs & Core",
+    "exercises": [
+      "Heavy Sled Push",
+      "Sled Pull",
+      "Farmers Walk",
+      "Sandbag Carries"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-027",
+    "title": "Cross-Training WOD Alpha",
+    "category": "Functional & Athletic",
+    "duration": "25 mins",
+    "exercisesCount": "For Time",
+    "targetMuscles": "Functional",
+    "exercises": [
+      "21-15-9 Thrusters & Pull-ups",
+      "400m Run",
+      "50 Double Unders"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-028",
+    "title": "Kettlebell Flow & Stability",
+    "category": "Functional & Athletic",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Mobility & Core",
+    "exercises": [
+      "Windmills",
+      "Turkish Get-ups",
+      "Halo Circles",
+      "Single-leg Deadlifts"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-029",
+    "title": "Rings & Calisthenics Mastery",
+    "category": "Functional & Athletic",
+    "duration": "35 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Upper Body",
+    "exercises": [
+      "Ring Muscle-ups",
+      "Ring Dips",
+      "Skin the Cat",
+      "L-Sit Pull-ups",
+      "Handstand Hold"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-030",
+    "title": "MMA Fighter Conditioning",
+    "category": "Functional & Athletic",
+    "duration": "30 mins",
+    "exercisesCount": "5 rounds",
+    "targetMuscles": "Full Body",
+    "exercises": [
+      "Sprawls",
+      "Clinch Knee Strikes",
+      "Heavy Bag Slams",
+      "Ground & Pound",
+      "Battle Ropes"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-031",
+    "title": "Grip Strength & Forearm Armor",
+    "category": "Functional & Athletic",
+    "duration": "20 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Grip / Forearms",
+    "exercises": [
+      "Dead Hangs",
+      "Wrist Rollers",
+      "Pinch Plate Holds",
+      "Fat Grip Curls",
+      "Reverse Curls"
+    ],
+    "difficulty": "All Levels",
+    "completed": 0
+  },
+  {
+    "id": "RTN-032",
+    "title": "Unilateral Balance & Power",
+    "category": "Functional & Athletic",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Lower Body",
+    "exercises": [
+      "Single Leg Box Jumps",
+      "Pistol Squats",
+      "Single Arm Snatch",
+      "Suitcase Carries"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-033",
+    "title": "Core Fortress 360",
+    "category": "Functional & Athletic",
+    "duration": "20 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Core",
+    "exercises": [
+      "Hanging Leg Raises",
+      "Ab Wheel Rollouts",
+      "Dragon Flags",
+      "Pallof Press",
+      "Side Planks"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-034",
+    "title": "Joint Mobility & Bulletproofing",
+    "category": "Functional & Athletic",
+    "duration": "25 mins",
+    "exercisesCount": "7 exercises",
+    "targetMuscles": "Mobility",
+    "exercises": [
+      "World's Greatest Stretch",
+      "Thoracic Rotations",
+      "Jefferson Curls",
+      "Couch Stretch",
+      "Band Pull-aparts"
+    ],
+    "difficulty": "All Levels",
+    "completed": 0
+  },
+  {
+    "id": "RTN-035",
+    "title": "Sandbag Tactical Strength",
+    "category": "Functional & Athletic",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Functional",
+    "exercises": [
+      "Sandbag Shouldering",
+      "Bear Hug Squats",
+      "Rotational Toss",
+      "Overhead Lunges"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-036",
+    "title": "Speed Acceleration & Sprinting",
+    "category": "Functional & Athletic",
+    "duration": "25 mins",
+    "exercisesCount": "5 drills",
+    "targetMuscles": "Speed",
+    "exercises": [
+      "Wall Drives",
+      "A-Skips",
+      "30m Flying Sprints",
+      "Resisted Band Sprints"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-037",
+    "title": "First Day Foundation A",
+    "category": "Beginner & Foundation",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Full Body",
+    "exercises": [
+      "Machine Chest Press",
+      "Lat Pulldown",
+      "Leg Press",
+      "Dumbbell Curls",
+      "Seated Calf"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-038",
+    "title": "First Day Foundation B",
+    "category": "Beginner & Foundation",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Full Body",
+    "exercises": [
+      "Goblet Squat",
+      "Seated Cable Row",
+      "Dumbbell Shoulder Press",
+      "Plank",
+      "Treadmill Walk"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-039",
+    "title": "Posture Restoration Protocol",
+    "category": "Beginner & Foundation",
+    "duration": "25 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Spine & Neck",
+    "exercises": [
+      "Face Pulls",
+      "Prone Y-T-W",
+      "Chin Tucks",
+      "Glute Bridges",
+      "Hip Flexor Release"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-040",
+    "title": "Bodyweight Essentials 101",
+    "category": "Beginner & Foundation",
+    "duration": "20 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Full Body",
+    "exercises": [
+      "Assisted Pull-ups",
+      "Knee Push-ups",
+      "Box Squats",
+      "Glute Bridges",
+      "Plank"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-041",
+    "title": "Dumbbell Only Home & Gym",
+    "category": "Beginner & Foundation",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Full Body",
+    "exercises": [
+      "DB Floor Press",
+      "DB Squats",
+      "DB Rows",
+      "DB Romanian Deadlift",
+      "Overhead Press"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-042",
+    "title": "Desk Worker Tension Relief",
+    "category": "Beginner & Foundation",
+    "duration": "15 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Mobility",
+    "exercises": [
+      "Cat-Cow",
+      "Doorway Pec Stretch",
+      "Seated Spinal Twist",
+      "Neck Rolls",
+      "Hamstring Reach"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-043",
+    "title": "Low Impact Senior / Gentle Cardio",
+    "category": "Beginner & Foundation",
+    "duration": "25 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Longevity",
+    "exercises": [
+      "Recumbent Bike",
+      "Wall Squats",
+      "Light Band Pulls",
+      "Balance Walk"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-044",
+    "title": "Core Stability for Back Pain",
+    "category": "Beginner & Foundation",
+    "duration": "20 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Core",
+    "exercises": [
+      "Bird-Dog",
+      "Dead Bug",
+      "Side Plank",
+      "Glute Bridge",
+      "McGill Curl-up"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-045",
+    "title": "Cardio Aerobic Base Builder",
+    "category": "Beginner & Foundation",
+    "duration": "30 mins",
+    "exercisesCount": "Steady State",
+    "targetMuscles": "Heart Rate Zone 2",
+    "exercises": [
+      "Incline Walk 12%",
+      "4.5 km/h",
+      "Heart Rate 125-135 BPM for 30 Mins"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-046",
+    "title": "Arm Definition Dumbbell Only",
+    "category": "Beginner & Foundation",
+    "duration": "25 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Arms",
+    "exercises": [
+      "Standing DB Curls",
+      "Hammer Curls",
+      "Overhead Triceps Extension",
+      "Kickbacks"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-047",
+    "title": "Leg Tone & Sculpt Beginner",
+    "category": "Beginner & Foundation",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Legs",
+    "exercises": [
+      "Goblet Squats",
+      "Lying Leg Curls",
+      "Bodyweight Lunges",
+      "Glute Bridges"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-048",
+    "title": "Daily 10-Minute Morning Wakeup",
+    "category": "Beginner & Foundation",
+    "duration": "10 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Mobility",
+    "exercises": [
+      "Sun Salutations",
+      "Deep Squat Hold",
+      "Inchworms",
+      "Downward Dog"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-049",
+    "title": "Deadlift Peak Performance",
+    "category": "Powerlifting & Strength",
+    "duration": "50 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Posterior Chain",
+    "exercises": [
+      "Deadlift 5x3 Ramp",
+      "Deficit Deadlifts",
+      "Barbell Shrugs",
+      "Hamstring Curls",
+      "Back Hyperextensions"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-050",
+    "title": "Squat Mastery 5x5",
+    "category": "Powerlifting & Strength",
+    "duration": "50 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Quads & Core",
+    "exercises": [
+      "Barbell Back Squat 5x5",
+      "Pause Squats",
+      "Leg Press",
+      "Standing Calf Raise",
+      "Ab Wheel"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-051",
+    "title": "Bench Press PR Day",
+    "category": "Powerlifting & Strength",
+    "duration": "45 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Chest & Triceps",
+    "exercises": [
+      "Competition Bench 5x3",
+      "Spoto Press",
+      "Close Grip Bench",
+      "Incline DB Press",
+      "Cable Triceps"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-052",
+    "title": "Overhead Strict Press Heavy",
+    "category": "Powerlifting & Strength",
+    "duration": "40 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Shoulders & Core",
+    "exercises": [
+      "Strict Standing OHP 5x5",
+      "Z-Press",
+      "Behind the Neck Press",
+      "Lateral Raise",
+      "Face Pull"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-053",
+    "title": "Full Body 5x5 Power A",
+    "category": "Powerlifting & Strength",
+    "duration": "50 mins",
+    "exercisesCount": "3 exercises",
+    "targetMuscles": "Compound",
+    "exercises": [
+      "Back Squats 5x5",
+      "Bench Press 5x5",
+      "Barbell Rows 5x5"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-054",
+    "title": "Full Body 5x5 Power B",
+    "category": "Powerlifting & Strength",
+    "duration": "50 mins",
+    "exercisesCount": "3 exercises",
+    "targetMuscles": "Compound",
+    "exercises": [
+      "Back Squats 5x5",
+      "Overhead Press 5x5",
+      "Conventional Deadlift 1x5"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-055",
+    "title": "Lockout & Grip Power",
+    "category": "Powerlifting & Strength",
+    "duration": "35 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Strength",
+    "exercises": [
+      "Rack Pulls",
+      "Board Press",
+      "Paused Squats",
+      "Farmers Carry"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-056",
+    "title": "Dynamic Effort Speed Bench",
+    "category": "Powerlifting & Strength",
+    "duration": "35 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Upper Body Speed",
+    "exercises": [
+      "Speed Bench 9x3 (50% + Bands)",
+      "Plyo Push-ups",
+      "DB Incline",
+      "Tricep Band Pushdowns"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-057",
+    "title": "Dynamic Effort Speed Squat",
+    "category": "Powerlifting & Strength",
+    "duration": "40 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Lower Body Speed",
+    "exercises": [
+      "Box Squat 10x2 (55% + Bands)",
+      "Speed Deadlifts",
+      "Reverse Hypers",
+      "Sled Drags"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-058",
+    "title": "Hypertrophy Deload Recovery",
+    "category": "Powerlifting & Strength",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Recovery",
+    "exercises": [
+      "Light Goblet Squats",
+      "Band Pull-aparts",
+      "Incline Treadmill Walk",
+      "Hanging Knee Raise"
+    ],
+    "difficulty": "All Levels",
+    "completed": 0
+  },
+  {
+    "id": "RTN-059",
+    "title": "Basketball Vertical Jump",
+    "category": "Functional & Athletic",
+    "duration": "35 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Legs",
+    "exercises": [
+      "Depth Jumps",
+      "Trap Bar Jumps",
+      "Bulgarian Split Squats",
+      "Tibialis Raises",
+      "Box Jumps"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-060",
+    "title": "Cricket Fast Bowler Core & Shoulder",
+    "category": "Functional & Athletic",
+    "duration": "35 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Shoulders & Core",
+    "exercises": [
+      "Rotational Med Ball Throws",
+      "Landmine Press",
+      "Cable Woodchoppers",
+      "Face Pulls"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-061",
+    "title": "Football Striker Agility & Stamina",
+    "category": "Functional & Athletic",
+    "duration": "40 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Conditioning",
+    "exercises": [
+      "Suicide Sprints",
+      "Cone Ladders",
+      "Nordic Hamstring Curls",
+      "Broad Jumps"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-062",
+    "title": "Tennis Rotational Power",
+    "category": "Functional & Athletic",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Core & Back",
+    "exercises": [
+      "Cable Woodchoppers",
+      "Rotational Med Ball Slams",
+      "Banded Shoulder ER",
+      "Lunges"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-063",
+    "title": "Swimming Lat & Shoulder Endurance",
+    "category": "Functional & Athletic",
+    "duration": "35 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Back & Delts",
+    "exercises": [
+      "Straight Arm Pulldowns",
+      "Scapular Pull-ups",
+      "Swimmer Kicks",
+      "Band Pulls"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-064",
+    "title": "Marathon Runner Leg Durability",
+    "category": "Functional & Athletic",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Legs & Core",
+    "exercises": [
+      "Single-leg Deadlift",
+      "Calf Raise Eccentrics",
+      "Side Planks",
+      "Hamstring Sliders"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-065",
+    "title": "Cycling Quad Power Intervals",
+    "category": "Functional & Athletic",
+    "duration": "30 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Quads",
+    "exercises": [
+      "High Cadence Spin",
+      "Leg Press Dropset",
+      "Step Ups",
+      "Walking Lunges"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-066",
+    "title": "Rock Climbing Grip & Lats",
+    "category": "Functional & Athletic",
+    "duration": "35 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Grip & Back",
+    "exercises": [
+      "Campus Board",
+      "Frenchies",
+      "Weighted Pull-ups",
+      "Finger Board Hangs",
+      "Inverted Rows"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-067",
+    "title": "Badminton Explosive Court Speed",
+    "category": "Functional & Athletic",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Agility",
+    "exercises": [
+      "Split Step Drills",
+      "Lateral Lunges",
+      "Shadow Footwork",
+      "Calf Explosions"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-068",
+    "title": "Calisthenics Front Lever Path",
+    "category": "Functional & Athletic",
+    "duration": "35 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Core & Lats",
+    "exercises": [
+      "Tuck Front Lever",
+      "Dragon Flags",
+      "Scapular Retractions",
+      "Hollow Body Rocks"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-069",
+    "title": "Calisthenics Planche Prep",
+    "category": "Functional & Athletic",
+    "duration": "35 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Shoulders & Core",
+    "exercises": [
+      "Planche Leans",
+      "Pseudo Planche Push-ups",
+      "Pike Push-ups",
+      "Wrist Prep"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-070",
+    "title": "Calisthenics Muscle-up Progression",
+    "category": "Functional & Athletic",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Upper Body",
+    "exercises": [
+      "Explosive Chest-to-Bar Pull-ups",
+      "Straight Bar Dips",
+      "Transition Drills"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-071",
+    "title": "Office Neck & Shoulder Release",
+    "category": "Beginner & Foundation",
+    "duration": "15 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Neck",
+    "exercises": [
+      "Upper Trap Stretch",
+      "Levator Scapulae Stretch",
+      "Wall Angels",
+      "Foam Roll Thoracic"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-072",
+    "title": "Lower Back Decompression",
+    "category": "Beginner & Foundation",
+    "duration": "20 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Lower Back",
+    "exercises": [
+      "Dead Hang",
+      "Child Pose",
+      "Piriformis Stretch",
+      "Cat-Camel",
+      "Glute Bridge"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-073",
+    "title": "Knee Pain Relief & VMO Activation",
+    "category": "Beginner & Foundation",
+    "duration": "25 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Knees & Quads",
+    "exercises": [
+      "Poliquin Step-ups",
+      "Terminal Knee Extensions",
+      "Hamstring Curls",
+      "Calf Raises"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-074",
+    "title": "Shoulder Impingement Protocol",
+    "category": "Beginner & Foundation",
+    "duration": "20 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Rotator Cuff",
+    "exercises": [
+      "Sleeper Stretch",
+      "External Rotations",
+      "Scapular Wall Slides",
+      "Face Pulls"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-075",
+    "title": "Hip Flexor Opening Session",
+    "category": "Beginner & Foundation",
+    "duration": "20 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Hips",
+    "exercises": [
+      "Couch Stretch",
+      "Pigeon Pose",
+      "Half Kneeling Hip Stretch",
+      "Butterfly Stretch"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-076",
+    "title": "Ankle Mobility & Plantar Relief",
+    "category": "Beginner & Foundation",
+    "duration": "15 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Feet & Ankles",
+    "exercises": [
+      "Calf Wall Stretch",
+      "Band Ankle Distractions",
+      "Golf Ball Foot Roll",
+      "Heel Drops"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-077",
+    "title": "Pre-Workout Dynamic Warmup 1",
+    "category": "Beginner & Foundation",
+    "duration": "10 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Full Body",
+    "exercises": [
+      "Arm Circles",
+      "Leg Swings",
+      "Butt Kicks",
+      "Torso Twists",
+      "Bodyweight Squats"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-078",
+    "title": "Post-Workout Full Cool Down",
+    "category": "Beginner & Foundation",
+    "duration": "12 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Flexibility",
+    "exercises": [
+      "Standing Quad Stretch",
+      "Hamstring Fold",
+      "Cobra Stretch",
+      "Cross-body Shoulder"
+    ],
+    "difficulty": "Beginner",
+    "completed": 0
+  },
+  {
+    "id": "RTN-079",
+    "title": "Upper Body Dumbbell Shred",
+    "category": "Fat Loss & HIIT",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Upper Body",
+    "exercises": [
+      "DB Push Press",
+      "DB Rows",
+      "DB Floor Press",
+      "Shadow Jabs with 2kg",
+      "Mountain Climbers"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-080",
+    "title": "Lower Body Dumbbell Burner",
+    "category": "Fat Loss & HIIT",
+    "duration": "30 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Lower Body",
+    "exercises": [
+      "DB Goblet Squats",
+      "Alternating DB Lunges",
+      "DB Romanian Deadlifts",
+      "Jump Rope"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-081",
+    "title": "300 Rep Spartan Challenge",
+    "category": "Fat Loss & HIIT",
+    "duration": "25 mins",
+    "exercisesCount": "6 exercises",
+    "targetMuscles": "Full Body",
+    "exercises": [
+      "50 Pull-ups",
+      "50 Push-ups",
+      "50 Box Jumps",
+      "50 Floor Wipers",
+      "50 Clean & Press",
+      "50 Squats"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-082",
+    "title": "Deck of Cards Bodyweight",
+    "category": "Fat Loss & HIIT",
+    "duration": "30 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Conditioning",
+    "exercises": [
+      "Hearts=Push-ups",
+      "Spades=Burpees",
+      "Diamonds=Squats",
+      "Clubs=Sit-ups"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-083",
+    "title": "EMOM 20-Minute Grind",
+    "category": "Fat Loss & HIIT",
+    "duration": "20 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Metcon",
+    "exercises": [
+      "Min 1: 15 KB Swings",
+      "Min 2: 12 Burpees",
+      "Min 3: 15 Box Jumps",
+      "Min 4: Rest"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-084",
+    "title": "AMRAP 15-Minute Inferno",
+    "category": "Fat Loss & HIIT",
+    "duration": "15 mins",
+    "exercisesCount": "3 exercises",
+    "targetMuscles": "Metcon",
+    "exercises": [
+      "10 Thrusters",
+      "10 Pull-ups",
+      "200m Run as many rounds as possible"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-085",
+    "title": "Rowing 2K Time Trial Prep",
+    "category": "Fat Loss & HIIT",
+    "duration": "30 mins",
+    "exercisesCount": "Intervals",
+    "targetMuscles": "Cardio",
+    "exercises": [
+      "5x500m Row with 1:1 Rest at Target Split Pace"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-086",
+    "title": "SkiErg Upper Body Cardio",
+    "category": "Fat Loss & HIIT",
+    "duration": "20 mins",
+    "exercisesCount": "5 rounds",
+    "targetMuscles": "Upper Body Cardio",
+    "exercises": [
+      "500m SkiErg",
+      "15 Push-ups",
+      "20 Core Twists"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-087",
+    "title": "Heavy Bag 10-Round Boxing",
+    "category": "Fat Loss & HIIT",
+    "duration": "30 mins",
+    "exercisesCount": "10 rounds",
+    "targetMuscles": "Boxing",
+    "exercises": [
+      "3-minute rounds with 30-sec active rest (Push-ups",
+      "Plank",
+      "Jumping Jacks)"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-088",
+    "title": "Agility Cones & Shuttle Sprints",
+    "category": "Fat Loss & HIIT",
+    "duration": "20 mins",
+    "exercisesCount": "5 drills",
+    "targetMuscles": "Speed",
+    "exercises": [
+      "Pro Agility 5-10-5",
+      "T-Drill",
+      "Shuttle Runs",
+      "Figure 8s"
+    ],
+    "difficulty": "All Levels",
+    "completed": 0
+  },
+  {
+    "id": "RTN-089",
+    "title": "Barbell Squat Volume 10x10",
+    "category": "Strength & Muscle",
+    "duration": "50 mins",
+    "exercisesCount": "German Volume",
+    "targetMuscles": "Quads",
+    "exercises": [
+      "Barbell Back Squat 10 sets x 10 reps @ 60% 1RM",
+      "Leg Curls 3x12"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-090",
+    "title": "Barbell Bench Volume 10x10",
+    "category": "Strength & Muscle",
+    "duration": "50 mins",
+    "exercisesCount": "German Volume",
+    "targetMuscles": "Chest",
+    "exercises": [
+      "Barbell Flat Bench 10 sets x 10 reps @ 60% 1RM",
+      "Lat Pulldowns 3x12"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-091",
+    "title": "Barbell Deadlift Volume 8x8",
+    "category": "Strength & Muscle",
+    "duration": "50 mins",
+    "exercisesCount": "Volume",
+    "targetMuscles": "Back",
+    "exercises": [
+      "Conventional Deadlift 8 sets x 8 reps",
+      "Barbell Shrugs",
+      "Hamstring Curls"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-092",
+    "title": "Dumbbell Incline Hypertrophy",
+    "category": "Strength & Muscle",
+    "duration": "35 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Upper Chest",
+    "exercises": [
+      "Incline DB Press",
+      "Incline DB Flyes",
+      "Low-to-High Cable Crossover",
+      "Push-ups"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-093",
+    "title": "Wide Back V-Taper Specialist",
+    "category": "Strength & Muscle",
+    "duration": "40 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Lats",
+    "exercises": [
+      "Weighted Pull-ups",
+      "Wide Grip Lat Pulldown",
+      "Neutral Grip Cable Row",
+      "Straight Arm Pull"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-094",
+    "title": "Hamstring Isolation Masterclass",
+    "category": "Strength & Muscle",
+    "duration": "35 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Hamstrings",
+    "exercises": [
+      "Seated Leg Curl",
+      "Lying Leg Curl",
+      "Romanian Deadlift",
+      "Nordic Hamstring Curl"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-095",
+    "title": "Calf Titan Blast",
+    "category": "Strength & Muscle",
+    "duration": "20 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Calves",
+    "exercises": [
+      "Standing Barbell Calf Raise",
+      "Seated Calf Raise",
+      "Donkey Calf Raise",
+      "Tibialis Raise"
+    ],
+    "difficulty": "All Levels",
+    "completed": 0
+  },
+  {
+    "id": "RTN-096",
+    "title": "Trap & Neck Armor",
+    "category": "Strength & Muscle",
+    "duration": "25 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Traps",
+    "exercises": [
+      "Barbell Shrugs",
+      "DB Farmer Walks",
+      "Neck Flexion/Extension",
+      "Face Pulls"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-097",
+    "title": "Triceps Horseshoe Builder",
+    "category": "Strength & Muscle",
+    "duration": "25 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Triceps",
+    "exercises": [
+      "Overhead Rope Extension",
+      "Skull Crushers",
+      "Diamond Push-ups",
+      "Cable Pushdown"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-098",
+    "title": "Biceps Peak Sculptor",
+    "category": "Strength & Muscle",
+    "duration": "25 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Biceps",
+    "exercises": [
+      "Incline Dumbbell Curl",
+      "Spider Curl",
+      "Concentration Curl",
+      "Reverse Grip Barbell Curl"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-099",
+    "title": "Forearm Popeye Density",
+    "category": "Strength & Muscle",
+    "duration": "20 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Forearms",
+    "exercises": [
+      "Behind-the-back Wrist Curl",
+      "Reverse Barbell Curl",
+      "Towel Pull-up Hang",
+      "Gripper"
+    ],
+    "difficulty": "All Levels",
+    "completed": 0
+  },
+  {
+    "id": "RTN-100",
+    "title": "Chest Dips & Push-up Finisher",
+    "category": "Strength & Muscle",
+    "duration": "25 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Chest",
+    "exercises": [
+      "Weighted Dips",
+      "Decline Push-ups",
+      "Diamond Push-ups",
+      "Cable Fly Drop Set"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-101",
+    "title": "Abs Six-Pack Density",
+    "category": "Strength & Muscle",
+    "duration": "20 mins",
+    "exercisesCount": "5 exercises",
+    "targetMuscles": "Abs",
+    "exercises": [
+      "Hanging Leg Raises",
+      "Cable Woodchoppers",
+      "Ab Wheel Rollout",
+      "Decline Sit-ups"
+    ],
+    "difficulty": "Intermediate",
+    "completed": 0
+  },
+  {
+    "id": "RTN-102",
+    "title": "Heavy Overhead Push Press",
+    "category": "Powerlifting & Strength",
+    "duration": "40 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Shoulders",
+    "exercises": [
+      "Push Press 5x3",
+      "Barbell Front Squat",
+      "Face Pulls",
+      "Lateral Raises"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-103",
+    "title": "Trap Bar Deadlift Max Effort",
+    "category": "Powerlifting & Strength",
+    "duration": "45 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Posterior Chain",
+    "exercises": [
+      "Trap Bar High Handle 5x3",
+      "Deficit Reverse Lunges",
+      "Glute Ham Developer"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-104",
+    "title": "Front Squat Core & Quad Heavy",
+    "category": "Powerlifting & Strength",
+    "duration": "45 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Quads & Core",
+    "exercises": [
+      "Barbell Front Squats 5x5",
+      "Zercher Squats",
+      "Walking Barbell Lunges",
+      "Planks"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-105",
+    "title": "Close Grip Bench Press Power",
+    "category": "Powerlifting & Strength",
+    "duration": "40 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Triceps & Chest",
+    "exercises": [
+      "Close Grip Bench Press 5x5",
+      "Weighted Dips",
+      "Floor Press",
+      "JM Press"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-106",
+    "title": "Sumo Deadlift Technician",
+    "category": "Powerlifting & Strength",
+    "duration": "45 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Hips & Hamstrings",
+    "exercises": [
+      "Sumo Deadlift 5x3",
+      "Paused Sumo at Knees",
+      "Hip Thrusts",
+      "Abductor Machine"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-107",
+    "title": "Safety Squat Bar Quad Crusher",
+    "category": "Powerlifting & Strength",
+    "duration": "45 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Quads",
+    "exercises": [
+      "SSB Squats 5x5",
+      "Hatfields Squats",
+      "Bulgarian Split Squats",
+      "Leg Extensions"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  },
+  {
+    "id": "RTN-108",
+    "title": "Swiss Bar Neutral Bench Press",
+    "category": "Powerlifting & Strength",
+    "duration": "40 mins",
+    "exercisesCount": "4 exercises",
+    "targetMuscles": "Chest & Shoulders",
+    "exercises": [
+      "Swiss Bar Bench 5x5",
+      "Neutral DB Incline",
+      "Seal Rows",
+      "Tricep Band Pushdowns"
+    ],
+    "difficulty": "Advanced",
+    "completed": 0
+  }
+]

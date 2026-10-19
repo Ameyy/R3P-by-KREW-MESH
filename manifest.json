@@ -1,0 +1,13 @@
+{
+  "short_name": "R3P",
+  "name": "R3P - Gym Management SaaS",
+  "icons": [
+    {"src": "assets/icon-192.png", "type": "image/png", "sizes": "192x192"},
+    {"src": "assets/icon-512.png", "type": "image/png", "sizes": "512x512"}
+  ],
+  "start_url": "./index.html",
+  "background_color": "#0d0f17",
+  "theme_color": "#ff3366",
+  "display": "standalone",
+  "orientation": "portrait"
+}

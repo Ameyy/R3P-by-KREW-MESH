@@ -1,0 +1,2528 @@
+:root {
+  color-scheme: dark;
+  box-sizing: border-box;
+  --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Space Grotesk", monospace;
+  
+  /* DARK THEME: Modern Deep Surface with Rich Gradient Glows */
+  --bg-page: #0a0c10;
+  --bg-app: #101319;
+  --bg-app-gradient: none;
+  
+  --card: #171b24;
+  --card-gradient: none;
+  --card-hover: #1e2430;
+  --card-subtle: #1c222d;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  
+  --text-main: #f8fafc;
+  --text-titles: #ffffff;
+  --mut: #94a3b8;
+  --ln: rgba(255, 255, 255, 0.09);
+  
+  /* Brand Accents */
+  --ac: #ff5500;           /* R3P Electric Orange */
+  --ac-gradient: #ff6a1a;
+  --acx: #ffffff;          /* White text on R3P Orange */
+  --hl: rgba(255, 85, 0, 0.16);
+  
+  --purple-accent: #bfb5ff;
+  --purple-soft: rgba(191, 181, 255, 0.18);
+  --pink-accent: #f9bdf6;
+  --blue-accent: #8ea8ff;
+  
+  /* Action button states */
+  --btn-primary-bg: #ff5500;
+  --btn-primary-text: #0e1115;
+  --btn-secondary-bg: #232a38;
+  --btn-secondary-text: #ffffff;
+  --btn-secondary-border: rgba(255, 255, 255, 0.14);
+  
+  --ok: #22c55e;
+  --bad: #f43f5e;
+  --warn: #f59e0b;
+  
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
+  --radius-full: 9999px;
+  
+  --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* LIGHT THEME: Vibrant, Crisp with Elegant Soft Gradients */
+/* LIGHT THEME: Vibrant, Crisp with Elegant Soft Gradients */
+body[data-theme="light"] {
+  --bg-page: #edf2f7;
+  --bg-app: #f8fafc;
+  --bg-app-gradient: none;
+  
+  --card: #ffffff;
+  --card-gradient: none;
+  --card-hover: #f1f5f9;
+  --card-subtle: #f1f5f9;
+  --card-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+  
+  --text-main: #1e293b;
+  --text-titles: #0f172a;
+  --mut: #64748b;
+  --ln: rgba(15, 23, 42, 0.09);
+  
+  /* Brand Accents Light */
+  --ac: #ff5500;
+  --ac-gradient: #ff6a1a;
+  --acx: #ffffff;
+  --hl: rgba(15, 23, 42, 0.08);
+  
+  --purple-accent: #d8cfff;
+  --purple-soft: rgba(191, 181, 255, 0.28);
+  --pink-accent: #fcdbfb;
+  --blue-accent: #bfd0ff;
+  
+  /* Buttons in Light Mode */
+  --btn-primary-bg: #ff5500;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #e2e8f0;
+  --btn-secondary-text: #0f172a;
+  --btn-secondary-border: rgba(15, 23, 42, 0.15);
+}
+
+/* Light Theme Card & Text Hierarchy */
+body[data-theme="light"] b,
+body[data-theme="light"] strong {
+  color: #0f172a;
+}
+
+body[data-theme="light"] .mut {
+  color: #64748b;
+}
+
+body[data-theme="light"] input {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+body[data-theme="light"] input::placeholder {
+  color: #94a3b8;
+}
+
+body[data-theme="light"] .chip {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.1);
+  color: #475569;
+}
+
+body[data-theme="light"] .chip.on {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+body[data-theme="light"] .chip.on .ic {
+  fill: #ffffff;
+}
+
+body[data-theme="light"] .btn {
+  background: #0f172a;
+  color: #ffffff !important;
+}
+
+body[data-theme="light"] .btn.ghost {
+  background: #f1f5f9;
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+body[data-theme="light"] .btn.ghost:hover {
+  background: #e2e8f0;
+  border-color: rgba(15, 23, 42, 0.25);
+}
+
+body[data-theme="light"] .pill {
+  background: #f1f5f9;
+  color: #1e293b;
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+body[data-theme="light"] .pill.in {
+  background: rgba(34, 197, 94, 0.14);
+  color: #15803d;
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+body[data-theme="light"] .pill.warn {
+  background: rgba(245, 158, 11, 0.14);
+  color: #b45309;
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+body[data-theme="light"] .v-menu-icon {
+  background: #f1f5f9 !important;
+}
+
+body[data-theme="light"] .v-menu-icon .ic {
+  fill: #0f172a !important;
+}
+
+body[data-theme="light"] .av {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+body[data-theme="light"] .header-btn {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--bg-page);
+  color: var(--text-main);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Phone Container Frame */
+#app {
+  position: relative;
+  max-width: 420px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 22px 18px 125px;
+  background: var(--bg-app);
+  background-image: var(--bg-app-gradient);
+  color: inherit;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.6), 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-left: 1px solid var(--ln);
+  border-right: 1px solid var(--ln);
+}
+
+/* Flex Row Utility */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* App Header */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 14px;
+}
+
+.header-titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.header-titles h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-titles);
+  line-height: 1.2;
+}
+
+.header-titles .mut {
+  font-size: 12px;
+  color: var(--mut);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.header-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full);
+  background: var(--card);
+  border: 1px solid var(--ln);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--card-shadow);
+}
+
+.header-btn:active {
+  transform: scale(0.92);
+}
+
+.header-btn .ic {
+  fill: currentColor;
+}
+
+.av {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-full);
+  background: var(--card-subtle);
+  color: var(--text-main);
+  border: 1.5px solid var(--ln);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+/* Typography Headings */
+h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-titles);
+}
+
+h2 {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 22px 0 12px;
+  color: var(--text-titles);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mut {
+  color: var(--mut);
+  font-size: 12px;
+}
+
+.big {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-family: var(--font-mono);
+  color: var(--text-titles);
+}
+
+.big.warn {
+  color: var(--warn);
+}
+
+/* Role Selector Chips (on login screen) */
+.chip {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 12px;
+  border-radius: var(--radius-full);
+  background: var(--card);
+  border: 1px solid var(--ln);
+  color: var(--mut);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--card-shadow);
+}
+
+.chip:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  color: var(--text-titles);
+}
+
+.chip.on {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border-color: transparent;
+  font-weight: 700;
+}
+
+.chip.on .ic {
+  fill: var(--btn-primary-text);
+}
+
+/* Cards & Surfaces */
+.card {
+  background: var(--card);
+  background-image: var(--card);
+  border: 1px solid var(--ln);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+}
+
+.card:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+/* Hero Highlight Card (High Contrast Gradient) */
+.hero {
+  position: relative;
+  border-radius: var(--radius-xl);
+  padding: 22px 20px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+}
+
+/* Dark theme hero: Electric Volt Lime Gradient */
+body:not([data-theme="light"]) .hero {
+  background: #ff5500;
+  color: #0e1115;
+}
+
+body:not([data-theme="light"]) .hero .mut {
+  color: rgba(14, 17, 21, 0.72);
+  font-weight: 600;
+}
+
+body:not([data-theme="light"]) .hero .big {
+  color: #0e1115;
+  font-family: var(--font);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+body:not([data-theme="light"]) .hero .bar {
+  background: rgba(14, 17, 21, 0.15);
+}
+
+body:not([data-theme="light"]) .hero .bar i {
+  background: #0e1115;
+}
+
+/* Light theme hero: Deep Luxury Carbon Gradient with Volt Accent */
+body[data-theme="light"] .hero {
+  background: #ff5500;
+  color: #ffffff;
+}
+
+body[data-theme="light"] .hero .mut {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 600;
+}
+
+body[data-theme="light"] .hero .big {
+  color: #ffffff;
+  font-family: var(--font);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+body[data-theme="light"] .hero .bar {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+body[data-theme="light"] .hero .bar i {
+  background: #ff5500;
+}
+
+/* Grids */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.g3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Tiles */
+.tile {
+  background: var(--card);
+  background-image: var(--card);
+  border: 1px solid var(--ln);
+  border-radius: var(--radius-lg);
+  padding: 16px 8px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-titles);
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--card-shadow);
+}
+
+.tile:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.tile .ic {
+  width: 24px;
+  height: 24px;
+  fill: #ff5500;
+}
+
+body[data-theme="light"] .tile .ic {
+  fill: #0f172a;
+}
+
+/* Buttons (Fixed contrast & distinct active borders) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  border-radius: var(--radius-full);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn.sm {
+  width: auto;
+  padding: 8px 16px;
+  font-size: 12px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+}
+
+/* Secondary / Ghost buttons: Clear contrast in both themes */
+.btn.ghost {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1px solid var(--btn-secondary-border);
+  box-shadow: none;
+}
+
+.btn.ghost:hover {
+  background: var(--card-hover);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+body[data-theme="light"] .btn.ghost:hover {
+  border-color: rgba(15, 23, 42, 0.25);
+}
+
+/* Segmented Tabs (Pill filter bar) */
+.seg {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.seg::-webkit-scrollbar {
+  display: none;
+}
+
+.seg button {
+  padding: 9px 18px;
+  border-radius: var(--radius-full);
+  background: var(--card);
+  border: 1px solid var(--ln);
+  color: var(--mut);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+  box-shadow: var(--card-shadow);
+}
+
+.seg button:hover {
+  color: var(--text-titles);
+}
+
+.seg button.on {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border-color: transparent;
+  font-weight: 700;
+}
+
+/* Status Pills */
+.pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--card-subtle);
+  color: var(--text-titles);
+  border: 1px solid var(--ln);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pill.in {
+  background: rgba(34, 197, 94, 0.16);
+  color: var(--ok);
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.pill.warn {
+  background: rgba(245, 158, 11, 0.16);
+  color: var(--warn);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+/* Progress Bars */
+.bar {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--ac);
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+/* Form Inputs */
+input {
+  width: 100%;
+  background: var(--card-subtle);
+  border: 1px solid var(--ln);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  color: var(--text-titles);
+  font-size: 14px;
+  font-family: inherit;
+  margin-bottom: 12px;
+  outline: none;
+  transition: var(--transition);
+}
+
+input:focus {
+  border-color: #ff5500;
+  background: var(--card-hover);
+}
+
+body[data-theme="light"] input:focus {
+  border-color: #0f172a;
+}
+
+/* Back Button */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-titles);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Floating Bottom Dock Navigation */
+/* Bottom Sheet Overlays */
+.ov {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  background-image: var(--card);
+  border-radius: 28px 28px 0 0;
+  padding: 24px 20px 42px;
+  border-top: 1px solid var(--ln);
+  color: var(--text-main);
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Toasts */
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ff5500;
+  color: #0e1115;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  z-index: 300;
+}
+
+body[data-theme="light"] .toast {
+  background: #ff5500;
+  color: #ffffff;
+}
+
+/* Icons */
+.ic {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* Switch & Checkbox Utilities */
+.sw {
+  width: 44px;
+  height: 24px;
+  background: var(--card-subtle);
+  border: 1px solid var(--ln);
+  border-radius: var(--radius-full);
+  position: relative;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.sw::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: var(--transition);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.sw.on {
+  background: #ff5500;
+  border-color: transparent;
+}
+
+body[data-theme="light"] .sw.on {
+  background: #ff5500;
+}
+
+.sw.on::after {
+  transform: translateX(20px);
+  background: #0e1115;
+}
+
+body[data-theme="light"] .sw.on::after {
+  background: #ffffff;
+}
+
+.chk {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--ln);
+  display: grid;
+  place-items: center;
+  transition: var(--transition);
+}
+
+.chk.d {
+  background: var(--ac);
+  border-color: var(--ac);
+  color: var(--acx);
+}
+
+.chk.d .ic {
+  fill: var(--acx);
+  width: 14px;
+  height: 14px;
+}
+
+/* Micro Animations */
+.fx > :not(nav):not(.ov):not(.toast) {
+  animation: up 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Vertical Menu Row Styling */
+.v-menu-item:hover {
+  background: var(--card-hover);
+}
+
+.v-menu-item:active {
+  transform: scale(0.99);
+}
+
+.v-menu-icon .ic {
+  fill: var(--text-titles);
+  width: 20px;
+  height: 20px;
+}
+
+/* Hero Card CTA Button */
+.hero-cta-btn {
+  margin-top: 14px;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hero-cta-btn .ic {
+  fill: #0f172a !important;
+}
+
+body:not([data-theme="light"]) .hero-cta-btn {
+  background: #0e1115 !important;
+  color: #ff5500 !important;
+}
+
+body:not([data-theme="light"]) .hero-cta-btn .ic {
+  fill: #ff5500 !important;
+}
+
+/* Explicit specificity for hero cta button */
+body[data-theme="light"] .hero .btn.hero-cta-btn,
+body[data-theme="light"] .hero-cta-btn {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+body[data-theme="light"] .hero .btn.hero-cta-btn .ic,
+body[data-theme="light"] .hero-cta-btn .ic {
+  fill: #0f172a !important;
+}
+
+body:not([data-theme="light"]) .hero .btn.hero-cta-btn,
+body:not([data-theme="light"]) .hero-cta-btn {
+  background: #0e1115 !important;
+  color: #ff5500 !important;
+}
+
+body:not([data-theme="light"]) .hero .btn.hero-cta-btn .ic,
+body:not([data-theme="light"]) .hero-cta-btn .ic {
+  fill: #ff5500 !important;
+}
+
+/* ==========================================================================
+   SPEECHLAB / AMBER-FIRE LUXURY LOGIN & SIGNUP REPLICA
+   ========================================================================== */
+
+.auth-wrapper {
+  position: relative;
+  min-height: 100vh;
+  margin: -22px -18px -125px;
+  padding: 24px 22px 40px;
+  background: #090a0d;
+  color: #ffffff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Atmospheric 3D Amber Radiant Glow */
+.auth-glow-bg {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 360px;
+  height: 380px;
+  background: transparent;
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Diagonal Sleek Architecture Lines */
+.auth-ambient-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 360px;
+  background: #ff5500;
+  background-size: 140px 140px;
+  pointer-events: none;
+  opacity: 0.7;
+  z-index: 0;
+}
+
+.auth-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.auth-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+  margin-bottom: 24px;
+}
+
+.auth-status-time {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14px;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.auth-top-action {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: var(--transition);
+}
+
+.auth-top-action:hover {
+  color: #ff9d42;
+}
+
+/* 3D Isometric Glowing Isometric Platform Logo */
+.auth-3d-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0 24px;
+}
+
+.auth-isometric-platform {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  display: grid;
+  place-items: center;
+}
+
+.auth-isometric-base {
+  position: absolute;
+  width: 100px;
+  height: 60px;
+  background: #ff5500;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  transform: rotateX(60deg) rotateZ(-45deg);
+  box-shadow: 0 25px 35px rgba(0, 0, 0, 0.6), 0 0 40px rgba(255, 100, 0, 0.35);
+}
+
+.auth-isometric-base-bottom {
+  position: absolute;
+  width: 100px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  transform: translateY(18px) rotateX(60deg) rotateZ(-45deg);
+}
+
+.auth-center-badge {
+  position: relative;
+  z-index: 2;
+  width: 58px;
+  height: 58px;
+  background: #ff5500;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 30px rgba(255, 60, 0, 0.55), 0 0 20px rgba(255, 140, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.auth-center-badge svg {
+  width: 32px;
+  height: 32px;
+  fill: #ffffff;
+}
+
+/* Headings */
+.auth-title {
+  font-family: var(--font);
+  font-size: 24px;
+  font-weight: 800;
+  text-align: center;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin-bottom: 22px;
+}
+
+/* Input Fields matching image */
+.auth-field-group {
+  margin-bottom: 16px;
+}
+
+.auth-label {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+  font-weight: 500;
+  display: block;
+}
+
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input {
+  width: 100%;
+  background: #14171d !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 16px !important;
+  padding: 14px 16px !important;
+  font-size: 14px !important;
+  color: #ffffff !important;
+  font-family: inherit !important;
+  margin-bottom: 0 !important;
+  outline: none !important;
+  transition: var(--transition);
+}
+
+.auth-input:focus {
+  border-color: #ff7824 !important;
+  background: #191d24 !important;
+  box-shadow: 0 0 0 3px rgba(255, 120, 36, 0.18);
+}
+
+.auth-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.auth-eye-btn {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 4px;
+}
+
+.auth-forgot-link {
+  display: block;
+  text-align: right;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 10px 2px 20px auto;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.auth-forgot-link:hover {
+  color: #ff9d42;
+}
+
+/* Radiant Orange-to-Yellow Gradient Login Button */
+.auth-cta-gradient-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: var(--radius-full);
+  background: #ff5500;
+  color: #0e1115;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(255, 107, 53, 0.45);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.auth-cta-gradient-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 6px 18px rgba(255, 107, 53, 0.35);
+}
+
+/* Secondary Social Buttons (Apple & Google) */
+.auth-social-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.auth-social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 16px;
+  border-radius: var(--radius-full);
+  background: #14171d;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.auth-social-btn:hover {
+  background: #1a1e27;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.auth-social-btn svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+
+/* ==========================================================================
+   LIGHT MODE COMPREHENSIVE CONTRAST & TYPOGRAPHY FIXES (EMPLOYEE & MEMBER)
+   ========================================================================== */
+
+/* Universal Hero inside Light Mode (covers Admin, Employee & Member) */
+body[data-theme="light"] .hero {
+  background: #ff5500 !important;
+  color: #ffffff !important;
+}
+
+body[data-theme="light"] .hero h1,
+body[data-theme="light"] .hero b,
+body[data-theme="light"] .hero strong,
+body[data-theme="light"] .hero .big {
+  color: #ffffff !important;
+}
+
+body[data-theme="light"] .hero .mut {
+  color: rgba(255, 255, 255, 0.76) !important;
+  font-weight: 500 !important;
+}
+
+/* Hero CTA and Primary action buttons inside hero */
+body[data-theme="light"] .hero .btn,
+body[data-theme="light"] .hero .btn.hero-cta-btn {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  font-weight: 700 !important;
+}
+
+body[data-theme="light"] .hero .btn .ic,
+body[data-theme="light"] .hero .btn.hero-cta-btn .ic {
+  fill: #0f172a !important;
+}
+
+body[data-theme="light"] .hero .btn:hover {
+  background: #f8fafc !important;
+}
+
+/* Light mode progress bar inside normal cards and views */
+body[data-theme="light"] .bar {
+  background: #e2e8f0 !important;
+}
+
+body[data-theme="light"] .bar i {
+  background: #ea580c !important;
+}
+
+body[data-theme="light"] .hero .bar {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+body[data-theme="light"] .hero .bar i {
+  background: #ff5500 !important;
+}
+
+/* Workout routines & sheets contrast refinements in light mode */
+body[data-theme="light"] #routineList .card {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+body[data-theme="light"] #routineList .card:hover {
+  border-color: rgba(15, 23, 42, 0.18);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+}
+
+body[data-theme="light"] .sheet .card {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+/* Target Muscles highlight in routine modal in light mode */
+body[data-theme="light"] .sheet .card b {
+  color: #c2410c !important;
+}
+
+/* Routine breakdown index avatar inside modal */
+body[data-theme="light"] .sheet .card .av {
+  background: #fee2e2 !important;
+  color: #c2410c !important;
+  border-color: rgba(194, 65, 12, 0.2) !important;
+  font-weight: 800 !important;
+}
+
+/* Form input labels and texts inside modals & settings in light mode */
+body[data-theme="light"] .card .mut {
+  color: #475569 !important;
+}
+
+body[data-theme="light"] .card b,
+body[data-theme="light"] .card strong {
+  color: #0f172a !important;
+}
+
+/* Tasks list crossed out text contrast in light mode */
+body[data-theme="light"] .chk.d {
+  background: #0f172a !important;
+  border-color: #0f172a !important;
+  color: #ffffff !important;
+}
+
+body[data-theme="light"] .chk.d .ic {
+  fill: #ffffff !important;
+}
+
+/* Segmented button controls in light mode */
+body[data-theme="light"] .seg {
+  background: #e2e8f0;
+}
+
+body[data-theme="light"] .seg button {
+  color: #334155 !important;
+}
+
+body[data-theme="light"] .seg button.on {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12) !important;
+}
+
+/* ==========================================================================
+   APPLE FITNESS DESIGN SYSTEM THEME (iOS Human Interface Guidelines)
+   ========================================================================== */
+
+/* SF Pro / System Font, ultra-smooth font smoothing */
+:root {
+  --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+  
+  /* Apple Fitness Signature Accents */
+  --apple-move: #fa114f;      /* Electric Strawberry/Red (Move Ring) */
+  --apple-exercise: #a1ff00;  /* Acid Lime/Green (Exercise Ring) */
+  --apple-stand: #00fff2;     /* Neon Cyan/Blue (Stand Ring) */
+  --apple-amber: #ff9500;     /* Apple Amber/Orange */
+  --apple-purple: #af52de;    /* Apple Purple */
+  
+  /* Apple Dark (Default for Fitness) */
+  --apple-dark-bg: #000000;
+  --apple-dark-card: #1c1c1e;
+  --apple-dark-elevated: #2c2c2e;
+  --apple-dark-separator: rgba(255, 255, 255, 0.12);
+  --apple-dark-text-primary: #ffffff;
+  --apple-dark-text-secondary: #8e8e93;
+  --apple-dark-text-tertiary: #636366;
+  
+  /* Apple Light System */
+  --apple-light-bg: #f2f2f7;
+  --apple-light-card: #ffffff;
+  --apple-light-elevated: #e5e5ea;
+  --apple-light-separator: rgba(60, 60, 67, 0.18);
+  --apple-light-text-primary: #000000;
+  --apple-light-text-secondary: #6e6e73;
+  --apple-light-text-tertiary: #8e8e93;
+}
+
+/* Base Body & Layout refinement */
+body {
+  font-family: var(--apple-font);
+  letter-spacing: -0.015em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  max-width: 414px;
+  background: var(--apple-dark-bg);
+}
+
+body[data-theme="light"] #app {
+  background: var(--apple-light-bg);
+}
+
+/* Apple Header Large Title Navigation */
+.app-header {
+  padding-top: 12px;
+  margin-bottom: 20px;
+}
+
+.header-titles h1 {
+  font-family: var(--apple-font);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+
+.header-titles .mut {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Header Avatar Apple Circular Pill */
+.header-controls .av,
+.av {
+  background: var(--apple-dark-elevated);
+  color: #ffffff;
+  border-radius: 50%;
+  font-weight: 700;
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body[data-theme="light"] .header-controls .av,
+body[data-theme="light"] .av {
+  background: #e5e5ea;
+  color: #000000;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.header-btn {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(20px);
+}
+
+body[data-theme="light"] .header-btn {
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: #000000 !important;
+}
+
+/* Apple Fitness Glassmorphic Rounded Cards (20px-24px squircle) */
+.card {
+  background: var(--apple-dark-card);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 18px 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  margin-bottom: 14px;
+}
+
+body[data-theme="light"] .card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* Section Headings */
+h2 {
+  font-family: var(--apple-font);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 22px 0 10px;
+  color: #ffffff;
+}
+
+body[data-theme="light"] h2 {
+  color: #000000;
+}
+
+/* Apple Hero Banner */
+.hero {
+  border-radius: 24px;
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 22px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+body[data-theme="light"] .hero {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Apple Action Pills and Buttons */
+.btn {
+  font-family: var(--apple-font);
+  border-radius: 9999px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  padding: 13px 20px;
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.btn.sm {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.btn.ghost {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body[data-theme="light"] .btn.ghost {
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: #000000 !important;
+}
+
+/* Apple Floating Frost Tab Bar */
+/* ==========================================================================
+   MIDNIGHT GLOW NAVBAR UI (Exact Dribbble Shot 27401154 Recreation)
+   ========================================================================== */
+
+nav {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 370px;
+  background: #08090d !important;
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border-radius: 9999px;
+  padding: 8px 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 
+              0 0 1px 1px rgba(255, 255, 255, 0.08),
+              inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 100;
+  box-sizing: border-box;
+}
+
+body[data-theme="light"] nav {
+  background: #0c0e14 !important;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.28),
+              0 0 1px 1px rgba(255, 255, 255, 0.08),
+              inset 0 1px 1px rgba(255, 255, 255, 0.14);
+}
+
+nav div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 4px;
+  position: relative;
+}
+
+/* Nav button items with slide-to-left icon & reveal label animation */
+nav button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 9999px;
+  background: transparent;
+  border: none;
+  color: #717684;
+  cursor: pointer;
+  padding: 0 12px;
+  outline: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+nav button:hover:not(.on) {
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.nav-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+}
+
+nav button .ic {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  transition: fill 0.25s ease;
+  flex-shrink: 0;
+}
+
+/* Tab label: seamlessly slides out from behind the icon */
+.nav-lbl {
+  display: inline-block;
+  font-family: var(--apple-font, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  white-space: nowrap;
+  max-width: 0;
+  opacity: 0;
+  transform: translateX(-8px);
+  margin-left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1) 0.08s,
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              margin-left 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+}
+
+/* ACTIVE TAB: Slides icon slightly left and reveals label */
+nav button.on {
+  color: #ffffff !important;
+  background: #08090d;
+  padding: 0 16px 0 12px;
+}
+
+nav button.on .nav-icon-wrap {
+  transform: translateX(-2px);
+}
+
+nav button.on .nav-lbl {
+  max-width: 90px;
+  opacity: 1;
+  transform: translateX(0);
+  margin-left: 7px;
+}
+
+/* Atmospheric Soft Glow behind the active item (Static Premium Glow) */
+nav button.on::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(255, 85, 0, 0.65) 0%, rgba(255, 106, 26, 0.35) 50%, transparent 75%);
+  filter: blur(10px);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.95;
+}
+
+/* Apple Fitness Interactive Pill Chips */
+.pill {
+  font-family: var(--apple-font);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border: none;
+}
+
+.pill.in {
+  background: rgba(161, 255, 0, 0.15);
+  color: #a1ff00;
+}
+
+.pill.warn {
+  background: rgba(255, 149, 0, 0.16);
+  color: #ff9500;
+}
+
+body[data-theme="light"] .pill {
+  background: rgba(0, 0, 0, 0.05);
+  color: #1c1c1e;
+}
+
+body[data-theme="light"] .pill.in {
+  background: rgba(52, 199, 89, 0.15);
+  color: #248a3d;
+}
+
+body[data-theme="light"] .pill.warn {
+  background: rgba(255, 149, 0, 0.15);
+  color: #b25000;
+}
+
+/* Apple Segment Controls */
+.seg {
+  background: rgba(118, 118, 128, 0.24);
+  padding: 3px;
+  border-radius: 12px;
+  display: flex;
+  gap: 2px;
+}
+
+body[data-theme="light"] .seg {
+  background: rgba(118, 118, 128, 0.14);
+}
+
+.seg button {
+  flex: 1;
+  border-radius: 9px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  color: #8e8e93;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.seg button.on {
+  background: #636366;
+  color: #ffffff;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+body[data-theme="light"] .seg button.on {
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* Modal Bottom Sheets matching iOS Sheets */
+.sheet {
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  background: #1c1c1e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+}
+
+body[data-theme="light"] .sheet {
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   LIVE TRACKING BADGE & PULSING DOT (HIGH CONTRAST IN DARK & LIGHT)
+   ========================================================================== */
+.live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--apple-font, var(--font));
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: rgba(161, 255, 0, 0.16) !important;
+  color: #a1ff00 !important;
+  border: 1px solid rgba(161, 255, 0, 0.35) !important;
+  white-space: nowrap;
+}
+
+.live-indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #a1ff00;
+  box-shadow: 0 0 8px #a1ff00, 0 0 14px rgba(161, 255, 0, 0.7);
+  animation: livePulse 1.8s infinite ease-in-out;
+  flex-shrink: 0;
+}
+
+@keyframes livePulse {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.28);
+    opacity: 1;
+    box-shadow: 0 0 12px #a1ff00, 0 0 20px rgba(161, 255, 0, 0.9);
+  }
+  100% {
+    transform: scale(0.92);
+    opacity: 0.8;
+  }
+}
+
+/* Light mode overrides inside carbon hero */
+body[data-theme="light"] .hero .live-pill {
+  background: rgba(161, 255, 0, 0.18) !important;
+  color: #a1ff00 !important;
+  border: 1px solid rgba(161, 255, 0, 0.4) !important;
+}
+
+body[data-theme="light"] .hero .live-indicator-dot {
+  background: #a1ff00 !important;
+  box-shadow: 0 0 10px #a1ff00 !important;
+}
+
+/* Dark mode live-pill on Volt hero card */
+body:not([data-theme="light"]) .hero .live-pill {
+  background: rgba(14, 17, 21, 0.85) !important;
+  color: #a1ff00 !important;
+  border: 1px solid rgba(161, 255, 0, 0.4) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+body:not([data-theme="light"]) .hero .live-indicator-dot {
+  background: #a1ff00 !important;
+  box-shadow: 0 0 8px #a1ff00, 0 0 14px rgba(161, 255, 0, 0.8) !important;
+}
+
+/* ==========================================================================
+/* ==========================================================================
+   CLEAN DOT MATRIX (NO GRADIENTS)
+   ========================================================================== */
+/* Crisp White Solid Floating Cards for Maximum Pop & Definition in Light Mode */
+body[data-theme="light"] .card {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* White Cards for Dark Mode */
+body:not([data-theme="light"]) .card {
+  background: #0f172a !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45), 0 0 1px rgba(6, 182, 212, 0.15) !important;
+}
+
+/* Light theme Floating Navigation Dock with crisp white shadow */
+/* Midnight Glow Nav retained across themes */
+
+/* ==========================================================================
+   MINIMALIST HIGH-PRECISION MICRO DOT MATRIX PATTERN (NO GRADIENTS)
+   Breathing Neon Orange/Amber Glow for R3P Branding
+   ========================================================================== */
+
+/* Remove background gradients across entire app and apply micro dot matrix */
+#app {
+  background-color: #05070a !important;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px) !important;
+  background-size: 16px 16px !important;
+  background-attachment: fixed !important;
+}
+
+/* Light Mode: Pure White Screen with Crisp Micro Dots for Maximum Contrast */
+body[data-theme="light"] #app {
+  background-color: #ffffff !important;
+  background-image: radial-gradient(rgba(15, 23, 42, 0.14) 1px, transparent 1px) !important;
+  background-size: 16px 16px !important;
+  background-attachment: fixed !important;
+}
+
+/* Clean solid cards with subtle border on dot matrix pattern */
+body[data-theme="light"] .card {
+  background: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+}
+
+body:not([data-theme="light"]) .card {
+  background: #0f131a !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Remove gradient from hero card as requested ("dont use gradients anywhere") */
+.hero {
+  background: #0f131a !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+body[data-theme="light"] .hero {
+  background: #090c10 !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.15) !important;
+}
+
+/* ==========================================================================
+   LOGIN SCREEN: MICRO DOT MATRIX ON WHITE / CLEAN OBSIDIAN + BREATHING GLOW
+   ========================================================================== */
+
+.auth-wrapper {
+  position: relative;
+  min-height: 100vh;
+  margin: -22px -18px -125px;
+  padding: 24px 22px 40px;
+  background-color: #06080c !important;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px) !important;
+  background-size: 16px 16px !important;
+  color: #ffffff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+body[data-theme="light"] .auth-wrapper {
+  background-color: #ffffff !important;
+  background-image: radial-gradient(rgba(15, 23, 42, 0.15) 1px, transparent 1px) !important;
+  background-size: 16px 16px !important;
+  color: #0f172a;
+}
+
+body[data-theme="light"] .auth-title {
+  color: #0f172a !important;
+}
+
+body[data-theme="light"] .auth-top-bar a {
+  color: #0f172a !important;
+}
+
+body[data-theme="light"] .auth-top-bar div {
+  color: #64748b !important;
+}
+
+body[data-theme="light"] .auth-label {
+  color: #334155 !important;
+}
+
+body[data-theme="light"] .auth-input {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body[data-theme="light"] .auth-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+body[data-theme="light"] .auth-social-btn {
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.16) !important;
+  color: #0f172a !important;
+}
+
+body[data-theme="light"] .auth-forgot-link {
+  color: #64748b !important;
+}
+
+/* Breathing Glowing Logo Container for R3P */
+.r3p-breathing-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 18px auto 26px;
+  position: relative;
+}
+
+.r3p-breathing-logo {
+  width: 146px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  animation: r3pNeonBreathe 3.2s infinite ease-in-out;
+}
+
+/* Pure breathing glow with identical brand colors (#ff5500 orange & amber) */
+@keyframes r3pNeonBreathe {
+  0% {
+    transform: scale(0.97);
+    filter: drop-shadow(0 0 10px rgba(255, 85, 0, 0.6))
+            drop-shadow(0 0 22px rgba(255, 85, 0, 0.35));
+    opacity: 0.92;
+  }
+  50% {
+    transform: scale(1.04);
+    filter: drop-shadow(0 0 20px rgba(255, 85, 0, 0.95))
+            drop-shadow(0 0 42px rgba(255, 100, 0, 0.7))
+            drop-shadow(0 0 65px rgba(255, 140, 0, 0.45));
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.97);
+    filter: drop-shadow(0 0 10px rgba(255, 85, 0, 0.6))
+            drop-shadow(0 0 22px rgba(255, 85, 0, 0.35));
+    opacity: 0.92;
+  }
+}
+
+/* Solid Brand Button (Replaced gradient with solid high-impact R3P Orange) */
+.auth-cta-gradient-btn {
+  background: #ff5500 !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  font-weight: 800;
+  border: none;
+  box-shadow: 0 8px 24px rgba(255, 85, 0, 0.4) !important;
+}
+
+.auth-cta-gradient-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 14px rgba(255, 85, 0, 0.3) !important;
+}
+
+/* Remove decorative blur overlays */
+.auth-glow-bg,
+.auth-ambient-grid {
+  display: none !important;
+}
+
+
+/* Fix App Container on Auth Screen so login fits viewport perfectly */
+#app.auth-screen-active {
+  padding: 0 !important;
+  margin: 0 auto !important;
+  min-height: 100vh !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+
+/* Minimalist Top Bar on Clean Login */
+.clean-login-topbar {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.clean-login-brand {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+body[data-theme="light"] .clean-login-brand {
+  color: rgba(15, 23, 42, 0.5);
+}
+
+.clean-theme-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clean-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: scale(1.05);
+}
+
+body[data-theme="light"] .clean-theme-toggle {
+  background: rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+}
+.clean-login-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  margin: 0 !important;
+  padding: 24px 20px 36px !important;
+  background-color: #06080c !important;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px) !important;
+  background-size: 16px 16px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+
+body[data-theme="light"] .clean-login-hero-img {
+  filter: contrast(1.05) brightness(0.98);
+  opacity: 0.92;
+}
+body[data-theme="light"] .clean-login-wrapper {
+  background-color: #ffffff !important;
+  background-image: radial-gradient(rgba(15, 23, 42, 0.15) 1px, transparent 1px) !important;
+  background-size: 16px 16px !important;
+}
+
+.clean-login-hero-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.clean-login-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  animation: heroFadeInFromBottom 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
+}
+@keyframes heroFadeInFromBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.97);
+  }
+  100% {
+    opacity: 0.95;
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+
+/* Stationary R3P Logo Container */
+.clean-login-logo-wrap {
+  position: relative;
+  z-index: 3;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: none !important;
+}
+
+.r3p-composite-logo {
+  position: relative;
+  width: 140px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* Base static layer (R & P letters and subtitle) - absolutely stationary */
+.r3p-base-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transform: none !important;
+  filter: brightness(2.4) contrast(1.15);
+}
+
+body[data-theme="light"] .r3p-base-layer {
+  filter: brightness(0.12) !important;
+}
+
+/* Orange '3' element layer - no glow, clean sharp rendering */
+.r3p-orange-glow-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  transform: none !important;
+  filter: none !important;
+  animation: none !important;
+}
+
+/* Diagonal glass light shine sweep across the logo every 7s */
+.r3p-composite-logo::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -120%;
+  width: 60%;
+  height: 200%;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0.75) 52%,
+    rgba(255, 255, 255, 0.45) 54%,
+    rgba(255, 255, 255, 0) 70%,
+    transparent 100%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+  z-index: 5;
+  animation: r3pLogoShine 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes r3pLogoShine {
+  0% {
+    left: -130%;
+  }
+  16% {
+    left: 170%;
+  }
+  100% {
+    left: 170%;
+  }
+}
+
+/* Clean minimal card */
+.clean-login-card {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 360px;
+  background: #0d1118;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: 22px 20px 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+  /* animation: cardFadeInUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; */
+}
+
+@keyframes cardFadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+body[data-theme="light"] .clean-login-card {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+}
+
+/* Clean Role Switcher Pills */
+.clean-role-pills {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.clean-role-pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.65);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clean-role-pill.active {
+  background: #ff5500;
+  border-color: #ff5500;
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(255, 85, 0, 0.45);
+}
+
+body[data-theme="light"] .clean-role-pill {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+body[data-theme="light"] .clean-role-pill.active {
+  background: #ff5500;
+  border-color: #ff5500;
+  color: #ffffff;
+}
+
+/* Clean Minimal Inputs */
+.clean-field {
+  margin-bottom: 12px;
+}
+
+.clean-input {
+  width: 100%;
+  padding: 13px 16px;
+  background: #141822;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  color: #ffffff;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.clean-input:focus {
+  border-color: #ff5500;
+  background: #171c28;
+  box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.18);
+}
+
+body[data-theme="light"] .clean-input {
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  color: #0f172a;
+}
+
+body[data-theme="light"] .clean-input:focus {
+  background: #ffffff;
+  border-color: #ff5500;
+  box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.14);
+}
+
+.clean-eye-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body[data-theme="light"] .clean-eye-btn {
+  color: #94a3b8;
+}
+
+/* High-Impact Solid CTA Button (No gradients) */
+.clean-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: #ff5500;
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(255, 85, 0, 0.4);
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.clean-submit-btn:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 10px 28px rgba(255, 85, 0, 0.55);
+}
+
+.clean-submit-btn:active {
+  transform: scale(0.98);
+}
+
+/* Profile Picture Camera Button & Wrapper (Settings / Profile view) */
+.profile-avatar-wrap {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 12px;
+}
+
+.profile-avatar-wrap .av {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-avatar-wrap:hover .av {
+  transform: scale(1.02);
+}
+
+.profile-cam-btn {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ac, #ff5500);
+  border: 2px solid #08090d;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+  padding: 0;
+  outline: none;
+  z-index: 10;
+}
+
+.profile-cam-btn:hover {
+  transform: scale(1.12);
+  background: #ff6a1a;
+}
+
+.profile-cam-btn:active {
+  transform: scale(0.95);
+}
+
+.profile-cam-btn .ic {
+  width: 14px;
+  height: 14px;
+  fill: #ffffff;
+}
+
+body[data-theme="light"] .profile-cam-btn {
+  border-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.25);
+}
+
+/* Profile Photo Picker Modal / Action Sheet */
+.photo-modal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.photo-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ln);
+}
+
+.sheet-close-btn {
+  background: var(--card-subtle);
+  border: 1px solid var(--ln);
+  color: var(--text-mut);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sheet-close-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.sheet-close-btn .ic {
+  width: 16px;
+  height: 16px;
+}
+
+.photo-modal-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.photo-opt-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--card-subtle);
+  border: 1px solid var(--ln);
+  border-radius: 18px;
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+}
+
+.photo-opt-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.photo-opt-btn:active {
+  transform: scale(0.98);
+}
+
+.photo-opt-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.photo-opt-icon .ic {
+  width: 20px;
+  height: 20px;
+}
+
+.camera-bg {
+  background: rgba(255, 85, 0, 0.15);
+  color: #ff5500;
+}
+
+.upload-bg {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+}
+
+.remove-bg {
+  background: rgba(244, 63, 94, 0.15);
+  color: #f43f5e;
+}
+
+.photo-opt-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.photo-opt-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.photo-opt-desc {
+  font-size: 12px;
+  color: var(--text-mut);
+}
+
+.photo-opt-btn .ic:last-child {
+  color: var(--text-mut);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+body[data-theme="light"] .photo-opt-btn {
+  background: #f1f5f9;
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+body[data-theme="light"] .photo-opt-btn:hover {
+  background: #e2e8f0;
+}
+
+
+/* Card Spacing & Alignment Fixes (Zero Layout / Design Change) */
+.hero {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero .mut:first-child {
+  margin-bottom: 4px;
+}
+
+.hero h1 {
+  margin: 2px 0 6px 0;
+  line-height: 1.2;
+}
+
+.hero .mut {
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+.hero .btn {
+  margin-top: 18px !important;
+  width: 100%;
+}
