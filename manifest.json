@@ -19,7 +19,8 @@
   "categories": [
     "fitness",
     "lifestyle",
-    "productivity"
+    "productivity",
+    "health"
   ],
   "prefer_related_applications": false,
   "related_applications": [
@@ -64,6 +65,123 @@
       "type": "image/png",
       "form_factor": "wide",
       "label": "R3P Fitness Desktop Operations & Pass Validation Console"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Digital Pass & Check-in",
+      "short_name": "Check-in",
+      "description": "Quickly display your signed dynamic QR pass",
+      "url": "/?shortcut=checkin",
+      "icons": [
+        {
+          "src": "/assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Today Workout Routine",
+      "short_name": "Workout",
+      "description": "Log sets, reps, and track personal records",
+      "url": "/?shortcut=workout",
+      "icons": [
+        {
+          "src": "/assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Fee Payments & Dues",
+      "short_name": "Payments",
+      "description": "Pay membership dues via instant UPI",
+      "url": "/?shortcut=payments",
+      "icons": [
+        {
+          "src": "/assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "protocol_handlers": [
+    {
+      "protocol": "web+r3p",
+      "url": "/?action=%s"
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 420
+  },
+  "file_handlers": [
+    {
+      "action": "/?action=open-file",
+      "name": "Workout & Member Data Files",
+      "icons": [
+        {
+          "src": "/assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ],
+      "accept": {
+        "text/csv": [
+          ".csv"
+        ],
+        "application/json": [
+          ".json"
+        ]
+      }
+    }
+  ],
+  "launch_handler": {
+    "client_mode": [
+      "navigate-existing",
+      "auto"
+    ]
+  },
+  "share_target": {
+    "action": "/?action=share-target",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "widgets": [
+    {
+      "name": "R3P Quick Pass",
+      "description": "Quick glance at membership status and QR access pass",
+      "tag": "r3p-pass-widget",
+      "template": "widget-template",
+      "ms_ac_template": "widgets/pass.json",
+      "data": "/api/widget-data.json",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "/assets/screenshot-mobile.png",
+          "sizes": "1080x1920",
+          "label": "R3P Widget Overview"
+        }
+      ],
+      "icons": [
+        {
+          "src": "/assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "note_taking": {
+    "new_note_url": "/?action=new-workout-note"
+  },
+  "scope_extensions": [
+    {
+      "origin": "https://r3p.mesh"
     }
   ]
 }
