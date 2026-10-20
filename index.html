@@ -8,11 +8,32 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- PWA & Mobile Web Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="R3P Fitness">
+  <meta name="description" content="Next-Gen Gym Operating System by KREW/MESH.">
   <link rel="stylesheet" href="css/theme.css?v=1792426240">
 </head>
 <body>
   <div id="app" data-role=""></div>
   <script src="js/db.js"></script>
   <script src="js/main.js?v=1792426169"></script>
+  <!-- Service Worker Registration for PWABuilder & Offline PWA -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function() {
+        navigator.serviceWorker.register("/sw.js")
+          .then(function(reg) {
+            console.log("[PWA] Service Worker registered successfully with scope:", reg.scope);
+          })
+          .catch(function(err) {
+            console.warn("[PWA] Service Worker registration failed:", err);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
