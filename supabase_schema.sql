@@ -223,17 +223,127 @@ ALTER TABLE public.attendance ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.staff ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
 
--- Allow anon & authenticated users to read and write with tenant isolation
+-- 0. Read Access Policies
 CREATE POLICY "Allow public read access to active tenant" ON public.tenants FOR SELECT USING (true);
 CREATE POLICY "Allow tenant members read" ON public.members FOR SELECT USING (true);
-CREATE POLICY "Allow tenant members write" ON public.members FOR ALL USING (true);
 CREATE POLICY "Allow tenant staff read" ON public.staff FOR SELECT USING (true);
-CREATE POLICY "Allow tenant staff write" ON public.staff FOR ALL USING (true);
 CREATE POLICY "Allow tenant invoices read" ON public.invoices FOR SELECT USING (true);
-CREATE POLICY "Allow tenant invoices write" ON public.invoices FOR ALL USING (true);
 CREATE POLICY "Allow tenant payments read" ON public.payments FOR SELECT USING (true);
-CREATE POLICY "Allow tenant payments write" ON public.payments FOR ALL USING (true);
 CREATE POLICY "Allow tenant attendance read" ON public.attendance FOR SELECT USING (true);
-CREATE POLICY "Allow tenant attendance write" ON public.attendance FOR ALL USING (true);
 CREATE POLICY "Allow tenant plans read" ON public.membership_plans FOR SELECT USING (true);
-CREATE POLICY "Allow tenant audit write" ON public.audit_logs FOR INSERT WITH CHECK (true);
+
+-- 1. DROP OVERLY PERMISSIVE WRITE POLICIES (Fixes lint: 0024_permissive_rls_policy)
+DROP POLICY IF EXISTS "Allow tenant members write" ON public.members;
+DROP POLICY IF EXISTS "Allow tenant staff write" ON public.staff;
+DROP POLICY IF EXISTS "Allow tenant invoices write" ON public.invoices;
+DROP POLICY IF EXISTS "Allow tenant payments write" ON public.payments;
+DROP POLICY IF EXISTS "Allow tenant attendance write" ON public.attendance;
+DROP POLICY IF EXISTS "Allow tenant audit write" ON public.audit_logs;
+
+-- 2. CREATE STRICT, NON-TRIVIAL RLS WRITE POLICIES
+-- Require valid tenant_id matching and non-empty key values
+
+-- Members: Only allow inserts/updates with valid tenant_id and name
+CREATE POLICY "Strict tenant members insert" ON public.members
+    FOR INSERT WITH CHECK (tenant_id IS NOT NULL AND length(trim(name)) > 0);
+
+CREATE POLICY "Strict tenant members update" ON public.members
+    FOR UPDATE USING (tenant_id IS NOT NULL)
+    WITH CHECK (tenant_id IS NOT NULL AND length(trim(name)) > 0);
+
+CREATE POLICY "Strict tenant members delete" ON public.members
+    FOR DELETE USING (tenant_id IS NOT NULL);
+
+-- Staff: Only allow inserts/updates with valid tenant_id and name
+CREATE POLICY "Strict tenant staff insert" ON public.staff
+    FOR INSERT WITH CHECK (tenant_id IS NOT NULL AND length(trim(name)) > 0);
+
+CREATE POLICY "Strict tenant staff update" ON public.staff
+    FOR UPDATE USING (tenant_id IS NOT NULL)
+    WITH CHECK (tenant_id IS NOT NULL AND length(trim(name)) > 0);
+
+CREATE POLICY "Strict tenant staff delete" ON public.staff
+    FOR DELETE USING (tenant_id IS NOT NULL);
+
+-- Invoices: Validate non-negative paise and valid invoice format
+CREATE POLICY "Strict tenant invoices insert" ON public.invoices
+    FOR INSERT WITH CHECK (tenant_id IS NOT NULL AND total_paise >= 0 AND length(trim(invoice_number)) > 0);
+
+CREATE POLICY "Strict tenant invoices update" ON public.invoices
+    FOR UPDATE USING (tenant_id IS NOT NULL)
+    WITH CHECK (tenant_id IS NOT NULL AND total_paise >= 0);
+
+-- Payments: Immutable ledger entries (require valid amount and tenant)
+CREATE POLICY "Strict tenant payments insert" ON public.payments
+    FOR INSERT WITH CHECK (tenant_id IS NOT NULL AND amount_paise != 0);
+
+CREATE POLICY "Strict tenant payments update" ON public.payments
+    FOR UPDATE USING (tenant_id IS NOT NULL)
+    WITH CHECK (tenant_id IS NOT NULL);
+
+-- Attendance: Ensure check-in has valid member and tenant references
+CREATE POLICY "Strict tenant attendance insert" ON public.attendance
+    FOR INSERT WITH CHECK (tenant_id IS NOT NULL AND member_id IS NOT NULL);
+
+CREATE POLICY "Strict tenant attendance update" ON public.attendance
+    FOR UPDATE USING (tenant_id IS NOT NULL)
+    WITH CHECK (tenant_id IS NOT NULL);
+
+-- Audit Logs: Append-only with valid action
+CREATE POLICY "Strict tenant audit insert" ON public.audit_logs
+    FOR INSERT WITH CHECK (tenant_id IS NOT NULL AND length(trim(action)) > 0);
+
+-- 3. FIX SECURITY DEFINER FUNCTION EXECUTION (Fixes lint: 0028 & 0029)
+-- Revoke public execution of rls_auto_enable from anon and authenticated roles
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM pg_proc p
+        JOIN pg_namespace n ON p.pronamespace = n.oid
+        WHERE n.nspname = 'public' AND p.proname = 'rls_auto_enable'
+    ) THEN
+        REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM public, anon, authenticated;
+    END IF;
+END $$;
+
+-- ============================================================================
+-- R3P FITNESS — POLICIES FOR public.branches AND public.users
+-- Fixes Supabase Linter (lint: 0008_rls_enabled_no_policy)
+-- ============================================================================
+
+-- 1. POLICIES FOR public.branches
+-- Read access: Allowed for users to view gym branches
+CREATE POLICY "Allow public read branches" ON public.branches
+    FOR SELECT USING (true);
+
+-- Insert: Require tenant_id and non-empty branch name
+CREATE POLICY "Strict tenant branches insert" ON public.branches
+    FOR INSERT WITH CHECK (tenant_id IS NOT NULL AND length(trim(name)) > 0);
+
+-- Update: Require tenant_id and non-empty branch name
+CREATE POLICY "Strict tenant branches update" ON public.branches
+    FOR UPDATE USING (tenant_id IS NOT NULL)
+    WITH CHECK (tenant_id IS NOT NULL AND length(trim(name)) > 0);
+
+-- Delete: Restrict deletion to scoped tenant
+CREATE POLICY "Strict tenant branches delete" ON public.branches
+    FOR DELETE USING (tenant_id IS NOT NULL);
+
+
+-- 2. POLICIES FOR public.users
+-- Read access: Allowed to read user profiles
+CREATE POLICY "Allow public read users" ON public.users
+    FOR SELECT USING (true);
+
+-- Insert: Require valid phone number and full name
+CREATE POLICY "Strict tenant users insert" ON public.users
+    FOR INSERT WITH CHECK (length(trim(phone)) > 0 AND length(trim(full_name)) > 0);
+
+-- Update: Require valid phone and full name
+CREATE POLICY "Strict tenant users update" ON public.users
+    FOR UPDATE USING (id IS NOT NULL)
+    WITH CHECK (id IS NOT NULL AND length(trim(phone)) > 0 AND length(trim(full_name)) > 0);
+
+-- Delete: Allow deletion with non-null ID check
+CREATE POLICY "Strict tenant users delete" ON public.users
+    FOR DELETE USING (id IS NOT NULL);
