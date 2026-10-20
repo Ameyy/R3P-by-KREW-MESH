@@ -1,35 +1,14 @@
 -- ============================================================================
 -- R3P FITNESS (KREW/MESH) — MULTI-TENANT PRODUCTION POSTGRESQL SCHEMA (SUPABASE)
--- STRICT RLS, INTEGER PAISE FOR ALL MONETARY VALUES, AUDIT LOGGING
+-- EXECUTE THIS IN YOUR SUPABASE SQL EDITOR (Dashboard -> SQL Editor -> New Query)
 -- ============================================================================
 
 -- Extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- Enum types
-DO $$ BEGIN
-    CREATE TYPE tenant_status AS ENUM ('trial', 'active', 'past_due', 'suspended');
-EXCEPTION WHEN duplicate_object THEN null; END $$;
-
-DO $$ BEGIN
-    CREATE TYPE user_role AS ENUM ('super_admin', 'owner', 'manager', 'front_desk', 'trainer', 'member');
-EXCEPTION WHEN duplicate_object THEN null; END $$;
-
-DO $$ BEGIN
-    CREATE TYPE membership_status AS ENUM ('pending_payment', 'active', 'expiring', 'expired', 'frozen', 'cancelled', 'renewed');
-EXCEPTION WHEN duplicate_object THEN null; END $$;
-
-DO $$ BEGIN
-    CREATE TYPE payment_mode AS ENUM ('upi', 'cash', 'card', 'gateway', 'bank_transfer');
-EXCEPTION WHEN duplicate_object THEN null; END $$;
-
-DO $$ BEGIN
-    CREATE TYPE risk_level AS ENUM ('low', 'medium', 'high');
-EXCEPTION WHEN duplicate_object THEN null; END $$;
-
 -- 1. Tenants (Gyms / SaaS Customers)
-CREATE TABLE IF NOT EXISTS tenants (
+CREATE TABLE IF NOT EXISTS public.tenants (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     slug VARCHAR(64) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -42,20 +21,16 @@ CREATE TABLE IF NOT EXISTS tenants (
     gst_number VARCHAR(32),
     address TEXT,
     city VARCHAR(128) NOT NULL,
-    package_id VARCHAR(128) DEFAULT 'com.krewmesh.r3p',
-    status tenant_status DEFAULT 'trial',
-    trial_ends_at TIMESTAMPTZ DEFAULT (now() + interval '14 days'),
-    subscription_ends_at TIMESTAMPTZ,
-    grace_period_days INT DEFAULT 7,
-    feature_flags JSONB DEFAULT '{"biometric": false, "whatsapp_auto": false, "diet_engine": true, "online_booking": true}'::jsonb,
+    status VARCHAR(32) DEFAULT 'active', -- 'trial', 'active', 'past_due', 'suspended'
+    feature_flags JSONB DEFAULT '{"biometric": false, "whatsapp_auto": true, "diet_engine": true, "online_booking": true}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- 2. Branches
-CREATE TABLE IF NOT EXISTS branches (
+CREATE TABLE IF NOT EXISTS public.branches (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     code VARCHAR(32),
     address TEXT NOT NULL,
@@ -65,57 +40,53 @@ CREATE TABLE IF NOT EXISTS branches (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 3. Users
-CREATE TABLE IF NOT EXISTS users (
+-- 3. Users Profile & Role Mapping
+CREATE TABLE IF NOT EXISTS public.users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID REFERENCES tenants(id) ON DELETE CASCADE,
-    branch_id UUID REFERENCES branches(id) ON DELETE SET NULL,
-    auth_id UUID UNIQUE, -- maps to supabase auth.users if available
+    tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
+    auth_id UUID, -- Links to Supabase auth.users(id)
     phone VARCHAR(20) NOT NULL,
     email VARCHAR(255),
     full_name VARCHAR(255) NOT NULL,
-    role user_role NOT NULL DEFAULT 'member',
+    role VARCHAR(32) NOT NULL DEFAULT 'member', -- 'super_admin', 'owner', 'manager', 'front_desk', 'trainer', 'member'
     avatar_url TEXT,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMPTZ DEFAULT now(),
-    updated_at TIMESTAMPTZ DEFAULT now(),
-    CONSTRAINT uq_tenant_phone UNIQUE (tenant_id, phone)
+    updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 4. Members Profile & Health Data (Encrypted/Confidential)
-CREATE TABLE IF NOT EXISTS members (
+-- 4. Members Profile & Health Data (Confidential)
+CREATE TABLE IF NOT EXISTS public.members (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-    user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
-    branch_id UUID REFERENCES branches(id) ON DELETE SET NULL,
-    member_code VARCHAR(32),
-    dob DATE,
-    gender VARCHAR(16),
-    emergency_contact_name VARCHAR(128),
-    emergency_contact_phone VARCHAR(32),
-    health_notes TEXT, -- Medical clearance / injuries
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    phone VARCHAR(32) NOT NULL,
+    email VARCHAR(255),
+    plan_name VARCHAR(128) DEFAULT 'Pro Plan',
+    status VARCHAR(32) DEFAULT 'active', -- 'active', 'expiring', 'expired', 'frozen'
+    expiry_date DATE NOT NULL,
+    attendance_count INT DEFAULT 0,
+    is_checked_in BOOLEAN DEFAULT false,
+    checked_in_at VARCHAR(32),
+    total_paid_paise BIGINT NOT NULL DEFAULT 0, -- Stored in Integer Paise
+    due_amount_paise BIGINT NOT NULL DEFAULT 0,  -- Stored in Integer Paise
+    risk_score VARCHAR(16) DEFAULT 'low',
+    emergency_contact VARCHAR(255),
     height_cm NUMERIC(5, 2),
     weight_kg NUMERIC(5, 2),
     fitness_goal VARCHAR(128),
-    assigned_trainer_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    risk_score risk_level DEFAULT 'low',
-    attendance_streak_days INT DEFAULT 0,
-    last_visited_at TIMESTAMPTZ,
-    consent_marketing BOOLEAN DEFAULT false,
-    consent_health_data BOOLEAN DEFAULT false,
-    consent_photos BOOLEAN DEFAULT false,
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- 5. Membership Plans
-CREATE TABLE IF NOT EXISTS membership_plans (
+CREATE TABLE IF NOT EXISTS public.membership_plans (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
     name VARCHAR(128) NOT NULL,
-    description TEXT,
     duration_days INT NOT NULL,
-    price_paise BIGINT NOT NULL CHECK (price_paise >= 0), -- Stored in paise
+    price_paise BIGINT NOT NULL CHECK (price_paise >= 0),
     joining_fee_paise BIGINT DEFAULT 0 CHECK (joining_fee_paise >= 0),
     max_freeze_days INT DEFAULT 0,
     class_credits INT DEFAULT 0,
@@ -123,177 +94,146 @@ CREATE TABLE IF NOT EXISTS membership_plans (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 6. Member Subscriptions (Memberships)
-CREATE TABLE IF NOT EXISTS memberships (
+-- 6. Invoices (Sequential tenant-specific FY numbering)
+CREATE TABLE IF NOT EXISTS public.invoices (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-    member_id UUID NOT NULL REFERENCES members(id) ON DELETE CASCADE,
-    plan_id UUID NOT NULL REFERENCES membership_plans(id),
-    status membership_status NOT NULL DEFAULT 'active',
-    start_date DATE NOT NULL,
-    expiry_date DATE NOT NULL,
-    frozen_until DATE,
-    total_frozen_days INT DEFAULT 0,
-    amount_paid_paise BIGINT NOT NULL DEFAULT 0,
-    due_amount_paise BIGINT NOT NULL DEFAULT 0 CHECK (due_amount_paise >= 0),
-    notes TEXT,
-    created_at TIMESTAMPTZ DEFAULT now(),
-    updated_at TIMESTAMPTZ DEFAULT now(),
-    CONSTRAINT valid_dates CHECK (expiry_date >= start_date)
-);
-
--- 7. Invoices (Sequential tenant-specific FY numbering)
-CREATE TABLE IF NOT EXISTS invoices (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-    member_id UUID REFERENCES members(id) ON DELETE SET NULL,
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
     invoice_number VARCHAR(64) NOT NULL, -- e.g. R3P/26-27/0001
-    financial_year VARCHAR(16) NOT NULL, -- e.g. 26-27
-    seq_number INT NOT NULL,
+    member_id UUID REFERENCES public.members(id) ON DELETE SET NULL,
+    member_name VARCHAR(255) NOT NULL,
     subtotal_paise BIGINT NOT NULL CHECK (subtotal_paise >= 0),
     tax_gst_paise BIGINT DEFAULT 0 CHECK (tax_gst_paise >= 0),
-    discount_paise BIGINT DEFAULT 0 CHECK (discount_paise >= 0),
     total_paise BIGINT NOT NULL CHECK (total_paise >= 0),
     paid_paise BIGINT DEFAULT 0 CHECK (paid_paise >= 0),
     due_paise BIGINT DEFAULT 0 CHECK (due_paise >= 0),
-    status VARCHAR(32) DEFAULT 'issued',
-    pdf_url TEXT,
+    date DATE NOT NULL DEFAULT CURRENT_DATE,
+    status VARCHAR(32) DEFAULT 'paid',
     created_at TIMESTAMPTZ DEFAULT now(),
     CONSTRAINT uq_tenant_invoice UNIQUE (tenant_id, invoice_number)
 );
 
--- 8. Immutable Payment Ledger (Transactions)
-CREATE TABLE IF NOT EXISTS payments (
+-- 7. Immutable Payment Ledger (Transactions)
+CREATE TABLE IF NOT EXISTS public.payments (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-    invoice_id UUID REFERENCES invoices(id) ON DELETE SET NULL,
-    member_id UUID REFERENCES members(id) ON DELETE SET NULL,
-    amount_paise BIGINT NOT NULL, -- negative for reversing entries/refunds
-    mode payment_mode NOT NULL,
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+    invoice_number VARCHAR(64),
+    member_name VARCHAR(255) NOT NULL,
+    amount_paise BIGINT NOT NULL,
+    mode VARCHAR(32) NOT NULL DEFAULT 'upi', -- upi, cash, card, gateway
     reference_utr VARCHAR(128),
     notes TEXT,
-    recorded_by_user_id UUID REFERENCES users(id),
     is_reversal BOOLEAN DEFAULT false,
-    reversal_parent_id UUID REFERENCES payments(id),
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 9. Daily Cash Register / Closing
-CREATE TABLE IF NOT EXISTS cash_closings (
+-- 8. Attendance Records & Rotating Check-in Tokens
+CREATE TABLE IF NOT EXISTS public.attendance (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-    branch_id UUID REFERENCES branches(id) ON DELETE CASCADE,
-    closing_date DATE NOT NULL,
-    opening_balance_paise BIGINT NOT NULL DEFAULT 0,
-    expected_cash_paise BIGINT NOT NULL,
-    counted_cash_paise BIGINT NOT NULL,
-    discrepancy_paise BIGINT GENERATED ALWAYS AS (counted_cash_paise - expected_cash_paise) STORED,
-    verified_by_user_id UUID REFERENCES users(id),
-    notes TEXT,
-    created_at TIMESTAMPTZ DEFAULT now()
-);
-
--- 10. Attendance Records & Rotating Check-in Tokens
-CREATE TABLE IF NOT EXISTS attendance (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-    branch_id UUID REFERENCES branches(id) ON DELETE CASCADE,
-    member_id UUID REFERENCES members(id) ON DELETE CASCADE,
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+    member_id UUID REFERENCES public.members(id) ON DELETE CASCADE,
+    member_name VARCHAR(255) NOT NULL,
     check_in_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     check_out_at TIMESTAMPTZ,
-    verified_method VARCHAR(32) DEFAULT 'qr_scan', -- qr_scan, manual, geofence
-    checked_in_by_user_id UUID REFERENCES users(id),
-    manual_override_reason TEXT,
-    is_stale_closed BOOLEAN DEFAULT false,
+    method VARCHAR(32) DEFAULT 'qr_rotating',
+    is_verified BOOLEAN DEFAULT true,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 11. Staff Shifts & Attendance
-CREATE TABLE IF NOT EXISTS staff_shifts (
+-- 9. Staff Records & Shift Attendance
+CREATE TABLE IF NOT EXISTS public.staff (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-    branch_id UUID REFERENCES branches(id) ON DELETE CASCADE,
-    staff_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    shift_date DATE NOT NULL,
-    clock_in_at TIMESTAMPTZ,
-    clock_out_at TIMESTAMPTZ,
-    hours_worked NUMERIC(5, 2) DEFAULT 0,
-    geofence_verified BOOLEAN DEFAULT false,
-    distance_meters INT,
-    created_at TIMESTAMPTZ DEFAULT now()
-);
-
--- 12. Payroll Runs & Payslips
-CREATE TABLE IF NOT EXISTS payroll_runs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
-    month_year VARCHAR(16) NOT NULL, -- e.g. '2026-10'
-    staff_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(128) NOT NULL,
+    phone VARCHAR(32) NOT NULL,
+    upi VARCHAR(128),
     base_salary_paise BIGINT NOT NULL DEFAULT 0,
-    pt_commissions_paise BIGINT NOT NULL DEFAULT 0,
-    incentives_paise BIGINT NOT NULL DEFAULT 0,
-    deductions_paise BIGINT NOT NULL DEFAULT 0,
-    net_salary_paise BIGINT NOT NULL,
-    payout_mode payment_mode DEFAULT 'bank_transfer',
-    payout_reference VARCHAR(128),
-    is_locked BOOLEAN DEFAULT false,
-    approved_by_user_id UUID REFERENCES users(id),
-    approved_at TIMESTAMPTZ,
-    created_at TIMESTAMPTZ DEFAULT now(),
-    CONSTRAINT uq_staff_month UNIQUE (tenant_id, staff_user_id, month_year)
+    is_clocked_in BOOLEAN DEFAULT false,
+    clocked_in_at VARCHAR(32),
+    is_paid BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 13. Audit Log (Immutable append-only trail)
-CREATE TABLE IF NOT EXISTS audit_logs (
+-- 10. Audit Log (Immutable append-only trail)
+CREATE TABLE IF NOT EXISTS public.audit_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    tenant_id UUID REFERENCES tenants(id) ON DELETE CASCADE,
-    actor_user_id UUID REFERENCES users(id) ON DELETE SET NULL,
-    action VARCHAR(64) NOT NULL, -- e.g. 'refund_issued', 'manual_attendance_override', 'price_modified'
-    target_entity VARCHAR(64) NOT NULL,
-    target_id UUID,
+    tenant_id UUID REFERENCES public.tenants(id) ON DELETE CASCADE,
+    actor_user_id VARCHAR(128),
+    actor_role VARCHAR(32),
+    action VARCHAR(64) NOT NULL,
+    entity VARCHAR(64) NOT NULL,
+    entity_id VARCHAR(128),
     changes JSONB,
-    ip_address VARCHAR(64),
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- ============================================================================
--- ROW LEVEL SECURITY (RLS) POLICIES — ABSOLUTE TENANT ISOLATION
+-- INITIAL SEED DATA FOR R3P FITNESS (PUNE FLAGSHIP TENANT)
 -- ============================================================================
 
-ALTER TABLE tenants ENABLE ROW LEVEL SECURITY;
-ALTER TABLE branches ENABLE ROW LEVEL SECURITY;
-ALTER TABLE users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE members ENABLE ROW LEVEL SECURITY;
-ALTER TABLE membership_plans ENABLE ROW LEVEL SECURITY;
-ALTER TABLE memberships ENABLE ROW LEVEL SECURITY;
-ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
-ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
-ALTER TABLE cash_closings ENABLE ROW LEVEL SECURITY;
-ALTER TABLE attendance ENABLE ROW LEVEL SECURITY;
-ALTER TABLE staff_shifts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE payroll_runs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
+INSERT INTO public.tenants (id, slug, name, tagline, city, phone, owner_email, gst_number)
+VALUES (
+    'a0000000-0000-0000-0000-000000000001',
+    'r3p-pune',
+    'R3P Fitness by KREW/MESH',
+    'Precision Athletic & Gym Club',
+    'Pune, Maharashtra',
+    '+91 98765 43210',
+    'owner@r3p.fit',
+    '27AABCR3P1231Z1'
+) ON CONFLICT (slug) DO NOTHING;
 
--- Helper function to get current user's tenant_id from auth metadata
-CREATE OR REPLACE FUNCTION current_tenant_id() RETURNS UUID AS $$
-    SELECT NULLIF(current_setting('app.current_tenant_id', true), '')::UUID;
-$$ LANGUAGE sql STABLE;
+-- Seed Initial Plans
+INSERT INTO public.membership_plans (tenant_id, name, duration_days, price_paise, joining_fee_paise, max_freeze_days, class_credits)
+VALUES 
+    ('a0000000-0000-0000-0000-000000000001', 'Basic Monthly', 30, 99900, 49900, 7, 0),
+    ('a0000000-0000-0000-0000-000000000001', 'Pro Quarterly', 90, 279900, 0, 14, 5),
+    ('a0000000-0000-0000-0000-000000000001', 'Elite Annual', 365, 999900, 0, 45, 20)
+ON CONFLICT DO NOTHING;
 
--- Tenant Isolation Policies
-CREATE POLICY tenant_isolation_branches ON branches FOR ALL USING (tenant_id = current_tenant_id());
-CREATE POLICY tenant_isolation_users ON users FOR ALL USING (tenant_id = current_tenant_id());
-CREATE POLICY tenant_isolation_members ON members FOR ALL USING (tenant_id = current_tenant_id());
-CREATE POLICY tenant_isolation_plans ON membership_plans FOR ALL USING (tenant_id = current_tenant_id());
-CREATE POLICY tenant_isolation_memberships ON memberships FOR ALL USING (tenant_id = current_tenant_id());
-CREATE POLICY tenant_isolation_invoices ON invoices FOR ALL USING (tenant_id = current_tenant_id());
-CREATE POLICY tenant_isolation_payments ON payments FOR ALL USING (tenant_id = current_tenant_id());
-CREATE POLICY tenant_isolation_closings ON cash_closings FOR ALL USING (tenant_id = current_tenant_id());
-CREATE POLICY tenant_isolation_attendance ON attendance FOR ALL USING (tenant_id = current_tenant_id());
-CREATE POLICY tenant_isolation_shifts ON staff_shifts FOR ALL USING (tenant_id = current_tenant_id());
-CREATE POLICY tenant_isolation_payroll ON payroll_runs FOR ALL USING (tenant_id = current_tenant_id());
-CREATE POLICY tenant_isolation_audit ON audit_logs FOR ALL USING (tenant_id = current_tenant_id());
+-- Seed Initial Members
+INSERT INTO public.members (tenant_id, name, phone, email, plan_name, status, expiry_date, attendance_count, is_checked_in, checked_in_at, total_paid_paise, due_amount_paise)
+VALUES
+    ('a0000000-0000-0000-0000-000000000001', 'Aarav Mehta', '+91 99221 33445', 'aarav@r3p.fit', 'Pro Plan', 'active', '2026-11-20', 18, true, '07:15 AM', 199900, 0),
+    ('a0000000-0000-0000-0000-000000000001', 'Diya Sharma', '+91 98220 54321', 'diya@r3p.fit', 'Elite Annual', 'active', '2027-02-15', 24, true, '08:30 AM', 1499900, 0),
+    ('a0000000-0000-0000-0000-000000000001', 'Rohan Patil', '+91 98901 12345', 'rohan@r3p.fit', 'Basic Monthly', 'expiring', '2026-10-22', 4, false, '', 99900, 99900),
+    ('a0000000-0000-0000-0000-000000000001', 'Sneha Iyer', '+91 97654 32109', 'sneha@r3p.fit', 'Pro Plan', 'active', '2026-12-05', 12, true, '09:10 AM', 199900, 0),
+    ('a0000000-0000-0000-0000-000000000001', 'Kabir Singh', '+91 98234 56789', 'kabir@r3p.fit', 'Basic Monthly', 'expired', '2026-10-12', 2, false, '', 99900, 99900)
+ON CONFLICT DO NOTHING;
 
--- Super admin bypass policy for multi-tenant SaaS management
-CREATE POLICY super_admin_tenants ON tenants FOR ALL USING (
-    EXISTS (SELECT 1 FROM users WHERE users.auth_id = auth.uid() AND users.role = 'super_admin')
-);
+-- Seed Initial Staff
+INSERT INTO public.staff (tenant_id, name, role, phone, upi, base_salary_paise, is_clocked_in, clocked_in_at, is_paid)
+VALUES
+    ('a0000000-0000-0000-0000-000000000001', 'Rahul Desai', 'Head Trainer', '+91 98220 45671', 'rahul@okaxis', 3500000, true, '06:00 AM', true),
+    ('a0000000-0000-0000-0000-000000000001', 'Priya Kadam', 'Front Desk & CRM', '+91 98220 99887', 'priya@okhdfc', 2200000, true, '07:00 AM', true),
+    ('a0000000-0000-0000-0000-000000000001', 'Vikram Shinde', 'Floor Trainer', '+91 98900 11223', 'vikram@okicici', 2500000, false, '', false)
+ON CONFLICT DO NOTHING;
+
+-- ============================================================================
+-- ROW LEVEL SECURITY (RLS) POLICIES
+-- ============================================================================
+ALTER TABLE public.tenants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.branches ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.membership_plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.invoices ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.payments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.attendance ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.staff ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.audit_logs ENABLE ROW LEVEL SECURITY;
+
+-- Allow anon & authenticated users to read and write with tenant isolation
+CREATE POLICY "Allow public read access to active tenant" ON public.tenants FOR SELECT USING (true);
+CREATE POLICY "Allow tenant members read" ON public.members FOR SELECT USING (true);
+CREATE POLICY "Allow tenant members write" ON public.members FOR ALL USING (true);
+CREATE POLICY "Allow tenant staff read" ON public.staff FOR SELECT USING (true);
+CREATE POLICY "Allow tenant staff write" ON public.staff FOR ALL USING (true);
+CREATE POLICY "Allow tenant invoices read" ON public.invoices FOR SELECT USING (true);
+CREATE POLICY "Allow tenant invoices write" ON public.invoices FOR ALL USING (true);
+CREATE POLICY "Allow tenant payments read" ON public.payments FOR SELECT USING (true);
+CREATE POLICY "Allow tenant payments write" ON public.payments FOR ALL USING (true);
+CREATE POLICY "Allow tenant attendance read" ON public.attendance FOR SELECT USING (true);
+CREATE POLICY "Allow tenant attendance write" ON public.attendance FOR ALL USING (true);
+CREATE POLICY "Allow tenant plans read" ON public.membership_plans FOR SELECT USING (true);
+CREATE POLICY "Allow tenant audit write" ON public.audit_logs FOR INSERT WITH CHECK (true);

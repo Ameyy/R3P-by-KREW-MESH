@@ -392,7 +392,35 @@ function aHome(){
 function aAtt(){const A=seg=="Members"?members:staff,L=A.filter(x=>x.n.toLowerCase().includes(q.toLowerCase())),ci=L.filter(x=>x.i).length;return T("Attendance",new Date().toDateString())+`<div class="seg">${["Members","Employees"].map(s=>`<button class="${seg==s?"on":""}" onclick="seg='${s}';q='';draw()">${s}</button>`).join("")}</div><input placeholder="Search ${seg.toLowerCase()}…" value="${q}" oninput="q=this.value;lst()"><div class="row mut" style="margin:4px 4px 14px;font-weight:600"><span>● ${ci} currently checked in</span><span>${L.length-ci} outside</span></div><div id="lst">${rows(L)}</div>`}
 function rows(L){const A=seg=="Members"?members:staff;return L.map(x=>`<div class="card row"><div class="row" style="justify-content:flex-start"><div class="av">${ini(x.n)}</div><div><b>${x.n}</b><div class="mut">${x.p}${x.i?` · <span class="in">In ${x.t}</span>`:""}</div></div></div>${btn(x.i?"Check out":"Check in","tog("+A.indexOf(x)+")",x.i?"ghost":"")}</div>`).join("")||`<p class="mut" style="text-align:center">No results</p>`}
 function lst(){const A=seg=="Members"?members:staff;$("#lst").innerHTML=rows(A.filter(x=>x.n.toLowerCase().includes(q.toLowerCase())))}
-function tog(i){const x=(seg=="Members"?members:staff)[i];x.i=x.i?0:1;x.t=x.i?now():"";draw()}
+function tog(i){
+  const isMem = seg == "Members";
+  const list = isMem ? members : staff;
+  const x = list[i];
+  if(!x) return;
+  x.i = x.i ? 0 : 1;
+  x.t = x.i ? now() : "";
+  draw();
+  // Live Cloud Synchronization with Supabase
+  if(window.R3PSupabase && window.R3PSupabase.client) {
+    if(isMem) {
+      window.R3PSupabase.client.from("members")
+        .update({ is_checked_in: !!x.i, checked_in_at: x.t, updated_at: new Date().toISOString() })
+        .eq("name", x.n)
+        .then(({error}) => {
+          if(error) console.warn("[Supabase Sync] Member check-in update error:", error);
+          else console.log("[Supabase Sync] Member check-in updated in cloud:", x.n, x.i);
+        });
+    } else {
+      window.R3PSupabase.client.from("staff")
+        .update({ is_clocked_in: !!x.i, clocked_in_at: x.t })
+        .eq("name", x.n)
+        .then(({error}) => {
+          if(error) console.warn("[Supabase Sync] Staff check-in update error:", error);
+          else console.log("[Supabase Sync] Staff check-in updated in cloud:", x.n, x.i);
+        });
+    }
+  }
+}
 function aPay(){const col=txns.filter(t=>t.k=="in").reduce((a,t)=>a+t.a,0),du=members.map((m,i)=>[m,i]).filter(([m])=>m.due),pend=staff.filter(s=>s.act&&!s.paid);let c;if(ps=="Collections")c=du.map(([m,i])=>item(m.n,m.p+" plan · due "+inr(m.due),btn(ic("wa")+" Remind","openWaReminder("+i+")","ghost")+btn("Cash","cash("+i+")","ghost"))).join("")||`<p class="mut" style="text-align:center;padding:20px">All dues are cleared</p>`;else if(ps=="Payroll")c=(pend.length?`<div class="card row"><div><b>${inr(pend.reduce((a,s)=>a+s.sal,0))}</b><div class="mut">${pend.length} salaries pending</div></div>${btn("Pay all via UPI","payOpen('all',0)")}</div>`:"")+staff.map((s,i)=>s.act?item(s.n,s.p+" · "+inr(s.sal)+"<br>"+s.upi,s.paid?'<span class="pill in">Paid</span>':btn("Pay via UPI","payOpen('sal',"+i+")")):"").join("");else c=txns.map(t=>item(t.t,t.d+" · "+t.m,`<b class="${t.k=="in"?"in":""}">${t.k=="in"?"+":"−"}${inr(t.a)}</b>`)).join("");return T("Payments","Collections, payroll & history")+`<div class="grid">${kpi("Collected",inr(col))}${kpi("Dues pending",inr(du.reduce((a,[m])=>a+m.due,0)),"warn")}</div><div class="seg">${["Collections","Payroll","History"].map(s=>`<button class="${ps==s?"on":""}" onclick="ps='${s}';draw()">${s}</button>`).join("")}</div>`+c}
 function cash(i){txns.unshift({t:members[i].n+" · membership",a:members[i].due,d:today(),k:"in",m:"Cash"});members[i].due=0;toast("Marked as paid in cash")}
 function aStaff(){return T("Staff",staff.filter(s=>s.act).length+" active")+`<button class="btn" style="margin-bottom:14px" onclick="staffForm(-1)">${ic("add")} Add staff member</button>`+staff.map((s,i)=>item(s.n,s.p+" · "+inr(s.sal)+"/mo",s.act?(s.paid?'<span class="pill in">Paid</span>':'<span class="pill warn">Salary due</span>'):'<span class="pill">Inactive</span>',"openStaff("+i+")")).join("")}
@@ -729,3 +757,22 @@ function op(k){sub=k;fresh=1;draw()}
 function back(){sub=null;fresh=1;draw()}
 function draw(){const R=APP[role],A=$("#app"),body=sub?SV[sub]():R.v[tab](),o=pay?payHtml():sh;A.dataset.role=role;setArt();A.className=fresh?"fx":"";A.innerHTML=body+`<nav class="${R.n}"><div>${R.t.map(([k,i,l])=>`<button class="${tab==k&&!sub?"on":""}" onclick="go('${k}')"><span class="nav-icon-wrap">${ic(i)}</span><span class="nav-lbl">${l}</span></button>`).join("")}</div></nav>`+(o?`<div class="ov" onclick="shut()"><div class="sheet" onclick="event.stopPropagation()">${o}</div></div>`:"")+(ts?`<div class="toast">${ts}</div>`:"");if(fresh)scrollTo(0,0);fresh=0}
 login();
+
+// Load live members & staff from Supabase on launch
+if (window.R3PSupabase && window.R3PSupabase.client) {
+  window.R3PSupabase.client.from("members").select("*").order("name").then(({data, error}) => {
+    if (!error && data && data.length > 0) {
+      data.forEach((m, idx) => {
+        const existing = members.find(localM => localM.n === m.name);
+        if (existing) {
+          existing.i = m.is_checked_in ? 1 : 0;
+          existing.t = m.checked_in_at || (m.is_checked_in ? "07:15 AM" : "");
+          existing.p = m.plan_name || existing.p;
+          existing.due = Math.round((m.due_amount_paise || 0) / 100);
+        }
+      });
+      console.log("[Supabase Sync] Synced " + data.length + " members from cloud database.");
+      if (typeof draw === "function" && role) draw();
+    }
+  });
+}
