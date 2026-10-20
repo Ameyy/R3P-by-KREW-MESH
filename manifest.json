@@ -6,11 +6,22 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#08090d",
   "theme_color": "#ff5500",
   "lang": "en",
+  "dir": "ltr",
   "categories": ["fitness", "lifestyle", "productivity"],
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "com.krewmesh.r3p",
+      "url": "https://play.google.com/store/apps/details?id=com.krewmesh.r3p"
+    }
+  ],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
   "icons": [
     {
       "src": "/assets/icon-192.png",
@@ -29,6 +40,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshot-mobile.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "R3P Fitness Mobile Gym Overview & Attendance"
+    },
+    {
+      "src": "/assets/screenshot-wide.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "R3P Fitness Desktop Operations & Pass Validation Console"
     }
   ]
 }
