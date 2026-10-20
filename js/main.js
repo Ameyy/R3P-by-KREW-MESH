@@ -192,7 +192,65 @@ const APPS=[["GPay","#4285f4"],["PhonePe","#5f259f"],["Paytm","#00b9f1"],["BHIM"
 function payOpen(kind,i){let amt,to,nm;if(kind=="due"){amt=members[i].due;to=P.adm.upi;nm=P.adm.gym.split(",")[0]}else if(kind=="sal"){amt=staff[i].sal;to=staff[i].upi;nm=staff[i].n}else{const L=staff.filter(s=>s.act&&!s.paid);amt=L.reduce((a,s)=>a+s.sal,0);to="Bulk UPI payout";nm=L.length+" staff members"}pay={kind,i,amt,to,nm,step:1,app:"",err:0};draw()}
 function payApp(a){pay.app=a;pay.step=2;draw()}
 function payGo(){const v=$("#pin").value;if(v.length<4){pay.err=1;draw();return}pay.err=0;pay.step=3;draw();setTimeout(payDone,1200)}
-function payDone(){const p=pay;if(!p)return;if(p.kind=="due"){txns.unshift({t:members[p.i].n+" · membership",a:p.amt,d:today(),k:"in",m:"UPI"});members[p.i].due=0}else if(p.kind=="sal"){txns.unshift({t:staff[p.i].n+" · salary",a:p.amt,d:today(),k:"out",m:"UPI"});staff[p.i].paid=1}else staff.filter(s=>s.act&&!s.paid).forEach(s=>{txns.unshift({t:s.n+" · salary",a:s.sal,d:today(),k:"out",m:"UPI"});s.paid=1});p.txn="UPI"+String(Date.now()).slice(-9);p.step=4;draw()}
+function payDone(){
+  const p = pay;
+  if(!p) return;
+  const utrRef = "UPI" + String(Date.now()).slice(-9);
+  p.txn = utrRef;
+
+  if(p.kind == "due"){
+    const targetMember = members[p.i];
+    txns.unshift({ t: targetMember.n + " · membership", a: p.amt, d: today(), k: "in", m: "UPI" });
+    targetMember.due = 0;
+
+    // Cloud Database Sync: Record immutable payment & clear dues in Supabase
+    if(window.R3PSupabase && window.R3PSupabase.client){
+      const amountPaise = Math.round(p.amt * 100);
+      window.R3PSupabase.client.from("payments").insert([{
+        tenant_id: window.R3PSupabase.tenantId,
+        member_name: targetMember.n,
+        amount_paise: amountPaise,
+        mode: "upi",
+        reference_utr: utrRef,
+        notes: "Membership collection via UPI"
+      }]).then(({error}) => {
+        if(error) console.warn("[Supabase Payments] Cloud payment insert error:", error);
+        else console.log("[Supabase Payments] Immutable payment saved to cloud:", utrRef);
+      });
+
+      window.R3PSupabase.client.from("members")
+        .update({ due_amount_paise: 0, status: "active", updated_at: new Date().toISOString() })
+        .eq("name", targetMember.n)
+        .then(({error}) => {
+          if(!error) console.log("[Supabase Payments] Member dues settled in cloud:", targetMember.n);
+        });
+    }
+  } else if(p.kind == "sal"){
+    const targetStaff = staff[p.i];
+    txns.unshift({ t: targetStaff.n + " · salary", a: p.amt, d: today(), k: "out", m: "UPI" });
+    targetStaff.paid = 1;
+
+    if(window.R3PSupabase && window.R3PSupabase.client){
+      window.R3PSupabase.client.from("staff")
+        .update({ is_paid: true })
+        .eq("name", targetStaff.n)
+        .then(({error}) => {
+          if(!error) console.log("[Supabase Payroll] Staff payout recorded in cloud:", targetStaff.n);
+        });
+    }
+  } else {
+    staff.filter(s => s.act && !s.paid).forEach(s => {
+      txns.unshift({ t: s.n + " · salary", a: s.sal, d: today(), k: "out", m: "UPI" });
+      s.paid = 1;
+      if(window.R3PSupabase && window.R3PSupabase.client){
+        window.R3PSupabase.client.from("staff").update({ is_paid: true }).eq("name", s.n).then(() => {});
+      }
+    });
+  }
+
+  p.step = 4;
+  draw();
+}
 function payHtml(){const p=pay;if(p.step==1)return `<div style="text-align:center"><div class="mut">${p.kind=="due"?"Paying":"Paying out"}</div><div class="big" style="font-size:34px">${inr(p.amt)}</div><div class="mut">to ${p.nm}${p.kind=="all"?"":" · "+p.to}</div></div><h2>Choose UPI app</h2><div class="grid">${APPS.map(([a,c])=>`<button class="app" onclick="payApp('${a}')"><i style="background:${c}">${a[0]}</i>${a}</button>`).join("")}</div><button class="btn ghost" style="margin-top:12px" onclick="shut()">Cancel</button>`;if(p.step==2)return `<h2 style="margin-top:0">Enter UPI PIN</h2><div class="mut" style="margin-bottom:10px">${p.app} · paying ${inr(p.amt)}</div><input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="••••">${p.err?'<div class="bad" style="margin:-4px 0 10px">Enter a 4–6 digit PIN</div>':""}<button class="btn" onclick="payGo()">Pay ${inr(p.amt)}</button><button class="btn ghost" style="margin-top:8px" onclick="pay.step=1;draw()">Back</button>`;if(p.step==3)return `<div style="text-align:center"><div class="spin"></div><b>Processing payment…</b><div class="mut">Do not close this screen</div></div>`;return `<div style="text-align:center"><div class="ok">${ic("check")}</div><h1>Payment successful</h1><div class="big" style="margin:6px 0">${inr(p.amt)}</div><div class="mut">to ${p.nm}</div><div class="card" style="margin:16px 0;text-align:left"><div class="row"><span class="mut">Transaction ID</span><b>${p.txn}</b></div><div class="row" style="margin-top:6px"><span class="mut">Paid via</span><b>${p.app}</b></div><div class="row" style="margin-top:6px"><span class="mut">Date</span><b>${today()}, ${now()}</b></div></div><button class="btn" onclick="shut()">Done</button></div>`}
 /* LOGIN */
 const ROLES={adm:["Admin","person","owner@r3p.fit"],emp:["Employee","fit","rahul@r3p.fit"],mem:["Member","cc","aarav@r3p.fit"]};
@@ -775,4 +833,40 @@ if (window.R3PSupabase && window.R3PSupabase.client) {
       if (typeof draw === "function" && role) draw();
     }
   });
+}
+
+// Realtime Postgres Synchronization across devices
+if (window.R3PSupabase && window.R3PSupabase.client) {
+  try {
+    const channel = window.R3PSupabase.client.channel('public-db-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'members' }, payload => {
+        console.log('[Supabase Realtime] Member change received from another device:', payload.eventType);
+        if (payload.new && payload.new.name) {
+          const m = members.find(item => item.n === payload.new.name);
+          if (m) {
+            m.i = payload.new.is_checked_in ? 1 : 0;
+            m.t = payload.new.checked_in_at || '';
+            m.due = Math.round((payload.new.due_amount_paise || 0) / 100);
+            if (typeof draw === 'function' && role) draw();
+          }
+        }
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'payments' }, payload => {
+        console.log('[Supabase Realtime] New payment recorded on another device:', payload.new?.reference_utr);
+        if (payload.new) {
+          txns.unshift({
+            t: payload.new.member_name + ' · membership',
+            a: Math.round((payload.new.amount_paise || 0) / 100),
+            d: today(),
+            k: 'in',
+            m: 'UPI'
+          });
+          if (typeof draw === 'function' && role) draw();
+        }
+      })
+      .subscribe();
+    console.log('[Supabase Realtime] Subscribed to real-time cross-device updates.');
+  } catch(e) {
+    console.warn('[Supabase Realtime] Could not subscribe:', e);
+  }
 }
