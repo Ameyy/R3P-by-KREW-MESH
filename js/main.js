@@ -190,7 +190,42 @@ function setArt(){const [a,b,s]={"":["#d4ff3a","#7dd3fc","#84cc16"],adm:["#d4ff3
 /* UPI GATEWAY */
 const APPS=[["GPay","#4285f4"],["PhonePe","#5f259f"],["Paytm","#00b9f1"],["BHIM","#f97316"]];
 function payOpen(kind,i){let amt,to,nm;if(kind=="due"){amt=members[i].due;to=P.adm.upi;nm=P.adm.gym.split(",")[0]}else if(kind=="sal"){amt=staff[i].sal;to=staff[i].upi;nm=staff[i].n}else{const L=staff.filter(s=>s.act&&!s.paid);amt=L.reduce((a,s)=>a+s.sal,0);to="Bulk UPI payout";nm=L.length+" staff members"}pay={kind,i,amt,to,nm,step:1,app:"",err:0};draw()}
-function payApp(a){pay.app=a;pay.step=2;draw()}
+function payApp(a){
+  pay.app = a;
+  const p = pay;
+  const upiId = p.to && p.to.includes("@") ? p.to : "r3p@okaxis";
+  const payeeName = encodeURIComponent(p.nm || "R3P Fitness");
+  const amount = p.amt;
+  const note = encodeURIComponent((p.kind == "due" ? "Gym Membership Fee" : "Trainer Salary") + " - R3P");
+  const txnId = "R3P" + Date.now().toString().slice(-8);
+
+  const genericUpiUri = "upi://pay?pa=" + upiId + "&pn=" + payeeName + "&am=" + amount + "&cu=INR&tn=" + note + "&tr=" + txnId;
+  let deepLink = genericUpiUri;
+
+  if (a === "GPay") {
+    deepLink = "tez://upi/pay?pa=" + upiId + "&pn=" + payeeName + "&am=" + amount + "&cu=INR&tn=" + note + "&tr=" + txnId;
+  } else if (a === "PhonePe") {
+    deepLink = "phonepe://pay?pa=" + upiId + "&pn=" + payeeName + "&am=" + amount + "&cu=INR&tn=" + note + "&tr=" + txnId;
+  } else if (a === "Paytm") {
+    deepLink = "paytmmp://pay?pa=" + upiId + "&pn=" + payeeName + "&am=" + amount + "&cu=INR&tn=" + note + "&tr=" + txnId;
+  } else if (a === "BHIM") {
+    deepLink = "bhim://pay?pa=" + upiId + "&pn=" + payeeName + "&am=" + amount + "&cu=INR&tn=" + note + "&tr=" + txnId;
+  }
+
+  try {
+    window.location.href = deepLink;
+    setTimeout(function() {
+      if (!document.hidden) {
+        window.location.href = genericUpiUri;
+      }
+    }, 450);
+  } catch(e) {
+    window.location.href = genericUpiUri;
+  }
+
+  pay.step = 2;
+  draw();
+}
 function payGo(){const v=$("#pin").value;if(v.length<4){pay.err=1;draw();return}pay.err=0;pay.step=3;draw();setTimeout(payDone,1200)}
 function payDone(){
   const p = pay;

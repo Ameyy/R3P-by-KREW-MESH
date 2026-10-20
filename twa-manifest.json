@@ -1,0 +1,30 @@
+{
+  "packageId": "com.krewmesh.r3p",
+  "host": "r3p.krewmesh.agency",
+  "name": "R3P Fitness - Gym Management SaaS",
+  "launcherName": "R3P Fitness",
+  "themeColor": "#ff5500",
+  "navigationColor": "#08090d",
+  "backgroundColor": "#08090d",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://r3p.krewmesh.agency/assets/icon-512.png",
+  "maskableIconUrl": "https://r3p.krewmesh.agency/assets/icon-maskable-512.png",
+  "appVersionCode": 1,
+  "appVersionName": "1.0.0",
+  "shortcuts": [],
+  "generatorApp": "pwabuilder",
+  "webManifestUrl": "https://r3p.krewmesh.agency/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "playBilling": {
+      "enabled": false
+    }
+  },
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "fullScreen": true
+}

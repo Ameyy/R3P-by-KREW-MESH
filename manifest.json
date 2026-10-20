@@ -5,14 +5,22 @@
   "description": "Next-gen gym management, athlete tracking, digital passes, and club ERP by KREW/MESH.",
   "start_url": "/",
   "scope": "/",
-  "display": "standalone",
-  "display_override": ["standalone", "window-controls-overlay", "minimal-ui"],
+  "display": "fullscreen",
+  "display_override": [
+    "fullscreen",
+    "standalone",
+    "window-controls-overlay"
+  ],
   "orientation": "portrait",
   "background_color": "#08090d",
   "theme_color": "#ff5500",
   "lang": "en",
   "dir": "ltr",
-  "categories": ["fitness", "lifestyle", "productivity"],
+  "categories": [
+    "fitness",
+    "lifestyle",
+    "productivity"
+  ],
   "prefer_related_applications": false,
   "related_applications": [
     {
