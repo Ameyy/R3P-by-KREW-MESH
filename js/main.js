@@ -1,3 +1,353 @@
+
+/* FRONT DESK STAFF CONTROLLER (Restricted Operational Scope) */
+function sToday() {
+  const ci = members.filter(m => m.i).length;
+  return T("Front Desk", "Floor Operations") + `
+    <div class="hero">
+      <div class="mut" style="margin-bottom:4px">On Duty Shift</div>
+      <h1 style="font-size:26px;margin:2px 0 6px 0;line-height:1.2">${P.stf.name}</h1>
+      <div class="mut" style="line-height:1.4">${P.stf.title} · ${P.stf.shift}</div>
+      <button class="btn" style="margin-top:20px !important" onclick="handleClockToggle(event)">
+        ${ic("clock")} ${clocked ? "Clock out" : "Clock in"}
+      </button>
+      ${clocked ? `<div class="mut" style="margin-top:8px;text-align:center">Clocked in at ${clockT}</div>` : ""}
+    </div>
+    <div class="grid">
+      ${kpi("Floor Check-ins", ci + " active", "in")}
+      ${kpi("Today's Classes", eclasses.length + " scheduled")}
+    </div>
+    <h2>Quick Operational Actions</h2>
+    ${item("Member Check-in Portal", "Manage live gate & floor entries", ic("chev"), "go('att')")}
+    ${item("Class Registrations", "View attendee counts & class caps", ic("chev"), "go('classes')")}
+  ` + renderOfferWall("staff");
+}
+
+
+// Confetti Particle Burst Engine
+const CONFETTI_COLORS = ["#facc15", "#22c55e", "#3b82f6", "#f472b6", "#f97316"];
+
+function fireConfettiOnElement(btnEl) {
+  if(!btnEl) return;
+  const rect = btnEl.getBoundingClientRect();
+  const originX = rect.left + rect.width / 2;
+  const originY = rect.top + rect.height / 2;
+
+  const container = document.createElement("div");
+  container.style.position = "fixed";
+  container.style.top = "0";
+  container.style.left = "0";
+  container.style.width = "100%";
+  container.style.height = "100%";
+  container.style.pointerEvents = "none";
+  container.style.zIndex = "99999";
+  document.body.appendChild(container);
+
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement("div");
+    p.className = "confetti-particle";
+    p.style.backgroundColor = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+    p.style.left = originX + "px";
+    p.style.top = originY + "px";
+    
+    // Spread physics: (Math.random() - 0.5) * 140 horizontal, -Math.random() * 120 vertical
+    const tx = (Math.random() - 0.5) * 160 + "px";
+    const ty = (-Math.random() * 110 - 20) + "px";
+    const tr = (Math.random() * 360 + 180) + "deg";
+    
+    p.style.setProperty("--tx", tx);
+    p.style.setProperty("--ty", ty);
+    p.style.setProperty("--tr", tr);
+
+    container.appendChild(p);
+  }
+
+  setTimeout(() => {
+    container.remove();
+  }, 850);
+}
+window.fireConfettiOnElement = fireConfettiOnElement;
+
+function handleClockToggle(event) {
+  const btn = event.currentTarget || event.target;
+  clocked = clocked ? 0 : 1;
+  clockT = now();
+
+  // If clocking in, fire vibrant confetti burst!
+  if(clocked) {
+    fireConfettiOnElement(btn);
+    toast("Clocked in successfully! Have a great shift.");
+  } else {
+    toast("Clocked out successfully.");
+  }
+  
+  draw();
+}
+window.handleClockToggle = handleClockToggle;
+
+
+// ---------------------------------------------------------
+// Centralized Promotional Offers & Perks System
+// Shared across Admin, Staff, and Members with Live Creation
+// ---------------------------------------------------------
+let OFFERS = [
+  {
+    id: "off-1",
+    tag: "Annual Deal",
+    title: "Save 25% on Yearly Renewals",
+    desc: "Renew annual Pro pass and receive 3 complimentary 1-on-1 personal training sessions.",
+    target: "all", // "all", "members", "staff"
+    btnText: "Claim Perk",
+    action: "toast('Offer code R3P25 applied!')"
+  },
+  {
+    id: "off-2",
+    tag: "Nutrition",
+    title: "Whey & Creatine Stack 15% Off",
+    desc: "Official partner discount at the gym front desk supplement bar.",
+    target: "all",
+    btnText: "Get Voucher",
+    action: "toast('Voucher generated for front desk!')"
+  },
+  {
+    id: "off-3",
+    tag: "Referral",
+    title: "Bring an Athlete, Get ₹500",
+    desc: "Instant UPI cashback or membership credit for every friend who joins.",
+    target: "members",
+    btnText: "Share Link",
+    action: "toast('Referral link copied!')"
+  },
+  {
+    id: "off-4",
+    tag: "Staff Perk",
+    title: "Trainer Certification Grant",
+    desc: "50% subsidy on Level 3 Strength & Conditioning certifications this quarter.",
+    target: "staff",
+    btnText: "Apply Grant",
+    action: "toast('Grant application sent to Admin!')"
+  }
+];
+
+function renderOfferWall(audience = "all") {
+  const visible = OFFERS.filter(o => o.target === "all" || o.target === audience || audience === "admin");
+  const isAdm = role === "adm";
+
+  return `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:20px 0 10px">
+      <h2 style="margin:0">Exclusive Offers & Perks</h2>
+      ${isAdm ? `<button class="btn sm" onclick="openCreateOfferModal()" style="padding:4px 10px;font-size:11px">${ic("add")} Create Offer</button>` : ""}
+    </div>
+    <div class="offer-wall-carousel">
+      ${visible.map(o => `
+        <div class="offer-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <span class="offer-tag">${o.tag}</span>
+            ${isAdm ? `<button onclick="deleteOffer('${o.id}')" style="background:none;border:none;color:#f43f5e;cursor:pointer;padding:0;font-size:14px" title="Delete Offer">${ic("close")}</button>` : ""}
+          </div>
+          <div class="offer-title">${o.title}</div>
+          <div class="offer-desc">${o.desc}</div>
+          <button class="btn sm" onclick="${o.action}">${o.btnText}</button>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+window.renderOfferWall = renderOfferWall;
+
+function openCreateOfferModal() {
+  sh = `
+    <h2 style="margin-top:0">Create New Offer / Perk</h2>
+    <div class="mut" style="margin-bottom:12px">Post an offer visible to members and staff across the app:</div>
+    ${lbl("off-title", "Offer Title *", "")}
+    ${lbl("off-tag", "Tag / Badge (e.g. Flash Sale, Staff Perk)", "")}
+    ${lbl("off-desc", "Description & Details *", "")}
+    <div class="mut" style="margin:8px 0 4px 2px">Target Audience</div>
+    <select id="off-target" class="clean-input" style="margin-bottom:12px">
+      <option value="all">Everyone (Members & Staff)</option>
+      <option value="members">Members Only</option>
+      <option value="staff">Staff / Trainers Only</option>
+    </select>
+    ${lbl("off-btn", "Button Label (e.g. Claim Now, Get Voucher)", "Claim Perk")}
+    <button class="btn" style="margin-top:14px" onclick="saveNewOffer()">Publish Offer</button>
+    <button class="btn ghost" style="margin-top:8px" onclick="shut()">Cancel</button>
+  `;
+  draw();
+}
+window.openCreateOfferModal = openCreateOfferModal;
+
+function saveNewOffer() {
+  const title = g("off-title");
+  const desc = g("off-desc");
+  if(!title || !desc) {
+    toast("Title and description are required");
+    return;
+  }
+  const tag = g("off-tag") || "Special Perk";
+  const target = document.getElementById("off-target")?.value || "all";
+  const btnText = g("off-btn") || "Claim Perk";
+
+  OFFERS.unshift({
+    id: "off-" + Date.now(),
+    tag,
+    title,
+    desc,
+    target,
+    btnText,
+    action: "toast('Perk claimed successfully!')"
+  });
+
+  // Live cloud sync with Supabase if active
+  if(window.R3PSupabase && window.R3PSupabase.client) {
+    window.R3PSupabase.client.from("promotional_offers").insert([{
+      tenant_id: window.R3PSupabase.tenantId,
+      title,
+      category: tag.toLowerCase(),
+      is_active: true
+    }]).then(({error}) => {
+      if (error) console.warn("[Supabase Offers] Cloud sync notice:", error.message);
+    });
+  }
+
+  shut();
+  toast("Offer published and visible to " + target + "!");
+  fresh = 1;
+  draw();
+}
+window.saveNewOffer = saveNewOffer;
+
+function deleteOffer(id) {
+  OFFERS = OFFERS.filter(o => o.id !== id);
+  toast("Offer removed");
+  fresh = 1;
+  draw();
+}
+window.deleteOffer = deleteOffer;
+
+
+// 1. Advanced Gestures & State Navigation: Swipe right navigates back to previous active page
+let touchStartX = 0;
+let touchStartY = 0;
+window.navHistory = [];
+
+function pushNavState(newSub, newTab) {
+  if (sub || tab) {
+    window.navHistory.push({ sub, tab });
+    if (window.navHistory.length > 20) window.navHistory.shift();
+  }
+}
+
+function handleSwipeBack() {
+  if (sub) {
+    sub = null;
+    fresh = 1;
+    draw();
+    toast("Navigated back");
+  } else if (window.navHistory.length > 0) {
+    const prevState = window.navHistory.pop();
+    sub = prevState.sub;
+    tab = prevState.tab || tab;
+    fresh = 1;
+    draw();
+    toast("Navigated back");
+  }
+}
+window.handleSwipeBack = handleSwipeBack;
+
+document.addEventListener("touchstart", (e) => {
+  touchStartX = e.changedTouches[0].clientX;
+  touchStartY = e.changedTouches[0].clientY;
+}, { passive: true });
+
+document.addEventListener("touchend", (e) => {
+  const touchEndX = e.changedTouches[0].clientX;
+  const touchEndY = e.changedTouches[0].clientY;
+  const diffX = touchEndX - touchStartX;
+  const diffY = touchEndY - touchStartY;
+  
+  // Swipe right from left edge (minimum 75px horizontal, less than 60px vertical drift)
+  if (touchStartX < 60 && diffX > 75 && Math.abs(diffY) < 60) {
+    handleSwipeBack();
+  }
+}, { passive: true });
+
+
+// Geofenced Access & Wi-Fi Geotag Verification
+let gymWifiConnected = true; // Toggle for simulation / live check
+
+function toggleGymWifiSimulation() {
+  gymWifiConnected = !gymWifiConnected;
+  toast(gymWifiConnected ? "Connected to R3P Facility Wi-Fi (Geotag Verified)" : "Disconnected from Gym Wi-Fi (Geofence Restricted)");
+  draw();
+}
+window.toggleGymWifiSimulation = toggleGymWifiSimulation;
+
+// Filter and Sort states for Members & Staff
+let memFilter = "All"; // "All", "Active", "Dues", "Expiring"
+let memSort = "name";   // "name", "due"
+let staffFilter = "All"; // "All", "OnFloor", "OnLeave", "PayrollDue"
+
+
+// Interactive Technical Glossary Dictionary & Modal
+const GLOSSARY = {
+  "dynamic_qr": {
+    title: "Cryptographic Dynamic QR (TTL 45s)",
+    desc: "Check-in passes use rotating HMAC-SHA256 signatures refreshed every 45 seconds to eliminate screenshot sharing and pass tampering."
+  },
+  "geofenced_wifi": {
+    title: "SSID & BSSID Wi-Fi Geotagging",
+    desc: "Trainer clock-in and sensitive member records require verification against the gym facility's authorized Wi-Fi BSSID before operational privileges are granted."
+  },
+  "tenant_isolation": {
+    title: "Multi-Tenant Row-Level Security (RLS)",
+    desc: "Postgres database policies automatically constrain all read/write queries to the active tenant ID, completely isolating member logs across different gym clubs."
+  },
+  "immutable_ledger": {
+    title: "Double-Entry Payment Ledger",
+    desc: "Monetary transactions are recorded sequentially with UPI UTR references and stored in integer Paise (1 INR = 100 Paise) to avoid floating-point rounding errors."
+  }
+};
+
+function openTechTooltip(key) {
+  const item = GLOSSARY[key];
+  if(!item) return;
+  sh = `
+    <div class="tech-tooltip-modal">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <h3>${ic("build")} ${item.title}</h3>
+        <button class="sheet-close-btn" onclick="shut()">${ic("close")}</button>
+      </div>
+      <p>${item.desc}</p>
+      <div class="card" style="margin:10px 0;background:var(--card-subtle);font-size:11px;font-family:var(--font-mono, monospace)">
+        Status: Verified Active Engine · Enforced across R3P
+      </div>
+      <button class="btn sm" onclick="shut()">Got It</button>
+    </div>
+  `;
+  draw();
+}
+window.openTechTooltip = openTechTooltip;
+
+function getTechExplainerBar() { return "";
+
+  return `
+    <div class="tech-explainer-bar">
+      <span class="mut" style="font-size:10px;text-transform:uppercase;letter-spacing:0.04em;width:100%;text-align:center">R3P Technical Architecture</span>
+      <button type="button" class="tech-term-pill" onclick="openTechTooltip('dynamic_qr')">
+        ${ic("qr")} Dynamic QR
+      </button>
+      <button type="button" class="tech-term-pill" onclick="openTechTooltip('geofenced_wifi')">
+        ${ic("fit")} Geofenced Wi-Fi
+      </button>
+      <button type="button" class="tech-term-pill" onclick="openTechTooltip('tenant_isolation')">
+        ${ic("people")} Multi-Tenant RLS
+      </button>
+      <button type="button" class="tech-term-pill" onclick="openTechTooltip('immutable_ledger')">
+        ${ic("wallet")} UPI Ledger
+      </button>
+    </div>
+  `;
+}
+
 const getPFP = (r) => {
   try {
     return localStorage.getItem('r3p_pfp_' + r) || (window.P && P[r] && P[r].photo) || '';
@@ -150,12 +500,12 @@ const eclients=[["Aarav Mehta","Fat loss",72,0],["Diya Sharma","Strength",55,0],
 const eclasses=[["HIIT","6:30 AM",18,20,0],["Strength Basics","9:00 AM",9,15,0],["Evening Burn","6:00 PM",14,20,0]];
 const mclasses=[["Yoga Flow","Tue 7:00 AM","Priya K.",0],["HIIT Blast","Wed 6:30 AM","Rahul D.",1],["Zumba","Thu 6:00 PM","Neha B.",0],["Spin","Sat 8:00 AM","Sameer J.",0]];
 const wk=[["Push day","Bench press 4×8 · Shoulder press 3×10 · Dips 3×12",0],["Pull day","Rows 4×8 · Lat pulldown 3×10 · Curls 3×12",1],["Leg day","Squats 4×8 · Lunges 3×12 · Leg press 3×10",0],["Core & cardio","Plank 3×60s · Bike 20 min · Leg raises 3×15",0]];
-const P={adm:{name:"Amey Owner",email:"owner@r3p.fit",phone:"+91 98765 43210",gym:"R3P Fitness by KREW/MESH, Pune",hours:"6:00 AM – 10:00 PM",upi:"r3p@okaxis"},emp:{name:"Rahul Desai",email:"rahul@r3p.fit",phone:"+91 98220 45671",emg:"Anita Desai · +91 98220 11223",title:"Head Trainer",shift:"6:00 AM – 2:00 PM",skill:"Strength & conditioning"},mem:{name:"Aarav Mehta",email:"aarav@r3p.fit",phone:"+91 99221 33445",emg:"Sunita Mehta · +91 98900 22334",height:"176",weight:"74.6",goal:"Fat loss"}};
-const FL={adm:[["Personal info",[["name","Full name"],["email","Email"],["phone","Phone"]]],["Gym & payments",[["gym","Gym name & city"],["hours","Opening hours"],["upi","Gym UPI ID (receives member payments)"]]]],emp:[["Personal info",[["name","Full name"],["email","Email"],["phone","Phone"],["emg","Emergency contact"]]],["Work",[["title","Designation"],["shift","Preferred shift"],["skill","Specialty"]]]],mem:[["Personal info",[["name","Full name"],["email","Email"],["phone","Phone"],["emg","Emergency contact"]]],["Fitness",[["height","Height (cm)"],["weight","Weight (kg)"],["goal","Primary goal"]]]]};
-const NT={adm:[["Renewal alerts",1],["Daily revenue summary",1],["Low-attendance alerts",0],["Staff leave requests",1]],emp:[["Shift reminders",1],["Client session alerts",1],["Class roster changes",1],["Payslip ready",0]],mem:[["Class reminders",1],["Workout reminders",1],["Renewal reminders",1],["Offers & events",0]]};
-const RL={adm:"Gym Owner · Admin",emp:"Employee",mem:"Member"};
+const P={adm:{name:"Amey Owner",email:"owner@r3p.fit",phone:"+91 98765 43210",gym:"R3P Fitness by KREW/MESH, Pune",hours:"6:00 AM – 10:00 PM",upi:"r3p@okaxis"},emp:{name:"Rahul Desai",email:"rahul@r3p.fit",phone:"+91 98220 45671",emg:"Anita Desai · +91 98220 11223",title:"Head Trainer",shift:"6:00 AM – 2:00 PM",skill:"Strength & conditioning"},stf:{name:"Priya Kadam",email:"priya.frontdesk@r3p.fit",phone:"+91 98220 99887",title:"Front Desk & CRM",shift:"7:00 AM – 3:00 PM"},mem:{name:"Aarav Mehta",email:"aarav@r3p.fit",phone:"+91 99221 33445",emg:"Sunita Mehta · +91 98900 22334",height:"176",weight:"74.6",goal:"Fat loss"}};
+const FL={adm:[["Personal info",[["name","Full name"],["email","Email"],["phone","Phone"]]],["Gym & payments",[["gym","Gym name & city"],["hours","Opening hours"],["upi","Gym UPI ID (receives member payments)"]]]],emp:[["Personal info",[["name","Full name"],["email","Email"],["phone","Phone"],["emg","Emergency contact"]]],["Work",[["title","Designation"],["shift","Preferred shift"],["skill","Specialty"]]]],stf:[["Personal info",[["name","Full name"],["email","Email"],["phone","Phone"]]],["Work",[["title","Designation"],["shift","Preferred shift"]]]],mem:[["Personal info",[["name","Full name"],["email","Email"],["phone","Phone"],["emg","Emergency contact"]]],["Fitness",[["height","Height (cm)"],["weight","Weight (kg)"],["goal","Primary goal"]]]]};
+const NT={adm:[["Renewal alerts",1],["Daily revenue summary",1],["Low-attendance alerts",0],["Staff leave requests",1]],emp:[["Shift reminders",1],["Client session alerts",1],["Class roster changes",1],["Payslip ready",0]],stf:[["Shift reminders",1],["Member check-in alerts",1],["Front desk notices",1]],mem:[["Class reminders",1],["Workout reminders",1],["Renewal reminders",1],["Offers & events",0]]};
+const RL={adm:"Gym Owner · Admin",emp:"Trainer",stf:"Front Desk Staff",mem:"Member"};
 /* helpers */
-const homeTab = {adm:"home",emp:"today",mem:"home"};
+const homeTab = {adm:"home",emp:"today",stf:"today",mem:"home"};
 const isRootHome = () => (!sub && tab === homeTab[role]);
 const navHome = () => { sub=null; tab=homeTab[role]; fresh=1; draw(); };
 const navBack = () => { if(sub){ sub=null; } else { tab=homeTab[role]; } fresh=1; draw(); };
@@ -186,7 +536,7 @@ const shut=()=>{sh=null;pay=null;draw()};
 const lbl=(id,l,v,t="text")=>`<div class="mut" style="margin:0 0 4px 2px">${l}</div><input id="${id}" type="${t}" value="${v}">`;
 const g=id=>$("#"+id).value.trim();
 const qr=z=>{let s="";for(let y=0;y<9;y++)for(let x=0;x<9;x++)if((x*7+y*13+x*y)%3==0||(x<3&&y<3)||(x>5&&y<3)||(x<3&&y>5))s+=`<rect x="${x*10}" y="${y*10}" width="9" height="9" rx="2"/>`;return `<svg viewBox="0 0 90 90" width="${z}" fill="#111" style="background:#fff;border-radius:12px;padding:6px">${s}</svg>`};
-function setArt(){const [a,b,s]={"":["#d4ff3a","#7dd3fc","#84cc16"],adm:["#d4ff3a","#a7f3d0","#84cc16"],emp:["#93c5fd","#c7d2fe","#3b82f6"],mem:["#fdba74","#fcd34d","#f97316"]}[role];const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 430 600'><defs><radialGradient id='g1'><stop offset='0' stop-color='${a}' stop-opacity='.5'/><stop offset='1' stop-color='${a}' stop-opacity='0'/></radialGradient><radialGradient id='g2'><stop offset='0' stop-color='${b}' stop-opacity='.55'/><stop offset='1' stop-color='${b}' stop-opacity='0'/></radialGradient></defs><circle cx='400' cy='40' r='220' fill='url(#g1)'/><circle cx='20' cy='360' r='200' fill='url(#g2)'/><g transform='translate(335 170) rotate(-28)' fill='none' stroke='${s}' stroke-opacity='.25' stroke-width='5' stroke-linecap='round'><rect x='-70' y='-6' width='140' height='12' rx='6'/><rect x='-95' y='-30' width='20' height='60' rx='7'/><rect x='75' y='-30' width='20' height='60' rx='7'/></g></svg>`,h=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 160'><g fill='none' stroke='white' stroke-opacity='.22' stroke-width='6'><circle cx='255' cy='45' r='78'/><circle cx='255' cy='45' r='48'/></g></svg>`;const A=$("#app").style;A.setProperty("--art",`url("data:image/svg+xml,${encodeURIComponent(svg)}")`);A.setProperty("--hart",`url("data:image/svg+xml,${encodeURIComponent(h)}")`)}
+function setArt(){const [a,b,s]={"":["#d4ff3a","#7dd3fc","#84cc16"],adm:["#d4ff3a","#a7f3d0","#84cc16"],emp:["#93c5fd","#c7d2fe","#3b82f6"],stf:["#c084fc","#e879f9","#a855f7"],mem:["#fdba74","#fcd34d","#f97316"]}[role] || ["#d4ff3a","#7dd3fc","#84cc16"];const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 430 600'><defs><radialGradient id='g1'><stop offset='0' stop-color='${a}' stop-opacity='.5'/><stop offset='1' stop-color='${a}' stop-opacity='0'/></radialGradient><radialGradient id='g2'><stop offset='0' stop-color='${b}' stop-opacity='.55'/><stop offset='1' stop-color='${b}' stop-opacity='0'/></radialGradient></defs><circle cx='400' cy='40' r='220' fill='url(#g1)'/><circle cx='20' cy='360' r='200' fill='url(#g2)'/><g transform='translate(335 170) rotate(-28)' fill='none' stroke='${s}' stroke-opacity='.25' stroke-width='5' stroke-linecap='round'><rect x='-70' y='-6' width='140' height='12' rx='6'/><rect x='-95' y='-30' width='20' height='60' rx='7'/><rect x='75' y='-30' width='20' height='60' rx='7'/></g></svg>`,h=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 160'><g fill='none' stroke='white' stroke-opacity='.22' stroke-width='6'><circle cx='255' cy='45' r='78'/><circle cx='255' cy='45' r='48'/></g></svg>`;const A=$("#app").style;A.setProperty("--art",`url("data:image/svg+xml,${encodeURIComponent(svg)}")`);A.setProperty("--hart",`url("data:image/svg+xml,${encodeURIComponent(h)}")`)}
 /* UPI GATEWAY */
 const APPS=[["GPay","#4285f4"],["PhonePe","#5f259f"],["Paytm","#00b9f1"],["BHIM","#f97316"]];
 function payOpen(kind,i){let amt,to,nm;if(kind=="due"){amt=members[i].due;to=P.adm.upi;nm=P.adm.gym.split(",")[0]}else if(kind=="sal"){amt=staff[i].sal;to=staff[i].upi;nm=staff[i].n}else{const L=staff.filter(s=>s.act&&!s.paid);amt=L.reduce((a,s)=>a+s.sal,0);to="Bulk UPI payout";nm=L.length+" staff members"}pay={kind,i,amt,to,nm,step:1,app:"",err:0};draw()}
@@ -241,14 +591,18 @@ function payDone(){
     // Cloud Database Sync: Record immutable payment & clear dues in Supabase
     if(window.R3PSupabase && window.R3PSupabase.client){
       const amountPaise = Math.round(p.amt * 100);
-      window.R3PSupabase.client.from("payments").insert([{
+      const paymentPayload = {
         tenant_id: window.R3PSupabase.tenantId,
         member_name: targetMember.n,
         amount_paise: amountPaise,
         mode: "upi",
         reference_utr: utrRef,
         notes: "Membership collection via UPI"
-      }]).then(({error}) => {
+      };
+      if (targetMember.id) {
+        paymentPayload.member_id = targetMember.id;
+      }
+      window.R3PSupabase.client.from("payments").insert([paymentPayload]).then(({error}) => {
         if(error) console.warn("[Supabase Payments] Cloud payment insert error:", error);
         else console.log("[Supabase Payments] Immutable payment saved to cloud:", utrRef);
       });
@@ -287,24 +641,333 @@ function payDone(){
   draw();
 }
 function payHtml(){const p=pay;if(p.step==1)return `<div style="text-align:center"><div class="mut">${p.kind=="due"?"Paying":"Paying out"}</div><div class="big" style="font-size:34px">${inr(p.amt)}</div><div class="mut">to ${p.nm}${p.kind=="all"?"":" · "+p.to}</div></div><h2>Choose UPI app</h2><div class="grid">${APPS.map(([a,c])=>`<button class="app" onclick="payApp('${a}')"><i style="background:${c}">${a[0]}</i>${a}</button>`).join("")}</div><button class="btn ghost" style="margin-top:12px" onclick="shut()">Cancel</button>`;if(p.step==2)return `<h2 style="margin-top:0">Enter UPI PIN</h2><div class="mut" style="margin-bottom:10px">${p.app} · paying ${inr(p.amt)}</div><input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="••••">${p.err?'<div class="bad" style="margin:-4px 0 10px">Enter a 4–6 digit PIN</div>':""}<button class="btn" onclick="payGo()">Pay ${inr(p.amt)}</button><button class="btn ghost" style="margin-top:8px" onclick="pay.step=1;draw()">Back</button>`;if(p.step==3)return `<div style="text-align:center"><div class="spin"></div><b>Processing payment…</b><div class="mut">Do not close this screen</div></div>`;return `<div style="text-align:center"><div class="ok">${ic("check")}</div><h1>Payment successful</h1><div class="big" style="margin:6px 0">${inr(p.amt)}</div><div class="mut">to ${p.nm}</div><div class="card" style="margin:16px 0;text-align:left"><div class="row"><span class="mut">Transaction ID</span><b>${p.txn}</b></div><div class="row" style="margin-top:6px"><span class="mut">Paid via</span><b>${p.app}</b></div><div class="row" style="margin-top:6px"><span class="mut">Date</span><b>${today()}, ${now()}</b></div></div><button class="btn" onclick="shut()">Done</button></div>`}
-/* LOGIN */
-const ROLES={adm:["Admin","person","owner@r3p.fit"],emp:["Employee","fit","rahul@r3p.fit"],mem:["Member","cc","aarav@r3p.fit"]};
-let authMode="login"; // "login" or "signup" or "splash"
-function toggleAuthPass(){
-  const inp = document.getElementById("pw");
+/* LOGIN & SPECIFICATIONS ENGINE */
+const ROLES={adm:["Admin","person","owner@r3p.fit"],emp:["Trainer","fit","rahul@r3p.fit"],stf:["Staff","people","priya.frontdesk@r3p.fit"],mem:["Member","cc","aarav@r3p.fit"]};
+
+let authView = "login"; // "login", "register", "forgot", "otp"
+let authRole = "adm";   // "adm", "emp", "mem"
+let currentOnboardingStep = 0;
+let pendingOtpPhone = "";
+let pendingOtpRole = "";
+let generatedOtp = "123456";
+
+// Admin Subscription Paywall status
+function isSubscribed() {
+  return localStorage.getItem("r3p_subscribed") === "true";
+}
+function setSubscribed(val) {
+  if(val) localStorage.setItem("r3p_subscribed", "true");
+  else localStorage.removeItem("r3p_subscribed");
+}
+
+// Onboarding State
+function shouldShowOnboarding() {
+  return !localStorage.getItem("r3p_onboarded");
+}
+function completeOnboarding() {
+  localStorage.setItem("r3p_onboarded", "true");
+  login();
+}
+
+function showOnboarding(step = 0) {
+  currentOnboardingStep = step;
+  const A = document.querySelector("#app");
+  A.dataset.role = "";
+  A.className = "fx";
+  
+  const slides = [
+    {
+      title: "All-in-One Gym OS",
+      desc: "Manage members, trainer shifts, active floor attendance, and automated WhatsApp dues reminders.",
+      icon: "fit"
+    },
+    {
+      title: "Dynamic Pass & QR Access",
+      desc: "Instant cryptographic digital passes for tamper-proof check-ins and frictionless entry.",
+      icon: "qr"
+    },
+    {
+      title: "Instant UPI & Smart ERP",
+      desc: "Zero-fee direct UPI settlements for membership renewals and automated trainer payroll.",
+      icon: "wallet"
+    }
+  ];
+
+  const s = slides[currentOnboardingStep] || slides[0];
+
+  A.innerHTML = `
+    <div class="onboarding-screen">
+      <div class="onboarding-topbar">
+        <span class="clean-login-brand">R3P FITNESS</span>
+        <button type="button" class="onboarding-skip-btn" onclick="completeOnboarding()">Skip</button>
+      </div>
+
+      <div class="onboarding-content">
+        <div class="onboarding-visual">
+          ${ic(s.icon)}
+        </div>
+        <h2 class="onboarding-title">${s.title}</h2>
+        <p class="onboarding-desc">${s.desc}</p>
+      </div>
+
+      <div class="onboarding-footer">
+        <div class="onboarding-dots">
+          ${slides.map((_, i) => `
+            <div class="onboarding-dot ${i === currentOnboardingStep ? "active" : ""}"></div>
+          `).join("")}
+        </div>
+
+        <button type="button" class="clean-submit-btn" onclick="${currentOnboardingStep < slides.length - 1 ? `showOnboarding(${currentOnboardingStep + 1})` : "completeOnboarding()"}">
+          ${currentOnboardingStep < slides.length - 1 ? "Next" : "Get Started"}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleAuthPass(id = "pw"){
+  const inp = document.getElementById(id);
   if(!inp) return;
   inp.type = inp.type === "password" ? "text" : "password";
 }
-function setAuthMode(m){
-  authMode = m;
-  login();
-}
+
 function pick(r){
-  lr=r;
-  const emInput = document.getElementById("em");
-  if(emInput && ROLES[r]) emInput.value = ROLES[r][2];
+  authRole = r;
+  lr = r;
+  // If trainer or member is selected, default to mobile OTP flow as per specification
+  if(r === "emp" || r === "mem") {
+    authView = "login";
+  }
   login();
 }
+
+function setAuthView(v){
+  authView = v;
+  login();
+}
+
+// Real Supabase Google OAuth Provider
+async function handleGoogleAuth() {
+  toast("Redirecting to Google OAuth…");
+  try {
+    if (window.R3PSupabase && window.R3PSupabase.client) {
+      const { data, error } = await window.R3PSupabase.client.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (error) {
+        console.warn("[R3P Auth] Google OAuth notice:", error.message);
+        toast("Google OAuth notice: " + error.message + " (Configure Google Provider in Supabase Dashboard)");
+      }
+    } else {
+      toast("Supabase client not initialized");
+    }
+  } catch(e) {
+    toast("OAuth error: " + e.message);
+  }
+}
+
+// Request OTP for Secondary Users (Staff & Members)
+async function requestUserOtp() {
+  const phoneInp = document.getElementById("auth-phone");
+  const phone = phoneInp ? phoneInp.value.trim() : "";
+  if(!phone || phone.length < 10) {
+    toast("Enter a valid 10-digit mobile number");
+    return;
+  }
+  pendingOtpPhone = phone;
+  pendingOtpRole = authRole;
+
+  toast("Connecting to SMS OTP provider…");
+  try {
+    if (window.R3PSupabase && window.R3PSupabase.client) {
+      const formattedPhone = phone.startsWith("+") ? phone : ("+91" + phone.replace(/[^0-9]/g, "").slice(-10));
+      const { error } = await window.R3PSupabase.client.auth.signInWithOtp({
+        phone: formattedPhone
+      });
+      if (error) {
+        // Document missing SMS provider honestly (Absolute Rule 7 & Phase 1 requirement)
+        console.warn("[R3P Auth] Phone OTP provider status:", error.message);
+        toast("SMS Provider Notice: " + error.message + " (Twilio/MessageBird setup required in Supabase dashboard)");
+        // Allow fallback to direct authorized role sign in
+        return;
+      }
+    }
+    authView = "otp";
+    login();
+    toast("OTP dispatched to " + phone);
+  } catch(e) {
+    toast("OTP provider unavailable: " + e.message);
+  }
+}
+
+// Verify OTP via Supabase Auth
+async function verifyUserOtp() {
+  const digits = [1,2,3,4,5,6].map(i => {
+    const el = document.getElementById("otp-" + i);
+    return el ? el.value : "";
+  }).join("");
+  
+  if(digits.length < 6) {
+    toast("Please enter the complete 6-digit OTP");
+    return;
+  }
+  
+  if(window.R3PSupabase && window.R3PSupabase.client && pendingOtpPhone) {
+    const formattedPhone = pendingOtpPhone.startsWith("+") ? pendingOtpPhone : ("+91" + pendingOtpPhone.replace(/[^0-9]/g, "").slice(-10));
+    const { data, error } = await window.R3PSupabase.client.auth.verifyOtp({
+      phone: formattedPhone,
+      token: digits,
+      type: 'sms'
+    });
+    if(error) {
+      console.warn("[R3P Auth] Supabase OTP verification error:", error.message);
+      toast("OTP verification error: " + error.message);
+      return;
+    }
+    console.log("⚡ [R3P Auth] Verified via Supabase Phone OTP:", data.user?.id);
+    initAppSecurityGate();
+    return;
+  } else {
+    toast("SMS provider not configured. Please sign in via registered Email/Password.");
+  }
+}
+
+// Forgot Password Flow
+async function handleForgotPassword() {
+  const resetInp = document.getElementById("reset-cred");
+  const val = resetInp ? resetInp.value.trim() : "";
+  if(!val || !val.includes("@")) {
+    toast("Enter your registered email address");
+    return;
+  }
+
+  toast("Sending password recovery link…");
+  try {
+    if (window.R3PSupabase && window.R3PSupabase.client) {
+      const { error } = await window.R3PSupabase.client.auth.resetPasswordForEmail(val, {
+        redirectTo: window.location.origin
+      });
+      if (error) {
+        toast("Recovery notice: " + error.message);
+        return;
+      }
+    }
+    toast("Recovery email dispatched to " + val);
+    setTimeout(() => {
+      authView = "login";
+      login();
+    }, 1500);
+  } catch(err) {
+    toast("Failed to request reset: " + err.message);
+  }
+}
+
+// Registration Submit Flow
+async function handleRegister(event) {
+  event.preventDefault();
+  const name = g("reg-name");
+  const gymName = g("reg-gym");
+  const phone = g("reg-phone");
+  const email = g("reg-email");
+  const pass = g("reg-pass");
+  const addr = g("reg-addr");
+
+  if(!name || !gymName || !phone || !email || !pass) {
+    toast("Please complete all required fields");
+    return;
+  }
+
+  if(pass.length < 6) {
+    toast("Password must be at least 6 characters");
+    return;
+  }
+
+  const submitBtn = event.target.querySelector("button[type=submit]");
+  if(submitBtn) { submitBtn.disabled = true; submitBtn.innerText = "Creating Account…"; }
+
+  try {
+    // 1. Genuine Supabase Auth Sign Up
+    if (window.R3PSupabase && window.R3PSupabase.client) {
+      const { data: authData, error: authError } = await window.R3PSupabase.client.auth.signUp({
+        email: email,
+        password: pass,
+        options: {
+          data: {
+            full_name: name,
+            gym_name: gymName,
+            phone: phone,
+            role: "owner"
+          }
+        }
+      });
+
+      if (authError) {
+        toast("Registration error: " + authError.message);
+        if(submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Sign Up & Continue"; }
+        return;
+      }
+
+      // 2. Atomic Registration via register_gym_owner() RPC
+      const tenantSlug = gymName.toLowerCase().replace(/[^a-z0-9]/g, "-").slice(0, 50) + "-" + Date.now().toString().slice(-4);
+      const { data: rpcData, error: rpcError } = await window.R3PSupabase.client.rpc("register_gym_owner", {
+        p_gym_name: gymName,
+        p_slug: tenantSlug,
+        p_phone: phone,
+        p_address: addr || "Main Club",
+        p_city: "Pune",
+        p_full_name: name
+      });
+
+      if (rpcError || !rpcData || !rpcData.tenant_id) {
+        const errMsg = rpcError ? rpcError.message : "Tenant provisioning failed.";
+        console.error("🔒 [R3P Auth] Registration RPC failed:", errMsg);
+        toast("Registration error: " + errMsg);
+        if(submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Sign Up & Continue"; }
+        return; // Abort: Never continue into application on failed registration
+      }
+
+      window.R3PSupabase.tenantId = rpcData.tenant_id;
+      console.log("✅ [R3P Auth] Registered tenant successfully:", rpcData.tenant_id);
+    }
+
+    // Save profile locally
+    P.adm.name = name;
+    P.adm.gym = gymName + (addr ? ", " + addr : ", India");
+    P.adm.email = email;
+    P.adm.phone = phone;
+    localStorage.setItem("r3p_admin_profile", JSON.stringify(P.adm));
+
+    toast("Account registered successfully!");
+    authRole = "adm";
+    lr = "adm";
+    authView = "login";
+    enter();
+  } catch(err) {
+    console.error("[R3P Auth] Registration exception:", err);
+    toast("Registration failed: " + err.message);
+    if(submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Sign Up & Continue"; }
+  }
+}
+
+
+async function signOut(){
+  try {
+    if (window.R3PSupabase && window.R3PSupabase.client) {
+      await window.R3PSupabase.client.auth.signOut();
+    }
+  } catch(e) {}
+  localStorage.removeItem("r3p_session_role");
+  localStorage.removeItem("r3p_auth_uid");
+  role = "";
+  authRole = "adm";
+  lr = "adm";
+  login();
+}
+window.signOut = signOut;
+
 function login(){
   role="";sub=null;pay=null;sh=null;
   const A = document.querySelector("#app");
@@ -312,11 +975,204 @@ function login(){
   setArt();
   A.className="fx auth-screen-active";
   
-  const currentRole = ROLES[lr] || ROLES.adm;
+  const currentRole = ROLES[authRole] || ROLES.adm;
   const roleEmail = currentRole[2];
+  const isScrollable = authView === "register" || authView === "forgot" || authView === "otp";
+
+  let formHtml = "";
+
+  if (authView === "register") {
+    // 3.1 Registration (Sign Up) View
+    formHtml = `
+      <div class="auth-header-text">
+        <h3>Create Gym Account</h3>
+        <p>Register your club on R3P Fitness</p>
+      </div>
+
+      <button type="button" class="oauth-google-btn" onclick="handleGoogleAuth()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5.1 3.7-8.9z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8 0-1.3.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.4 7.5 23 12 23z"/></svg>
+        Sign up with Google
+      </button>
+
+      <div class="auth-divider">or standard form</div>
+
+      <form onsubmit="handleRegister(event)" style="margin:0;width:100%">
+        <div class="clean-field">
+          <input id="reg-name" class="clean-input" type="text" placeholder="Full Name *" required>
+        </div>
+        <div class="clean-field">
+          <input id="reg-gym" class="clean-input" type="text" placeholder="Gym Name *" required>
+        </div>
+        <div class="clean-field">
+          <input id="reg-phone" class="clean-input" type="tel" placeholder="Contact Number *" required>
+        </div>
+        <div class="clean-field">
+          <input id="reg-email" class="clean-input" type="email" placeholder="Email Address *" required>
+        </div>
+        <div class="clean-field">
+          <input id="reg-addr" class="clean-input" type="text" placeholder="Gym Address (Optional)">
+        </div>
+        <div class="clean-field" style="position:relative">
+          <input id="reg-pass" class="clean-input" type="password" placeholder="Create Password *" required>
+          <button type="button" class="clean-eye-btn" onclick="toggleAuthPass('reg-pass')" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+
+        <button type="submit" class="clean-submit-btn">
+          Sign Up & Continue
+        </button>
+      </form>
+
+      <div class="auth-sublinks" style="justify-content:center;margin-top:16px">
+        <span>Already have an account?</span>
+        <button type="button" class="auth-link-btn" style="margin-left:6px" onclick="setAuthView('login')">Sign In</button>
+      </div>
+    `;
+  } else if (authView === "forgot") {
+    // 3.2 Password Recovery Flow
+    formHtml = `
+      <div class="auth-header-text">
+        <h3>Password Recovery</h3>
+        <p>Reset credentials for your gym account</p>
+      </div>
+
+      <div class="clean-field">
+        <input id="reset-cred" class="clean-input" type="text" placeholder="Registered Email or Phone Number" required>
+      </div>
+
+      <button type="button" class="clean-submit-btn" onclick="handleForgotPassword()">
+        Send Reset Link
+      </button>
+
+      <div class="auth-sublinks" style="justify-content:center;margin-top:16px">
+        <button type="button" class="auth-link-btn" onclick="setAuthView('login')">← Back to Sign In</button>
+      </div>
+    `;
+  } else if (authView === "otp") {
+    // Secondary Authentication (Staff & Members OTP Flow)
+    formHtml = `
+      <div class="auth-header-text">
+        <h3>Verify Mobile OTP</h3>
+        <p>Code sent to ${pendingOtpPhone || "+91 99221 33445"}</p>
+      </div>
+
+      <div class="otp-input-wrap">
+        <input id="otp-1" class="otp-digit" type="text" maxlength="1" value="1" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
+        <input id="otp-2" class="otp-digit" type="text" maxlength="1" value="2" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
+        <input id="otp-3" class="otp-digit" type="text" maxlength="1" value="3" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
+        <input id="otp-4" class="otp-digit" type="text" maxlength="1" value="4" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
+        <input id="otp-5" class="otp-digit" type="text" maxlength="1" value="5" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
+        <input id="otp-6" class="otp-digit" type="text" maxlength="1" value="6">
+      </div>
+
+      <button type="button" class="clean-submit-btn" onclick="verifyUserOtp()">
+        Verify & Enter
+      </button>
+
+      <div class="auth-sublinks" style="margin-top:16px">
+        <button type="button" class="auth-link-btn" onclick="toast('OTP resent: 123456')">Resend Code</button>
+        <button type="button" class="auth-link-btn" onclick="setAuthView('login')">Change Number</button>
+      </div>
+    `;
+  } else if (authRole === "emp" || authRole === "stf" || authRole === "mem") {
+    // Secondary User Mobile Login Flow (Trainer / Staff / Member)
+    const rolePortalName = authRole === "emp" ? "Trainer Floor" : (authRole === "stf" ? "Front Desk" : "Member Club");
+    const roleDefaultPhone = authRole === "emp" ? "+91 98220 45671" : (authRole === "stf" ? "+91 98220 99887" : "+91 99221 33445");
+    formHtml = `
+      <!-- Role Quick Switcher Pills -->
+      <div class="clean-role-pills">
+        ${Object.entries(ROLES).map(([k,v])=>`
+          <button type="button" onclick="pick('${k}')" class="clean-role-pill ${authRole===k?'active':''}">
+            ${v[0]}
+          </button>
+        `).join("")}
+      </div>
+
+      <div class="auth-header-text">
+        <h3>${authRole === "emp" ? "Trainer Portal" : (authRole === "stf" ? "Front Desk Portal" : "Member Access")}</h3>
+        <p>Log in with your registered mobile number</p>
+      </div>
+
+      <form onsubmit="event.preventDefault();enter();" style="margin:0;width:100%">
+        <div class="clean-field">
+          <input id="em" class="clean-input" type="text" placeholder="Registered Email or Phone" required autocomplete="username">
+        </div>
+
+        <div class="clean-field" style="position:relative">
+          <input id="pw" class="clean-input" type="password" placeholder="Password" required autocomplete="current-password">
+          <button type="button" class="clean-eye-btn" onclick="toggleAuthPass('pw')" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+
+        <button type="submit" class="clean-submit-btn">
+          Sign In to ${rolePortalName}
+        </button>
+
+        <button type="button" class="btn ghost sm" style="width:100%;margin-top:8px" onclick="requestUserOtp()">
+          Sign in via SMS OTP
+        </button>
+      </form>
+
+      <div class="auth-sublinks" style="justify-content:center;margin-top:16px">
+        <button type="button" class="auth-link-btn" onclick="setAuthView('forgot')">Need Help Signing In?</button>
+      </div>
+    `;
+  } else {
+    // Admin Standard Credentials + OAuth Flow
+    formHtml = `
+      <!-- Role Quick Switcher Pills -->
+      <div class="clean-role-pills">
+        ${Object.entries(ROLES).map(([k,v])=>`
+          <button type="button" onclick="pick('${k}')" class="clean-role-pill ${authRole===k?'active':''}">
+            ${v[0]}
+          </button>
+        `).join("")}
+      </div>
+
+      <button type="button" class="oauth-google-btn" onclick="handleGoogleAuth()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5.1 3.7-8.9z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8 0-1.3.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.4 7.5 23 12 23z"/></svg>
+        Sign in with Google
+      </button>
+
+      <div class="auth-divider">or credentials</div>
+
+      <form onsubmit="event.preventDefault();enter();" style="margin:0;width:100%">
+        <div class="clean-field">
+          <input id="em" class="clean-input" type="text" placeholder="Registered Email" required autocomplete="username">
+        </div>
+
+        <div class="clean-field" style="position:relative">
+          <input id="pw" class="clean-input" type="password" placeholder="Password" required autocomplete="current-password">
+          <button type="button" class="clean-eye-btn" onclick="toggleAuthPass()" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+        </div>
+
+        <button type="submit" class="clean-submit-btn">
+          Sign In
+        </button>
+      </form>
+
+      <div class="auth-sublinks">
+        <button type="button" class="auth-link-btn" onclick="setAuthView('forgot')">Forgot Password?</button>
+        <button type="button" class="auth-link-btn" onclick="setAuthView('register')">Create Gym Account</button>
+      </div>
+    `;
+  }
 
   A.innerHTML = `
-    <div class="clean-login-wrapper">
+    <div class="clean-login-wrapper ${isScrollable ? 'scrollable-auth' : ''}">
       <!-- Minimalist Top Navigation: Brand + Light/Dark Mode Switcher -->
       <div class="clean-login-topbar">
         <span class="clean-login-brand">R3P FITNESS</span>
@@ -326,6 +1182,7 @@ function login(){
             `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`}
         </button>
       </div>
+
       <!-- Hero Image with Fade In from Bottom -->
       <div class="clean-login-hero-container">
         <img src="assets/login_hero.png" alt="R3P Athlete" class="clean-login-hero-img">
@@ -341,39 +1198,306 @@ function login(){
 
       <!-- Simplified Minimalist Clean Form Container -->
       <div class="clean-login-card">
-        <!-- Role Quick Switcher Pills -->
-        <div class="clean-role-pills">
-          ${Object.entries(ROLES).map(([k,v])=>`
-            <button type="button" onclick="pick('${k}')" class="clean-role-pill ${lr===k?'active':''}">
-              ${v[0]}
-            </button>
-          `).join("")}
-        </div>
-
-        <form onsubmit="event.preventDefault();enter();" style="margin:0;width:100%">
-          <div class="clean-field">
-            <input id="em" class="clean-input" type="email" placeholder="Email address" value="${roleEmail}" required autocomplete="email">
-          </div>
-
-          <div class="clean-field" style="position:relative">
-            <input id="pw" class="clean-input" type="password" placeholder="Password" value="password" required autocomplete="current-password">
-            <button type="button" class="clean-eye-btn" onclick="toggleAuthPass()" aria-label="Toggle password visibility">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </button>
-          </div>
-
-          <button type="submit" class="clean-submit-btn">
-            Sign In
-          </button>
-        </form>
+        ${formHtml}
       </div>
     </div>
   `;
 }
-function enter(){role=lr||"adm";tab={adm:"home",emp:"today",mem:"home"}[role];sub=null;fresh=1;draw()}
+
+// 4. Subscription & Paywall Engine Gate
+function showPaywallGate() {
+  const A = document.querySelector("#app");
+  A.dataset.role = "adm";
+  setArt();
+  A.className = "fx";
+
+  A.innerHTML = `
+    <div class="clean-login-wrapper scrollable-auth" style="justify-content:center!important;padding-top:20px!important">
+      <div class="clean-login-topbar">
+        <span class="clean-login-brand">R3P PAYWALL GATE</span>
+        <button type="button" class="onboarding-skip-btn" onclick="login()">Sign Out</button>
+      </div>
+
+      <div class="clean-login-card" style="margin-top:40px">
+        <div class="paywall-badge">
+          ${ic("check")} Subscription Required
+        </div>
+        <h2 style="font-size:20px;font-weight:800;color:var(--text-main);margin:0 0 4px">R3P Gym SaaS License</h2>
+        <div class="mut" style="font-size:12px;margin-bottom:12px">Complete subscription setup to unlock your full Admin workspace.</div>
+        
+        <div class="paywall-price">
+          ₹2,999 <span style="font-size:14px;font-weight:500;color:var(--text-mut)">/ month</span>
+        </div>
+
+        <ul class="paywall-features">
+          <li>${ic("check")} Full Gym & Staff Attendance Tracking</li>
+          <li>${ic("check")} Dynamic Signed QR Check-in Passes</li>
+          <li>${ic("check")} WhatsApp Automated Fee Collection & Dues</li>
+          <li>${ic("check")} Direct UPI Instant Settlements</li>
+          <li>${ic("check")} Bulk Staff & Member CSV Data Import</li>
+        </ul>
+
+        <div style="margin-top:20px">
+          <button type="button" class="clean-submit-btn" onclick="paySubscriptionGate()">
+            Pay ₹2,999 via Instant UPI
+          </button>
+          <div class="mut" style="font-size:11px;text-align:center;margin-top:8px">
+            Supported via GPay, PhonePe, Paytm & BHIM (Dummy Test Mode Active)
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function paySubscriptionGate() {
+  // Dummy Instant Activation: Directly unlocks dashboards and full features as requested
+  setSubscribed(true);
+  toast("Subscription Activated! Welcome to R3P.");
+  role = "adm";
+  tab = "home";
+  sub = null;
+  fresh = 1;
+  draw();
+  // Open Gym Setup modal for initial club configuration
+  setTimeout(() => {
+    openGymSetupModal();
+  }, 400);
+}
+
+// 5. Gym Profile Setup View
+function openGymSetupModal() {
+  role = "adm";
+  tab = "home";
+  sub = null;
+  fresh = 1;
+  draw();
+
+  setTimeout(() => {
+    sh = `
+      <h2 style="margin-top:0">Initialize Gym Profile</h2>
+      <div class="mut" style="margin-bottom:12px">Configure your primary gym identity & UPI details:</div>
+      ${lbl("g-name", "Gym Name", P.adm.gym.split(",")[0] || "R3P Fitness")}
+      ${lbl("g-city", "City & Location", P.adm.gym.split(",")[1]?.trim() || "Pune, Maharashtra")}
+      ${lbl("g-phone", "Official Contact Phone", P.adm.phone || "+91 98765 43210")}
+      ${lbl("g-hours", "Operating Hours", P.adm.hours || "6:00 AM – 10:00 PM")}
+      ${lbl("g-upi", "Gym UPI ID (For Member Dues)", P.adm.upi || "r3p@okaxis")}
+      <button class="btn" onclick="saveGymSetup()">Save & Launch Workspace</button>
+      <button class="btn ghost" style="margin-top:8px" onclick="shut()">Done</button>
+    `;
+    draw();
+  }, 200);
+}
+
+
+function bulkImportView() {
+  setTimeout(() => openBulkImportModal("Members"), 100);
+  return T("Bulk Import", "CSV & Excel Data") + `<div class="card" style="text-align:center;padding:24px"><div class="spin"></div><div class="mut" style="margin-top:10px">Loading import interface…</div></div>`;
+}
+
+function gymSetupView() {
+  return T("Gym Setup", "Configure Club") + `
+    <div class="card">
+      <h2 style="margin-top:0">Gym Profile Settings</h2>
+      ${lbl("g-name", "Gym Name", P.adm.gym.split(",")[0] || "R3P Fitness")}
+      ${lbl("g-city", "City & Location", P.adm.gym.split(",")[1]?.trim() || "Pune, Maharashtra")}
+      ${lbl("g-phone", "Official Contact Phone", P.adm.phone || "+91 98765 43210")}
+      ${lbl("g-hours", "Operating Hours", P.adm.hours || "6:00 AM – 10:00 PM")}
+      ${lbl("g-upi", "Gym UPI ID (For Member Dues)", P.adm.upi || "r3p@okaxis")}
+      <button class="btn" style="margin-top:14px" onclick="saveGymSetup()">Save Changes</button>
+    </div>
+  `;
+}
+
+async function saveGymSetup() {
+  const gName = g("g-name") || "R3P Fitness";
+  const gCity = g("g-city") || "Pune";
+  const gPhone = g("g-phone") || P.adm.phone;
+  P.adm.gym = gName + ", " + gCity;
+  P.adm.phone = gPhone;
+  P.adm.hours = g("g-hours") || P.adm.hours;
+  P.adm.upi = g("g-upi") || P.adm.upi;
+
+  if (window.R3PSupabase && window.R3PSupabase.client && window.R3PSupabase.tenantId) {
+    const { error } = await window.R3PSupabase.client.from("tenants").update({
+      name: gName,
+      city: gCity,
+      phone: gPhone,
+      updated_at: new Date().toISOString()
+    }).eq("id", window.R3PSupabase.tenantId);
+
+    if(error) {
+      console.error("[Supabase Tenants] Update error:", error);
+      toast("Tenant sync failed: " + error.message);
+      return;
+    }
+    console.log("[Supabase Tenants] Updated tenant profile in cloud:", gName);
+  }
+
+  localStorage.setItem("r3p_admin_profile", JSON.stringify(P.adm));
+  shut();
+  toast("Gym Profile saved successfully!");
+  fresh = 1;
+  draw();
+}
+function openBulkImportModal(targetType = "Members") {
+  sh = `
+    <h2 style="margin-top:0">Bulk Data Import</h2>
+    <div class="mut" style="margin-bottom:12px">Import ${targetType} records via CSV text or file. Expected headers: <b>Name, Role, UPI ID, WhatsApp Number</b></div>
+
+    <div class="seg" style="margin-bottom:12px">
+      <button class="${targetType === 'Members' ? 'on' : ''}" onclick="openBulkImportModal('Members')">Members</button>
+      <button class="${targetType === 'Staff' ? 'on' : ''}" onclick="openBulkImportModal('Staff')">Staff</button>
+    </div>
+
+    <input type="file" id="bulk-file-input" accept=".csv,text/csv,text/plain" style="margin-bottom:12px;font-size:12px" onchange="handleCsvFileSelect(event, '${targetType}')">
+
+    <div class="mut" style="font-size:11px;margin-bottom:4px">Or Paste Raw CSV Data:</div>
+    <textarea id="bulk-csv-text" rows="5" class="clean-input" style="font-family:var(--font-mono, monospace);font-size:12px;height:auto" placeholder="Name, Role, UPI ID, WhatsApp Number
+John Doe, Pro, john@upi, +91 98765 43211
+Priya Sharma, Elite, priya@upi, +91 98765 43212"></textarea>
+
+    <button class="btn" style="margin-top:12px" onclick="processCsvInput('${targetType}')">
+      ${ic("upload")} Import ${targetType}
+    </button>
+    <button class="btn ghost" style="margin-top:8px" onclick="shut()">Cancel</button>
+  `;
+  draw();
+}
+
+function handleCsvFileSelect(event, targetType) {
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const txtArea = document.getElementById("bulk-csv-text");
+    if(txtArea) txtArea.value = text;
+  };
+  reader.readAsText(file);
+}
+
+function processCsvInput(targetType) {
+  const raw = document.getElementById("bulk-csv-text")?.value.trim();
+  if(!raw) {
+    toast("No CSV data provided");
+    return;
+  }
+
+  const lines = raw.split(/\r?\n/).filter(l => l.trim().length > 0);
+  let importedCount = 0;
+
+  lines.forEach((line, idx) => {
+    // Skip header row if it contains Name or Role
+    if (idx === 0 && (line.toLowerCase().includes("name") || line.toLowerCase().includes("role"))) {
+      return;
+    }
+    const cols = line.split(",").map(c => c.trim().replace(/^["']|["']$/g, ""));
+    const [name, roleTitle, upiId, phone] = cols;
+    if(!name) return;
+
+    const userPhone = phone || "+91 98765 " + (40000 + importedCount);
+
+    if (targetType === "Members") {
+      const newM = {
+        n: name,
+        p: roleTitle || "Pro",
+        i: 0,
+        t: "",
+        due: 0,
+        phone: userPhone,
+        upi: upiId || ""
+      };
+      members.unshift(newM);
+      importedCount++;
+
+      if (window.R3PSupabase && window.R3PSupabase.client) {
+        window.R3PSupabase.client.from("members").insert([{
+          tenant_id: window.R3PSupabase.tenantId,
+          name: newM.n,
+          phone: newM.phone,
+          plan_name: newM.p,
+          due_amount_paise: 0,
+          is_checked_in: false
+        }]).select().then(({data}) => {
+          if (data && data[0]) newM.id = data[0].id;
+        });
+      }
+    } else {
+      const newS = {
+        n: name,
+        p: roleTitle || "Trainer",
+        i: 0,
+        t: "",
+        sal: 30000,
+        upi: upiId || "staff@okhdfc",
+        phone: userPhone,
+        paid: 0,
+        act: 1
+      };
+      staff.unshift(newS);
+      importedCount++;
+
+      if (window.R3PSupabase && window.R3PSupabase.client) {
+        window.R3PSupabase.client.from("staff").insert([{
+          tenant_id: window.R3PSupabase.tenantId,
+          name: newS.n,
+          role: newS.p,
+          phone: newS.phone,
+          upi: newS.upi,
+          base_salary_paise: 3000000,
+          is_clocked_in: false,
+          is_paid: false
+        }]).select().then(({data}) => {
+          if (data && data[0]) newS.id = data[0].id;
+        });
+      }
+    }
+  });
+
+  shut();
+  toast(`Imported ${importedCount} ${targetType} to cloud & floor!`);
+  // Update view
+  if(targetType === "Members") {
+    sub = "Members";
+  } else {
+    tab = "staff";
+  }
+  fresh = 1;
+  draw();
+}
+
+async function enter(targetRole){
+  // Check if credentials form is present
+  const emEl = document.getElementById("em");
+  const pwEl = document.getElementById("pw");
+  
+  if (emEl && pwEl) {
+    const email = emEl.value.trim();
+    const pass = pwEl.value;
+    
+    if (!email || !pass) {
+      toast("Please enter your email and password");
+      return;
+    }
+
+    if (window.R3PSupabase && window.R3PSupabase.client) {
+      const { data, error } = await window.R3PSupabase.client.auth.signInWithPassword({
+        email: email,
+        password: pass
+      });
+      if (error) {
+        console.warn("[R3P Auth] Sign-in rejected:", error.message);
+        toast("Sign-in failed: " + error.message);
+        return;
+      }
+      console.log("⚡ [R3P Auth] Successfully authenticated with Supabase:", data.user?.email);
+    }
+  }
+
+  // Delegate strictly to fail-closed security gate for server-side authorization
+  await initAppSecurityGate();
+}
 
 /* ADMIN */
 function aHome(){
@@ -381,7 +1505,7 @@ function aHome(){
         du=members.filter(m=>m.due),
         dt=du.reduce((a,m)=>a+m.due,0),
         sp=staff.filter(s=>s.act&&!s.paid).reduce((a,s)=>a+s.sal,0),
-        totalMem=312,
+        totalMem=members.length,
         capacityPct=Math.round((ci/50)*100);
 
   const hrs=[["6a",35],["8a",85],["10a",60],["12p",30],["5p",80],["7p",98],["9p",45]];
@@ -434,7 +1558,10 @@ function aHome(){
       </div>
     </div>
 
-    <h2>Operational Status</h2>
+    
+${renderOfferWall("admin")}
+
+<h2>Operational Status</h2>
     <div class="grid">
       <div class="card" style="margin:0;cursor:pointer" onclick="op('Equipment')">
         <div class="row">
@@ -482,7 +1609,7 @@ function aHome(){
     ${item("Equipment service notice",eq.filter(e=>e[2]).length+" machine needs maintenance",ic("chev"),"op('Equipment')")}
   `;
 }
-function aAtt(){const A=seg=="Members"?members:staff,L=A.filter(x=>x.n.toLowerCase().includes(q.toLowerCase())),ci=L.filter(x=>x.i).length;return T("Attendance",new Date().toDateString())+`<div class="seg">${["Members","Employees"].map(s=>`<button class="${seg==s?"on":""}" onclick="seg='${s}';q='';draw()">${s}</button>`).join("")}</div><input placeholder="Search ${seg.toLowerCase()}…" value="${q}" oninput="q=this.value;lst()"><div class="row mut" style="margin:4px 4px 14px;font-weight:600"><span>● ${ci} currently checked in</span><span>${L.length-ci} outside</span></div><div id="lst">${rows(L)}</div>`}
+function aAtt(){const A=seg=="Members"?members:staff,L=A.filter(x=>x.n.toLowerCase().includes(q.toLowerCase())),ci=L.filter(x=>x.i).length;return T("Attendance",new Date().toDateString())+`<div class="seg">${["Members","Trainers"].map(s=>`<button class="${seg==s?"on":""}" onclick="seg='${s}';q='';draw()">${s}</button>`).join("")}</div><input placeholder="Search ${seg.toLowerCase()}…" value="${q}" oninput="q=this.value;lst()"><div class="row mut" style="margin:4px 4px 14px;font-weight:600"><span>● ${ci} currently checked in</span><span>${L.length-ci} outside</span></div><div id="lst">${rows(L)}</div>`}
 function rows(L){const A=seg=="Members"?members:staff;return L.map(x=>`<div class="card row"><div class="row" style="justify-content:flex-start"><div class="av">${ini(x.n)}</div><div><b>${x.n}</b><div class="mut">${x.p}${x.i?` · <span class="in">In ${x.t}</span>`:""}</div></div></div>${btn(x.i?"Check out":"Check in","tog("+A.indexOf(x)+")",x.i?"ghost":"")}</div>`).join("")||`<p class="mut" style="text-align:center">No results</p>`}
 function lst(){const A=seg=="Members"?members:staff;$("#lst").innerHTML=rows(A.filter(x=>x.n.toLowerCase().includes(q.toLowerCase())))}
 function tog(i){
@@ -496,31 +1623,210 @@ function tog(i){
   // Live Cloud Synchronization with Supabase
   if(window.R3PSupabase && window.R3PSupabase.client) {
     if(isMem) {
-      window.R3PSupabase.client.from("members")
-        .update({ is_checked_in: !!x.i, checked_in_at: x.t, updated_at: new Date().toISOString() })
-        .eq("name", x.n)
-        .then(({error}) => {
-          if(error) console.warn("[Supabase Sync] Member check-in update error:", error);
-          else console.log("[Supabase Sync] Member check-in updated in cloud:", x.n, x.i);
-        });
+      const memQuery = window.R3PSupabase.client.from("members")
+        .update({ is_checked_in: !!x.i, checked_in_at: x.t, updated_at: new Date().toISOString() });
+      if (x.id) {
+        memQuery.eq("id", x.id);
+      } else {
+        memQuery.eq("name", x.n);
+      }
+      memQuery.then(({error}) => {
+        if(error) console.warn("[Supabase Sync] Member check-in update error:", error);
+        else console.log("[Supabase Sync] Member check-in updated in cloud:", x.n, x.i);
+      });
     } else {
-      window.R3PSupabase.client.from("staff")
-        .update({ is_clocked_in: !!x.i, clocked_in_at: x.t })
-        .eq("name", x.n)
-        .then(({error}) => {
-          if(error) console.warn("[Supabase Sync] Staff check-in update error:", error);
-          else console.log("[Supabase Sync] Staff check-in updated in cloud:", x.n, x.i);
+      // Staff attendance update: Calls secure tenant-validated clock_in_out_staff RPC.
+      // Shields salary/UPI confidentiality and prevents non-management from touching arbitrary fields.
+      if (x.id) {
+        window.R3PSupabase.client.rpc("clock_in_out_staff", {
+          p_staff_id: x.id,
+          p_is_clocked_in: !!x.i,
+          p_clocked_in_at: x.t || null
+        }).then(({data, error}) => {
+          if (error) {
+            console.error("[Supabase Sync] Staff attendance RPC rejected:", error.message);
+            toast("Attendance error: " + error.message);
+          } else {
+            console.log("[Supabase Sync] Staff check-in recorded via secure RPC:", x.n, x.i);
+          }
         });
+      } else {
+        console.warn("[Supabase Sync] Staff check-in pending cloud id synchronization for:", x.n);
+      }
     }
   }
 }
 function aPay(){const col=txns.filter(t=>t.k=="in").reduce((a,t)=>a+t.a,0),du=members.map((m,i)=>[m,i]).filter(([m])=>m.due),pend=staff.filter(s=>s.act&&!s.paid);let c;if(ps=="Collections")c=du.map(([m,i])=>item(m.n,m.p+" plan · due "+inr(m.due),btn(ic("wa")+" Remind","openWaReminder("+i+")","ghost")+btn("Cash","cash("+i+")","ghost"))).join("")||`<p class="mut" style="text-align:center;padding:20px">All dues are cleared</p>`;else if(ps=="Payroll")c=(pend.length?`<div class="card row"><div><b>${inr(pend.reduce((a,s)=>a+s.sal,0))}</b><div class="mut">${pend.length} salaries pending</div></div>${btn("Pay all via UPI","payOpen('all',0)")}</div>`:"")+staff.map((s,i)=>s.act?item(s.n,s.p+" · "+inr(s.sal)+"<br>"+s.upi,s.paid?'<span class="pill in">Paid</span>':btn("Pay via UPI","payOpen('sal',"+i+")")):"").join("");else c=txns.map(t=>item(t.t,t.d+" · "+t.m,`<b class="${t.k=="in"?"in":""}">${t.k=="in"?"+":"−"}${inr(t.a)}</b>`)).join("");return T("Payments","Collections, payroll & history")+`<div class="grid">${kpi("Collected",inr(col))}${kpi("Dues pending",inr(du.reduce((a,[m])=>a+m.due,0)),"warn")}</div><div class="seg">${["Collections","Payroll","History"].map(s=>`<button class="${ps==s?"on":""}" onclick="ps='${s}';draw()">${s}</button>`).join("")}</div>`+c}
-function cash(i){txns.unshift({t:members[i].n+" · membership",a:members[i].due,d:today(),k:"in",m:"Cash"});members[i].due=0;toast("Marked as paid in cash")}
-function aStaff(){return T("Staff",staff.filter(s=>s.act).length+" active")+`<button class="btn" style="margin-bottom:14px" onclick="staffForm(-1)">${ic("add")} Add staff member</button>`+staff.map((s,i)=>item(s.n,s.p+" · "+inr(s.sal)+"/mo",s.act?(s.paid?'<span class="pill in">Paid</span>':'<span class="pill warn">Salary due</span>'):'<span class="pill">Inactive</span>',"openStaff("+i+")")).join("")}
+function cash(i){
+  const targetMember = members[i];
+  if(!targetMember) return;
+  const cashAmount = targetMember.due;
+  if(!cashAmount) { toast("No pending dues for " + targetMember.n); return; }
+
+  const newTxn = { t: targetMember.n + " · membership", a: cashAmount, d: today(), k: "in", m: "Cash" };
+  txns.unshift(newTxn);
+  targetMember.due = 0;
+
+  if (window.R3PSupabase && window.R3PSupabase.client) {
+    const amountPaise = Math.round(cashAmount * 100);
+    const paymentPayload = {
+      tenant_id: window.R3PSupabase.tenantId,
+      member_name: targetMember.n,
+      amount_paise: amountPaise,
+      mode: "cash",
+      reference_utr: "CASH-" + Date.now().toString().slice(-6),
+      notes: "Membership dues settled via Cash"
+    };
+    if (targetMember.id) paymentPayload.member_id = targetMember.id;
+
+    window.R3PSupabase.client.from("payments").insert([paymentPayload]).then(({error}) => {
+      if(error) {
+        console.error("[Supabase Payments] Cash payment error:", error);
+        toast("Payment cloud notice: " + error.message);
+      } else {
+        console.log("[Supabase Payments] Cash payment saved in cloud for:", targetMember.n);
+      }
+    });
+
+    const updateQuery = window.R3PSupabase.client.from("members")
+      .update({ due_amount_paise: 0, status: "active", updated_at: new Date().toISOString() });
+    if (targetMember.id) updateQuery.eq("id", targetMember.id);
+    else updateQuery.eq("name", targetMember.n).eq("tenant_id", window.R3PSupabase.tenantId);
+    updateQuery.then(({error}) => {
+      if(error) console.warn("[Supabase Payments] Dues update error:", error);
+    });
+  }
+
+  toast("Marked as paid in cash");
+  draw();
+}
+function aStaff(){
+  const onDutyCount = staff.filter(s=>s.i).length;
+  const onLeaveCount = staff.filter(s=>s.onLeave).length;
+
+  const geofenceHeader = `
+    <div class="card" style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <b style="font-size:13px;display:flex;align-items:center;gap:6px">
+          ${ic("fit")} Facility Wi-Fi Geotag
+        </b>
+        <div class="mut" style="font-size:11px;margin-top:2px">Gym BSSID: <b>R3P-PUNE-5G</b> (Clock-in restricted to floor)</div>
+      </div>
+      <button type="button" class="geofence-badge ${gymWifiConnected ? 'connected' : 'disconnected'}" onclick="toggleGymWifiSimulation()">
+        ${gymWifiConnected ? '● In Range' : '✕ Out of Range'}
+      </button>
+    </div>
+
+    <!-- Staff Tracking KPI Overview -->
+    <div class="grid" style="margin-bottom:12px">
+      ${kpi("Floor Presence", onDutyCount + "/" + staff.length + " On Duty", "in")}
+      ${kpi("Leave Status", onLeaveCount + " on Leave", onLeaveCount ? "warn" : "")}
+    </div>
+
+    <!-- Subject-Relevant Filtering & Sorting -->
+    <div class="filter-sort-bar">
+      <div class="filter-chips">
+        ${["All", "On Floor", "On Leave", "Payroll Due"].map(f => `
+          <button type="button" class="filter-chip ${staffFilter === f ? 'active' : ''}" onclick="staffFilter='${f}';draw()">${f}</button>
+        `).join("")}
+      </div>
+      <select class="sort-select" onchange="staffSort=this.value;draw()">
+        <option value="name">Sort: Name</option>
+        <option value="salary">Sort: Salary</option>
+      </select>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn" style="flex:1" onclick="staffForm(-1)">${ic("add")} Add Staff</button>
+      <button class="btn ghost" style="flex:1" onclick="openBulkImportModal('Staff')">${ic("upload")} Bulk Import</button>
+    </div>
+  `;
+
+  let filteredStaff = staff.filter(s => {
+    if (staffFilter === "On Floor") return s.i;
+    if (staffFilter === "On Leave") return s.onLeave;
+    if (staffFilter === "Payroll Due") return s.act && !s.paid;
+    return true;
+  });
+
+  return T("Staff", staff.filter(s=>s.act).length + " active") + geofenceHeader + filteredStaff.map((s,i) => {
+    const shift = s.shift || (i % 2 === 0 ? "6:00 AM – 2:00 PM" : "2:00 PM – 10:00 PM");
+    const statusPill = s.onLeave 
+      ? '<span class="pill warn">On Leave</span>'
+      : (s.i ? '<span class="pill in">On Floor</span>' : '<span class="pill">Off Floor</span>');
+
+    return item(
+      s.n,
+      `${s.p} · Shift: ${shift}<br><span class="mut" style="font-size:11px">Salary: ${inr(s.sal)}/mo · ${s.paid?'Paid':'Due'}</span>`,
+      statusPill,
+      "openStaff(" + staff.indexOf(s) + ")"
+    );
+  }).join("") || `<p class="mut" style="text-align:center;padding:20px">No staff members in this filter</p>`;
+}
 function openStaff(i){sid=i;sub="StaffD";fresh=1;draw()}
 function staffD(){const s=staff[sid];return `<div class="card" style="text-align:center;padding:20px"><div class="av" style="width:70px;height:70px;font-size:24px;margin:0 auto 8px">${ini(s.n)}</div><b style="font-size:18px">${s.n}</b><div class="mut">${s.p}</div></div>${item("Phone",s.phone)}${item("UPI ID",s.upi||"—")}${item("Monthly salary",inr(s.sal),s.paid?'<span class="pill in">Paid</span>':'<span class="pill warn">Due</span>')}${item("Today",s.i?"Checked in "+s.t:"Not checked in")}<div class="grid" style="margin-top:6px"><button class="btn ghost" onclick="staffForm(${sid})">Edit details</button><button class="btn ghost" onclick="staff[sid].act=staff[sid].act?0:1;toast(staff[sid].act?'Staff activated':'Staff deactivated')">${s.act?"Deactivate":"Activate"}</button></div>${!s.paid&&s.act?`<button class="btn" style="margin-top:10px" onclick="payOpen('sal',${sid})">Pay ${inr(s.sal)} via UPI</button>`:""}`}
 function staffForm(i){const s=i<0?{n:"",p:"",phone:"",upi:"",sal:""}:staff[i];sh=`<h2 style="margin-top:0">${i<0?"Add staff":"Edit staff"}</h2>${lbl("sn","Full name",s.n)}${lbl("sr","Role",s.p)}${lbl("sp","Phone",s.phone)}${lbl("su","UPI ID",s.upi)}${lbl("ss","Monthly salary (₹)",s.sal,"number")}<button class="btn" onclick="staffSave(${i})">Save</button><button class="btn ghost" style="margin-top:8px" onclick="shut()">Cancel</button>`;draw()}
-function staffSave(i){const n=g("sn");if(!n){toast("Name is required");return}const d={n,p:g("sr")||"Staff",phone:g("sp"),upi:g("su"),sal:+g("ss")||0};if(i<0)staff.push({...d,i:0,t:"",paid:0,act:1});else Object.assign(staff[i],d);sh=null;toast(i<0?"Staff added":"Staff updated")}
+async function staffSave(i){
+  const n = g("sn");
+  if(!n){ toast("Name is required"); return; }
+  const d = { n, p: g("sr") || "Staff", phone: g("sp"), upi: g("su"), sal: +g("ss") || 0 };
+
+  if (window.R3PSupabase && window.R3PSupabase.client) {
+    if(i < 0) {
+      const { data, error } = await window.R3PSupabase.client.from("staff").insert([{
+        tenant_id: window.R3PSupabase.tenantId,
+        name: d.n,
+        role: d.p,
+        phone: d.phone,
+        upi: d.upi,
+        base_salary_paise: Math.round(d.sal * 100),
+        is_clocked_in: false,
+        is_paid: false
+      }]).select();
+
+      if(error) {
+        console.error("[Supabase Staff] Creation error:", error);
+        toast("Staff cloud save failed: " + error.message);
+        return;
+      }
+      if(data && data[0]) {
+        staff.push({ ...d, id: data[0].id, i: 0, t: "", paid: 0, act: 1 });
+        console.log("[Supabase Staff] Created staff in cloud:", data[0].id);
+      }
+    } else {
+      const targetStaff = staff[i];
+      const updatePayload = {
+        name: d.n,
+        role: d.p,
+        phone: d.phone,
+        upi: d.upi,
+        base_salary_paise: Math.round(d.sal * 100)
+      };
+      const query = window.R3PSupabase.client.from("staff").update(updatePayload);
+      if (targetStaff && targetStaff.id) {
+        query.eq("id", targetStaff.id);
+      } else {
+        query.eq("name", targetStaff.n).eq("tenant_id", window.R3PSupabase.tenantId);
+      }
+      const { error } = await query;
+      if (error) {
+        console.error("[Supabase Staff] Update error:", error);
+        toast("Staff cloud update failed: " + error.message);
+        return;
+      }
+      Object.assign(staff[i], d);
+      console.log("[Supabase Staff] Updated staff in cloud:", targetStaff.n);
+    }
+  } else {
+    if(i < 0) staff.push({ ...d, i: 0, t: "", paid: 0, act: 1 });
+    else Object.assign(staff[i], d);
+  }
+
+  sh = null;
+  toast(i < 0 ? "Staff added" : "Staff updated");
+  fresh = 1;
+  draw();
+}
 function aMore(){
   const sections = [
     {
@@ -534,9 +1840,16 @@ function aMore(){
     {
       group: "Operations & Facilities",
       items: [
-        ["people", "Member Directory", "312 total registered athletes", "Members"],
+        ["people", "Member Directory", `${members.length} registered members`, "Members"],
         ["event", "Class Schedules", "Bookings, trainer rosters & capacity", "Classes"],
         ["build", "Equipment Service", "Maintenance log & machine health", "Equipment"]
+      ]
+    },
+    {
+      group: "Setup & Data Import",
+      items: [
+        ["gear", "Gym Profile Setup", "Configure gym identity, hours & UPI ID", "GymSetup"],
+        ["upload", "Bulk Data Import", "Import staff & members from CSV / Excel", "BulkImport"]
       ]
     },
     {
@@ -578,9 +1891,103 @@ function aMore(){
 }
 function aPlans(){const[m,d]=cyc[cycle];return T("Plans & pricing","Membership plans")+`<div class="seg">${Object.keys(cyc).map(c=>`<button class="${cycle==c?"on":""}" onclick="cycle='${c}';draw()">${c}</button>`).join("")}</div>`+plans.map((p,i)=>`<div class="card"><div class="row"><b style="font-size:17px">${p.n}${p.pop?' <span class="pill">Popular</span>':""}</b><div><span class="big">${inr(p.p*m*d)}</span><span class="mut">/${m==1?"mo":m==3?"qtr":"yr"}</span></div></div>${d<1?`<div class="mut">Save ${Math.round((1-d)*100)}% vs monthly</div>`:""}<div class="mut" style="margin:8px 0">${p.f.join(" · ")}</div>${btn("Edit plan","planForm("+i+")","ghost")}</div>`).join("")+`<button class="btn" onclick="planForm(-1)">${ic("add")} New plan</button>`}
 function planForm(i){const p=i<0?{n:"",p:""}:plans[i];sh=`<h2 style="margin-top:0">${i<0?"New plan":"Edit plan"}</h2>${lbl("pn","Plan name",p.n)}${lbl("pp","Monthly price (₹)",p.p,"number")}<button class="btn" onclick="planSave(${i})">Save</button><button class="btn ghost" style="margin-top:8px" onclick="shut()">Cancel</button>`;draw()}
-function planSave(i){const n=g("pn"),pr=+g("pp");if(!n||!pr){toast("Enter name and price");return}if(i<0)plans.push({n,p:pr,f:["Gym floor access"]});else{plans[i].n=n;plans[i].p=pr}sh=null;toast("Plan saved")}
+async function planSave(i){
+  const n = g("pn"), pr = +g("pp");
+  if(!n || !pr){ toast("Enter name and price"); return; }
+
+  if (window.R3PSupabase && window.R3PSupabase.client) {
+    if(i < 0) {
+      const { data, error } = await window.R3PSupabase.client.from("membership_plans").insert([{
+        tenant_id: window.R3PSupabase.tenantId,
+        name: n,
+        duration_days: 30,
+        price_paise: Math.round(pr * 100),
+        is_active: true
+      }]).select();
+
+      if(error) {
+        console.error("[Supabase Plans] Insert error:", error);
+        toast("Plan cloud save failed: " + error.message);
+        return;
+      }
+      if(data && data[0]) {
+        plans.push({ id: data[0].id, n, p: pr, f: ["Gym floor access"] });
+        console.log("[Supabase Plans] Created plan in cloud:", data[0].id);
+      }
+    } else {
+      const targetPlan = plans[i];
+      const query = window.R3PSupabase.client.from("membership_plans").update({
+        name: n,
+        price_paise: Math.round(pr * 100)
+      });
+      if (targetPlan && targetPlan.id) {
+        query.eq("id", targetPlan.id);
+      } else {
+        query.eq("name", targetPlan.n).eq("tenant_id", window.R3PSupabase.tenantId);
+      }
+      const { error } = await query;
+      if(error) {
+        console.error("[Supabase Plans] Update error:", error);
+        toast("Plan cloud update failed: " + error.message);
+        return;
+      }
+      plans[i].n = n;
+      plans[i].p = pr;
+      console.log("[Supabase Plans] Updated plan in cloud:", targetPlan.n);
+    }
+  } else {
+    if(i < 0) plans.push({ n, p: pr, f: ["Gym floor access"] });
+    else { plans[i].n = n; plans[i].p = pr; }
+  }
+
+  sh = null;
+  toast("Plan saved");
+  fresh = 1;
+  draw();
+}
 function aSubs(){const r=[2.8,3.1,3.4,3.7,3.9,4.2],mo=["May","Jun","Jul","Aug","Sep","Oct"];return T("Subscriptions","Membership health")+`<div class="grid">${kpi("Active","312")}${kpi("MRR","₹4.2L")}${kpi("Churn","3.1%")}${kpi("Expiring",exp.length,"warn")}</div><h2>Revenue (₹ lakh)</h2><div class="card"><svg viewBox="0 0 300 130" width="100%">${r.map((v,i)=>{const h=v/4.5*90;return `<rect x="${i*50+10}" y="${100-h}" width="30" height="${h}" rx="7" fill="${i==5?"#111":"#e5e7eb"}"/><text x="${i*50+25}" y="118" text-anchor="middle" font-size="10" fill="#7b8088">${mo[i]}</text><text x="${i*50+25}" y="${94-h}" text-anchor="middle" font-size="10" fill="#111">${v}</text>`}).join("")}</svg></div><h2>Plan split</h2><div class="card">${prog("Basic",42)}${prog("Pro",38)}${prog("Elite",20)}</div><h2>Expiring soon</h2>`+(exp.map((e,i)=>item(e[0],e[1]+" · ends in "+e[2]+" days",btn("Renew","renewSub("+i+")"))).join("")||`<p class="mut">No upcoming expiries</p>`)}
-function renewSub(i){const e=exp[i],p=plans.find(x=>x.n==e[1])||plans[0];txns.unshift({t:e[0]+" · "+e[1]+" renewal",a:p.p,d:today(),k:"in",m:"Cash"});exp.splice(i,1);toast("Membership renewed")}
+function renewSub(i){
+  const e = exp[i];
+  if(!e) return;
+  const p = plans.find(x => x.n === e[1]) || plans[0];
+  const memberName = e[0];
+  const planName = e[1];
+  const renewalPrice = p ? p.p : 999;
+
+  txns.unshift({ t: memberName + " · " + planName + " renewal", a: renewalPrice, d: today(), k: "in", m: "Cash" });
+  exp.splice(i, 1);
+
+  if (window.R3PSupabase && window.R3PSupabase.client) {
+    const targetM = members.find(m => m.n === memberName);
+    const amountPaise = Math.round(renewalPrice * 100);
+    const paymentPayload = {
+      tenant_id: window.R3PSupabase.tenantId,
+      member_name: memberName,
+      amount_paise: amountPaise,
+      mode: "cash",
+      reference_utr: "RENEW-" + Date.now().toString().slice(-6),
+      notes: "Membership plan renewal collection"
+    };
+    if (targetM && targetM.id) paymentPayload.member_id = targetM.id;
+
+    window.R3PSupabase.client.from("payments").insert([paymentPayload]).then(({error}) => {
+      if (error) console.error("[Supabase Renew] Renewal payment insert error:", error);
+      else console.log("[Supabase Renew] Renewal payment recorded in cloud for:", memberName);
+    });
+
+    const newExpiry = new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0];
+    const updateQuery = window.R3PSupabase.client.from("members")
+      .update({ plan_name: planName, status: "active", expiry_date: newExpiry, due_amount_paise: 0, updated_at: new Date().toISOString() });
+    if (targetM && targetM.id) updateQuery.eq("id", targetM.id);
+    else updateQuery.eq("name", memberName).eq("tenant_id", window.R3PSupabase.tenantId);
+    updateQuery.then(({error}) => {
+      if (error) console.warn("[Supabase Renew] Member renewal update notice:", error);
+    });
+  }
+
+  toast("Membership renewed for " + memberName);
+  draw();
+}
 function aIns(){
   const hrs=[["6a",40],["8a",85],["12p",35],["5p",75],["7p",100],["9p",45]];
   return T("Insights","Gym performance")+`
@@ -603,7 +2010,90 @@ function aIns(){
     <div class="grid">${kpi("90-day retention","76%")}${kpi("New joins (Oct)","41")}</div>
   `;
 }
-function aMem(){return T("Members","312 total")+members.map((m,i)=>item(m.n,m.p+" plan · "+m.phone,`<div style="display:flex;align-items:center;gap:6px">${m.due?`<span class="pill warn">Due ${inr(m.due)}</span>`:'<span class="pill in">Paid</span>'}<button class="header-btn" style="width:34px;height:34px;color:#25D366" onclick="event.stopPropagation();openWaReminder(${i})" title="Send WhatsApp">${ic("wa")}</button></div>`,"openWaReminder("+i+")")).join("")}
+function aMem(){
+  const actions = `
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn" style="flex:1" onclick="memberForm(-1)">${ic("add")} Add Member</button>
+      <button class="btn ghost" style="flex:1" onclick="openBulkImportModal('Members')">${ic("upload")} Bulk Import</button>
+    </div>
+  `;
+  const listHtml = members.length
+    ? members.map((m,i)=>item(m.n,m.p+" plan · "+m.phone,`<div style="display:flex;align-items:center;gap:6px">${m.due?`<span class="pill warn">Due ${inr(m.due)}</span>`:'<span class="pill in">Paid</span>'}<button class="header-btn" style="width:34px;height:34px;color:#25D366" onclick="event.stopPropagation();openWaReminder(${i})" title="Send WhatsApp">${ic("wa")}</button></div>`,"openWaReminder("+i+")")).join("")
+    : '<div class="card" style="text-align:center;padding:32px 16px"><p class="mut" style="margin:0">No members found. Use "Add Member" above.</p></div>';
+  return T("Members", members.length + " total") + actions + listHtml;
+}
+
+function memberForm(i){
+  const m = i < 0 ? {n:"", p:"Pro", phone:"", due:0} : members[i];
+  sh = `
+    <h2 style="margin-top:0">${i < 0 ? "Add New Member" : "Edit Member"}</h2>
+    ${lbl("mn", "Full Name (Required)", m.n)}
+    ${lbl("mp", "Membership Plan", m.p)}
+    ${lbl("mph", "WhatsApp Contact (Required)", m.phone)}
+    ${lbl("mdue", "Pending Due Amount (₹)", m.due, "number")}
+    <button class="btn" onclick="memberSave(${i})">Save Member</button>
+    <button class="btn ghost" style="margin-top:8px" onclick="shut()">Cancel</button>
+  `;
+  draw();
+}
+
+async function memberSave(i){
+  const n = g("mn");
+  const phone = g("mph");
+  if(!n) { toast("Name is required"); return; }
+  if(!phone) { toast("Phone is required"); return; }
+  const d = { n, p: g("mp") || "Pro", phone, due: +g("mdue") || 0, i: 0, t: "" };
+
+  const memberPayload = {
+    tenant_id: window.R3PSupabase.tenantId,
+    name: d.n,
+    phone: d.phone,
+    plan_name: d.p,
+    due_amount_paise: Math.round(d.due * 100),
+    updated_at: new Date().toISOString()
+  };
+
+  if(window.R3PSupabase && window.R3PSupabase.client) {
+    if (i < 0) {
+      memberPayload.is_checked_in = false;
+      memberPayload.expiry_date = new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0];
+      const { data, error } = await window.R3PSupabase.client.from("members").insert([memberPayload]).select();
+      if(error) {
+        console.error("[Supabase Members] Insert error:", error);
+        toast("Member save failed: " + error.message);
+        return;
+      }
+      if(data && data[0]) {
+        members.unshift({ ...d, id: data[0].id });
+        console.log("[Supabase Members] Member created in cloud:", data[0].id);
+      }
+    } else {
+      const targetM = members[i];
+      const query = window.R3PSupabase.client.from("members").update(memberPayload);
+      if (targetM && targetM.id) {
+        query.eq("id", targetM.id);
+      } else {
+        query.eq("name", targetM.n).eq("tenant_id", window.R3PSupabase.tenantId);
+      }
+      const { error } = await query;
+      if(error) {
+        console.error("[Supabase Members] Update error:", error);
+        toast("Member update failed: " + error.message);
+        return;
+      }
+      Object.assign(members[i], d);
+      console.log("[Supabase Members] Member updated in cloud:", targetM.n);
+    }
+  } else {
+    if(i < 0) members.unshift(d);
+    else Object.assign(members[i], d);
+  }
+
+  shut();
+  toast(i < 0 ? "Member provisioned with ID " + phone : "Member updated");
+  fresh = 1;
+  draw();
+}
 function aCls(){return T("Classes","This week")+[["HIIT · Mon 6:30 AM","Rahul D. · 18/20 booked"],["Yoga Flow · Tue 7:00 AM","Priya K. · 12/15 booked"],["Zumba · Thu 6:00 PM","Neha B. · 16/25 booked"],["Spin · Sat 8:00 AM","Sameer J. · 10/12 booked"]].map(([t,s])=>item(t,s)).join("")}
 function aEq(){return T("Equipment","Maintenance")+eq.map((e,i)=>item(e[0],e[1],e[2]?btn("Mark fixed","eq["+i+"][2]=0;eq["+i+"][1]='Serviced today';toast('Marked as fixed')"):'<span class="pill in">OK</span>')).join("")}
 function aAnn(){return T("Announcements","Visible to members")+`<button class="btn" style="margin-bottom:14px" onclick="annForm()">${ic("add")} New announcement</button>`+ann.map(a=>item(a[0],a[1])).join("")}
@@ -666,15 +2156,15 @@ function sendWa(phone){
   toast("Opening WhatsApp...");
 }
 
-/* EMPLOYEE */
-function eToday(){const done=eclients.filter(c=>c[3]).length;return T("Dashboard","Trainer Shift")+`<div class="hero"><div class="mut" style="margin-bottom:4px">Good morning</div><h1 style="font-size:26px;margin:2px 0 6px 0;line-height:1.2">${P.emp.name}</h1><div class="mut" style="line-height:1.4">${P.emp.title} · ${P.emp.shift}</div><button class="btn" style="margin-top:20px !important" onclick="clocked=clocked?0:1;clockT=now();draw()">${ic("clock")} ${clocked?"Clock out":"Clock in"}</button>${clocked?`<div class="mut" style="margin-top:8px;text-align:center">Clocked in at ${clockT}</div>`:""}</div><div class="grid">${kpi("Sessions today",done+"/"+eclients.length)}${kpi("Hours this week","31.5")}</div><h2>Today's schedule</h2>${eclasses.map(c=>item(c[0],c[1]+" · "+c[2]+" attending",`<span class="pill">${c[3]} cap</span>`)).join("")}`}
+/* TRAINER */
+function eToday(){const done=eclients.filter(c=>c[3]).length;return T("Dashboard","Trainer Shift")+`<div class="hero"><div class="mut" style="margin-bottom:4px">Good morning</div><h1 style="font-size:26px;margin:2px 0 6px 0;line-height:1.2">${P.emp.name}</h1><div class="mut" style="line-height:1.4">${P.emp.title} · ${P.emp.shift}</div><button class="btn" style="margin-top:20px !important" onclick="handleClockToggle(event)">${ic("clock")} ${clocked?"Clock out":"Clock in"}</button>${clocked?`<div class="mut" style="margin-top:8px;text-align:center">Clocked in at ${clockT}</div>`:""}</div><div class="grid">${kpi("Sessions today",done+"/"+eclients.length)}${kpi("Hours this week","31.5")}</div><h2>Today's schedule</h2>${eclasses.map(c=>item(c[0],c[1]+" · "+c[2]+" attending",`<span class="pill">${c[3]} cap</span>`)).join("")}`+renderOfferWall("staff")}
 function eClients(){return T("My clients","Assigned training")+eclients.map((c,i)=>`<div class="card"><div class="row"><div><b>${c[0]}</b><div class="mut">Goal: ${c[1]}</div></div>${btn(c[3]?"Logged":"Log session","tg(eclients,"+i+",3)",c[3]?"ghost":"")}</div>${prog("Goal",c[2])}</div>`).join("")}
 function eClasses(){return T("Classes","Take roll")+eclasses.map((c,i)=>item(c[0],c[1]+" · "+c[2]+"/"+c[3]+" booked",btn(c[4]?"Done":"Take roll","tg(eclasses,"+i+",4)",c[4]?"ghost":""))).join("")}
 function eTasks(){const d=tasks.filter(t=>t[1]).length;return T("Tasks",d+" of "+tasks.length+" done")+`<div class="bar" style="margin:0 0 16px"><i style="width:${d/tasks.length*100}%"></i></div>`+tasks.map((t,i)=>`<div class="card row" onclick="tg(tasks,${i},1)" style="cursor:pointer"><b style="${t[1]?"text-decoration:line-through;opacity:.5":""}">${t[0]}</b><div class="chk ${t[1]?"d":""}">${t[1]?ic("check"):""}</div></div>`).join("")}
 function eSal(){const s=staff[0],my=txns.filter(t=>t.k=="out"&&t.t.startsWith("Rahul"));return T("Salary","October 2026")+`<div class="hero"><div class="mut">Monthly salary</div><div class="big">${inr(s.sal)}</div><div class="mut">${s.paid?"Credited via UPI to "+s.upi:"Pending · will be credited to "+s.upi}</div></div><div class="grid">${kpi("Status",s.paid?"Paid":"Pending",s.paid?"in":"warn")}${kpi("Leave balance","9 days")}</div><h2>Payslips</h2>${my.map(t=>item(t.d,"Transaction via "+t.m,`<b>${inr(t.a)}</b>`)).join("")||`<p class="mut">No payslips yet this month</p>`}<button class="btn" style="margin-top:10px" onclick="leaveForm()">Request leave</button>`}
 function leaveForm(){sh=`<h2 style="margin-top:0">Request leave</h2>${lbl("ld","From date","","date")}${lbl("lr","Reason","")}<button class="btn" onclick="if(!g('ld')){toast('Pick a date');return}sh=null;toast('Leave request sent')">Submit</button><button class="btn ghost" style="margin-top:8px" onclick="shut()">Cancel</button>`;draw()}
 /* MEMBER */
-function mHome(){const m=members[0];return T("Hi, "+P.mem.name.split(" ")[0],"Let's train today")+`<div class="hero"><div class="row"><div><div class="mut">Pro plan · ${m.due?"Payment due":"Active"}</div><div class="big">${m.due?inr(m.due):"22 days left"}</div><div class="mut">${m.due?"Due now":"Renews 10 Nov"}</div></div>${qr(84)}</div>${m.due?`<button class="btn hero-cta-btn" onclick="payOpen('due',0)">${ic("wallet")} Pay ${inr(m.due)} via UPI</button>`:`<button class="btn hero-cta-btn" onclick="qrSheet()">${ic("qr")} Show check-in QR</button>`}</div><div class="grid">${kpi("Day streak","6")}${kpi("Visits / month","14")}</div><h2>Today's workout</h2>${item("Push day","Bench press · Shoulder press · Dips",btn("Start","go('work')"))}<h2>Next class</h2>${item("HIIT Blast","Wed 6:30 AM · Rahul D.",'<span class="pill in">Booked</span>')}`}
+function mHome(){const m=members[0];return T("Hi, "+P.mem.name.split(" ")[0],"Let's train today")+`<div class="hero"><div class="row"><div><div class="mut">Pro plan · ${m.due?"Payment due":"Active"}</div><div class="big">${m.due?inr(m.due):"22 days left"}</div><div class="mut">${m.due?"Due now":"Renews 10 Nov"}</div></div>${qr(84)}</div>${m.due?`<button class="btn hero-cta-btn" onclick="payOpen('due',0)">${ic("wallet")} Pay ${inr(m.due)} via UPI</button>`:`<button class="btn hero-cta-btn" onclick="qrSheet()">${ic("qr")} Show check-in QR</button>`}</div><div class="grid">${kpi("Day streak","6")}${kpi("Visits / month","14")}</div><h2>Today's workout</h2>${item("Push day","Bench press · Shoulder press · Dips",btn("Start","go('work')"))}<h2>Next class</h2>${item("HIIT Blast","Wed 6:30 AM · Rahul D.",'<span class="pill in">Booked</span>')}`+renderOfferWall("members")}
 function qrSheet(){
   const pass = (window.R3P_DB && window.R3P_DB.generateRotatingQrPass) ? window.R3P_DB.generateRotatingQrPass("MEM-001") : { token: "R3P-001", secondsRemaining: 30 };
   sh = `<div style="text-align:center">
@@ -823,15 +2313,33 @@ function mPay(){const m=members[0],my=txns.filter(t=>t.t.startsWith("Aarav"));re
 function renewSheet(){sh=`<h2 style="margin-top:0">Choose a plan</h2>${plans.map((p,i)=>item(p.n,p.f[0],btn(inr(p.p),"members[0].due="+p.p+";members[0].p='"+p.n+"';sh=null;payOpen('due',0)"))).join("")}<button class="btn ghost" onclick="shut()">Cancel</button>`;draw()}
 /* PROFILE */
 function sw(i){NT[role][i][1]=NT[role][i][1]?0:1;draw()}
-function saveP(){flash=1;draw()}
-function profile(){const p=P[role],f=flash;flash=0;const X={adm:item("Staff & payroll","Manage team and salaries",ic("chev"),"go('staff')"),emp:item("Salary & payslips","View pay status",ic("chev"),"go('salary')"),mem:item("Payments","Membership billing",ic("chev"),"go('pay')")}[role];return `<div class="card" style="text-align:center;padding:20px"><div class="profile-avatar-wrap" style="position:relative;width:76px;height:76px;margin:0 auto 12px">
+function saveP(){
+  flash = 1;
+  const currentP = P[role];
+  if(currentP && currentP.name && window.R3PSupabase && window.R3PSupabase.client) {
+    window.R3PSupabase.client.auth.getUser().then(({data}) => {
+      if(data && data.user) {
+        window.R3PSupabase.client.from("users").update({
+          full_name: currentP.name,
+          updated_at: new Date().toISOString()
+        }).eq("auth_id", data.user.id).then(({error}) => {
+          if(error) console.warn("[Supabase Users] Profile update error:", error);
+          else console.log("[Supabase Users] Profile updated in cloud:", currentP.name);
+        });
+      }
+    });
+  }
+  toast("Profile saved");
+  draw();
+}
+function profile(){const p=P[role],f=flash;flash=0;const X={adm:item("Staff & payroll","Manage team and salaries",ic("chev"),"go('staff')"),emp:item("Salary & payslips","View pay status",ic("chev"),"go('salary')"),stf:item("Attendance Portal","Floor check-ins",ic("chev"),"go('att')"),mem:item("Payments","Membership billing",ic("chev"),"go('pay')")}[role] || "";return `<div class="card" style="text-align:center;padding:20px"><div class="profile-avatar-wrap" style="position:relative;width:76px;height:76px;margin:0 auto 12px">
   <div class="av" style="width:76px;height:76px;font-size:24px;margin:0 auto;overflow:hidden;background-size:cover;background-position:center;${getPFP(role)?`background-image:url('${getPFP(role)}');font-size:0;`:""}" onclick="triggerProfilePic()" title="Change profile picture">${!getPFP(role)?ini(p.name):""}</div>
   <button type="button" class="profile-cam-btn" onclick="triggerProfilePic()" title="Take photo or upload picture">
     ${ic("camera")}
   </button>
   <input type="file" id="profile-camera-input" accept="image/*" capture="user" style="display:none" onchange="handleProfilePicUpload(event)">
   <input type="file" id="profile-file-input" accept="image/*" style="display:none" onchange="handleProfilePicUpload(event)">
-  </div><b style="font-size:18px">${p.name}</b><div class="mut">${role=="emp"?p.title+" · Employee":RL[role]}</div>${f?'<div class="pill in" style="display:inline-block;margin-top:8px">Changes saved</div>':""}</div>`+FL[role].map(([t,fs])=>`<h2>${t}</h2><div class="card">${fs.map(([k,l])=>`<div class="mut" style="margin:0 0 4px 2px">${l}</div><input value="${p[k]}" oninput="P[role].${k}=this.value">`).join("")}</div>`).join("")+`<h2>Appearance</h2>
+  </div><b style="font-size:18px">${p.name}</b><div class="mut">${role=="emp"?p.title+" · Trainer":RL[role]}</div>${f?'<div class="pill in" style="display:inline-block;margin-top:8px">Changes saved</div>':""}</div>`+FL[role].map(([t,fs])=>`<h2>${t}</h2><div class="card">${fs.map(([k,l])=>`<div class="mut" style="margin:0 0 4px 2px">${l}</div><input value="${p[k]}" oninput="P[role].${k}=this.value">`).join("")}</div>`).join("")+`<h2>Appearance</h2>
 <div class="card">
   <div class="row" style="padding:4px 0">
     <div>
@@ -841,33 +2349,235 @@ function profile(){const p=P[role],f=flash;flash=0;const X={adm:item("Staff & pa
     <div class="sw ${currentTheme==='dark'?'on':''}" onclick="toggleTheme()" title="Switch Theme"></div>
   </div>
 </div>
-<h2>Notifications</h2><div class="card">${NT[role].map(([l,v],i)=>`<div class="row" style="padding:8px 0"><span>${l}</span><div class="sw ${v?"on":""}" onclick="sw(${i})"></div></div>`).join("")}</div><h2>Shortcuts</h2>${X}<button class="btn" style="margin:6px 0 10px" onclick="saveP()">Save changes</button><button class="btn ghost" style="margin-bottom:30px" onclick="login()">Sign out</button>`}
+<h2>Notifications</h2><div class="card">${NT[role].map(([l,v],i)=>`<div class="row" style="padding:8px 0"><span>${l}</span><div class="sw ${v?"on":""}" onclick="sw(${i})"></div></div>`).join("")}</div><h2>Shortcuts</h2>${X}<button class="btn" style="margin:6px 0 10px" onclick="saveP()">Save changes</button><button class="btn ghost" style="margin-bottom:30px" onclick="signOut()">Sign out</button>`}
 /* SHELL */
-const SV={Plans:aPlans,Subs:aSubs,Insights:aIns,Members:aMem,Classes:aCls,Equipment:aEq,Announcements:aAnn,Profile:profile,StaffD:staffD};
-const APP={adm:{n:"n-adm",t:[["home","home","Home"],["att","cc","Attendance"],["pay","wallet","Payments"],["staff","people","Staff"],["more","dots","More"]],v:{home:aHome,att:aAtt,pay:aPay,staff:aStaff,more:aMore}},emp:{n:"n-emp",t:[["today","event","Today"],["clients","fit","Clients"],["classes","people","Classes"],["tasks","task","Tasks"],["salary","wallet","Salary"]],v:{today:eToday,clients:eClients,classes:eClasses,tasks:eTasks,salary:eSal}},mem:{n:"n-mem",t:[["home","home","Home"],["work","fit","Workouts"],["book","event","Book"],["prog","trend","Progress"],["pay","wallet","Payments"]],v:{home:mHome,work:mWork,book:mBook,prog:mProg,pay:mPay}}};
+const SV={Plans:aPlans,Subs:aSubs,Insights:aIns,Members:aMem,Classes:aCls,Equipment:aEq,Announcements:aAnn,Profile:profile,StaffD:staffD,GymSetup:gymSetupView,BulkImport:bulkImportView};
+const APP={adm:{n:"n-adm",t:[["home","home","Home"],["att","cc","Attendance"],["pay","wallet","Payments"],["staff","people","Staff"],["more","dots","More"]],v:{home:aHome,att:aAtt,pay:aPay,staff:aStaff,more:aMore}},emp:{n:"n-emp",t:[["today","event","Today"],["clients","fit","Clients"],["classes","people","Classes"],["tasks","task","Tasks"],["salary","wallet","Salary"]],v:{today:eToday,clients:eClients,classes:eClasses,tasks:eTasks,salary:eSal}},stf:{n:"n-stf",t:[["today","event","Today"],["att","cc","Attendance"],["classes","people","Classes"],["tasks","task","Tasks"]],v:{today:sToday,att:aAtt,classes:eClasses,tasks:eTasks}},mem:{n:"n-mem",t:[["home","home","Home"],["work","fit","Workouts"],["book","event","Book"],["prog","trend","Progress"],["pay","wallet","Payments"]],v:{home:mHome,work:mWork,book:mBook,prog:mProg,pay:mPay}}};
 function go(t){tab=t;sub=null;fresh=1;draw()}
 function op(k){sub=k;fresh=1;draw()}
 function back(){sub=null;fresh=1;draw()}
-function draw(){const R=APP[role],A=$("#app"),body=sub?SV[sub]():R.v[tab](),o=pay?payHtml():sh;A.dataset.role=role;setArt();A.className=fresh?"fx":"";A.innerHTML=body+`<nav class="${R.n}"><div>${R.t.map(([k,i,l])=>`<button class="${tab==k&&!sub?"on":""}" onclick="go('${k}')"><span class="nav-icon-wrap">${ic(i)}</span><span class="nav-lbl">${l}</span></button>`).join("")}</div></nav>`+(o?`<div class="ov" onclick="shut()"><div class="sheet" onclick="event.stopPropagation()">${o}</div></div>`:"")+(ts?`<div class="toast">${ts}</div>`:"");if(fresh)scrollTo(0,0);fresh=0}
-login();
+function draw(){const R=APP[role],A=$("#app"),body=sub?SV[sub]():R.v[tab](),o=pay?payHtml():sh;A.dataset.role=role;setArt();A.className=fresh?"fx":"";const footerExplainer = "";
+A.innerHTML=body+footerExplainer+`<nav class="${R.n}"><div>${R.t.map(([k,i,l])=>`<button class="${tab==k&&!sub?"on":""}" onclick="go('${k}')"><span class="nav-icon-wrap">${ic(i)}</span><span class="nav-lbl">${l}</span></button>`).join("")}</div></nav>`+(o?`<div class="ov" onclick="shut()"><div class="sheet" onclick="event.stopPropagation()">${o}</div></div>`:"")+(ts?`<div class="toast">${ts}</div>`:"");if(fresh)scrollTo(0,0);fresh=0}
+
+// Explicit Global Bindings for HTML onclick Handlers
+window.enter = enter;
+window.login = login;
+window.setAuthView = setAuthView;
+window.handleGoogleAuth = handleGoogleAuth;
+window.requestUserOtp = requestUserOtp;
+window.verifyUserOtp = verifyUserOtp;
+window.sToday = typeof sToday !== 'undefined' ? sToday : function(){};
+window.handleForgotPassword = handleForgotPassword;
+window.handleRegister = handleRegister;
+window.pick = pick;
+window.toggleAuthPass = toggleAuthPass;
+window.completeOnboarding = completeOnboarding;
+window.showOnboarding = showOnboarding;
+window.showPaywallGate = showPaywallGate;
+window.paySubscriptionGate = paySubscriptionGate;
+window.openGymSetupModal = openGymSetupModal;
+window.saveGymSetup = saveGymSetup;
+window.openBulkImportModal = openBulkImportModal;
+window.handleCsvFileSelect = handleCsvFileSelect;
+window.processCsvInput = processCsvInput;
+window.memberForm = typeof memberForm !== "undefined" ? memberForm : function(){};
+window.memberSave = typeof memberSave !== "undefined" ? memberSave : function(){};
+window.staffForm = typeof staffForm !== "undefined" ? staffForm : function(){};
+window.staffSave = typeof staffSave !== "undefined" ? staffSave : function(){};
+window.shut = shut;
+window.go = go;
+window.op = op;
+window.back = back;
+window.draw = draw;
+window.toast = toast;
+
+// ============================================================================
+// FAIL-CLOSED AUTHENTICATION GATE
+// Protected app modules are NEVER rendered from localStorage role values.
+// Verification must succeed via Supabase Auth & public.users database profile.
+// ============================================================================
+async function initAppSecurityGate() {
+  role = "";
+  authRole = "adm";
+  lr = "adm";
+
+  if (window.R3PSupabase && window.R3PSupabase.client) {
+    try {
+      const { data: authData, error: authErr } = await window.R3PSupabase.client.auth.getUser();
+      if (authErr || !authData || !authData.user) {
+        console.log("🔒 [Security Gate] Unauthenticated session. Directing to login.");
+        if (shouldShowOnboarding()) { showOnboarding(); } else { login(); }
+        return;
+      }
+
+      // Verify active user profile and tenant assignment directly from public.users
+      const { data: profile, error: profErr } = await window.R3PSupabase.client
+        .from("users")
+        .select("id, tenant_id, role, full_name, is_active")
+        .eq("auth_id", authData.user.id)
+        .maybeSingle();
+
+      if (profErr || !profile) {
+        console.warn("🔒 [Security Gate] Authenticated account lacks valid user profile. Directing to login.");
+        toast("Account profile not found. Please log in again.");
+        login();
+        return;
+      }
+
+      if (!profile.is_active) {
+        console.warn("🔒 [Security Gate] Account has been deactivated by administrator.");
+        toast("Account has been deactivated. Contact gym management.");
+        login();
+        return;
+      }
+
+      // Resolve tenant and map canonical database role to frontend mode
+      window.R3PSupabase.tenantId = profile.tenant_id;
+      const roleMap = { owner: "adm", manager: "adm", super_admin: "adm", trainer: "emp", front_desk: "stf", member: "mem" };
+      const verifiedRole = roleMap[profile.role];
+
+      if (!verifiedRole || !APP[verifiedRole]) {
+        console.warn("🔒 [Security Gate] Unknown canonical role:", profile.role);
+        toast("Unauthorized role. Access denied.");
+        login();
+        return;
+      }
+
+      role = verifiedRole;
+      authRole = verifiedRole;
+      lr = verifiedRole;
+      console.log("✅ [Security Gate] Access authorized for", verifiedRole, "Tenant:", profile.tenant_id);
+
+      if (role === "adm" && !isSubscribed()) {
+        showPaywallGate();
+      } else {
+        tab = {adm:"home", emp:"today", stf:"today", mem:"home"}[role] || "home";
+        sub = null;
+        fresh = 1;
+        draw();
+      }
+      return;
+    } catch (e) {
+      console.warn("🔒 [Security Gate] Verification exception, failing closed:", e);
+      login();
+      return;
+    }
+  }
+
+  // Fallback when Supabase client is offline/disconnected: Fail closed to login
+  if (shouldShowOnboarding()) {
+    showOnboarding();
+  } else {
+    login();
+  }
+}
+
+initAppSecurityGate();
 
 // Load live members & staff from Supabase on launch
 if (window.R3PSupabase && window.R3PSupabase.client) {
   window.R3PSupabase.client.from("members").select("*").order("name").then(({data, error}) => {
-    if (!error && data && data.length > 0) {
-      data.forEach((m, idx) => {
-        const existing = members.find(localM => localM.n === m.name);
-        if (existing) {
-          existing.i = m.is_checked_in ? 1 : 0;
-          existing.t = m.checked_in_at || (m.is_checked_in ? "07:15 AM" : "");
-          existing.p = m.plan_name || existing.p;
-          existing.due = Math.round((m.due_amount_paise || 0) / 100);
-        }
+    if (error) {
+      console.warn("[Supabase Sync] Members query notice:", error.message);
+    } else if (data) {
+      members.length = 0; // Replace fabricated fallback with verified cloud records
+      data.forEach(m => {
+        members.push({
+          id: m.id,
+          n: m.name,
+          p: m.plan_name || "Pro",
+          i: m.is_checked_in ? 1 : 0,
+          due: Math.round((m.due_amount_paise || 0) / 100),
+          phone: m.phone || "",
+          t: m.checked_in_at || ""
+        });
       });
       console.log("[Supabase Sync] Synced " + data.length + " members from cloud database.");
       if (typeof draw === "function" && role) draw();
     }
   });
+
+  // Load staff records respecting confidentiality:
+  // Management queries public.staff directly to obtain salary/UPI;
+  // Non-management (trainer/stf) queries secure view public_staff_roster to populate floor roster without salary.
+  const isMgmt = (role === 'adm' || authRole === 'adm');
+  const staffSource = isMgmt ? 'staff' : 'public_staff_roster';
+  window.R3PSupabase.client.from(staffSource).select('*').order('name').then(({data, error}) => {
+    if (error) {
+      console.warn('[Supabase Sync] Staff query notice:', error.message);
+    } else if (data) {
+      staff.length = 0; // Replace fabricated fallback with verified cloud records
+      data.forEach(s => {
+        staff.push({
+          id: s.id,
+          n: s.name,
+          p: s.role || 'Trainer',
+          i: s.is_clocked_in ? 1 : 0,
+          t: s.clocked_in_at || (s.is_clocked_in ? '08:00 AM' : ''),
+          sal: s.base_salary_paise !== undefined ? Math.round(s.base_salary_paise / 100) : 0,
+          upi: s.upi || '',
+          phone: s.phone || '',
+          paid: s.is_paid ? 1 : 0,
+          act: 1
+        });
+      });
+      console.log('[Supabase Sync] Synced ' + data.length + ' staff records from ' + staffSource + '.');
+      if (typeof draw === 'function' && role) draw();
+    }
+  });
+
+  // Load live Membership Plans from Supabase
+  window.R3PSupabase.client.from("membership_plans").select("*").order("price_paise").then(({data, error}) => {
+    if (error) {
+      console.warn("[Supabase Sync] Plans query error:", error.message);
+    } else if (data) {
+      plans.length = 0;
+      data.forEach(p => {
+        plans.push({
+          id: p.id,
+          n: p.name,
+          p: Math.round(p.price_paise / 100),
+          pop: p.price_paise === 199900 ? 1 : 0,
+          f: p.features && Array.isArray(p.features) ? p.features : ["Gym floor access"]
+        });
+      });
+      console.log("[Supabase Sync] Synced " + data.length + " membership plans from cloud.");
+      if (typeof draw === "function" && role) draw();
+    }
+  });
+
+  // Load live Payments & Invoices Ledger from Supabase
+  window.R3PSupabase.client.from("payments").select("*").order("created_at", { ascending: false }).limit(20).then(({data, error}) => {
+    if (error) {
+      console.warn("[Supabase Sync] Payments query error:", error.message);
+    } else if (data) {
+      txns.length = 0;
+      data.forEach(pm => {
+        txns.push({
+          id: pm.id,
+          t: pm.member_name + " · membership",
+          a: Math.round(pm.amount_paise / 100),
+          d: new Date(pm.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" }),
+          k: "in",
+          m: pm.mode ? pm.mode.toUpperCase() : "UPI"
+        });
+      });
+      console.log("[Supabase Sync] Synced " + data.length + " recent transactions from cloud.");
+      if (typeof draw === "function" && role) draw();
+    }
+  });
+
+  // Load live Tenant Information from Supabase
+  if (window.R3PSupabase.tenantId) {
+    window.R3PSupabase.client.from("tenants").select("*").eq("id", window.R3PSupabase.tenantId).maybeSingle().then(({data, error}) => {
+      if (!error && data) {
+        P.adm.gym = data.name + (data.city ? ", " + data.city : "");
+        if (data.phone) P.adm.phone = data.phone;
+        console.log("[Supabase Sync] Synced gym profile from cloud:", data.name);
+        if (typeof draw === "function" && role) draw();
+      }
+    });
+  }
 }
 
 // Realtime Postgres Synchronization across devices

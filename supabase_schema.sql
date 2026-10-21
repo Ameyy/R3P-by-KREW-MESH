@@ -347,3 +347,66 @@ CREATE POLICY "Strict tenant users update" ON public.users
 -- Delete: Allow deletion with non-null ID check
 CREATE POLICY "Strict tenant users delete" ON public.users
     FOR DELETE USING (id IS NOT NULL);
+
+-- ============================================================================
+-- RECOMMENDED SCHEMA UPDATES FOR NEW SPECIFICATIONS:
+-- 1. Geofenced Wi-Fi Verification (SSID/BSSID)
+-- 2. Staff Shifts & Leave Management Tracking
+-- 3. In-App Promotional Offer Wall & Claimed Perks
+-- ============================================================================
+
+-- 1. Facility Wi-Fi Geofence & Geotag Table
+CREATE TABLE IF NOT EXISTS public.facility_wifi_geofences (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+    branch_id UUID REFERENCES public.branches(id) ON DELETE CASCADE,
+    ssid VARCHAR(128) NOT NULL,
+    bssid VARCHAR(64) NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 2. Staff Shifts, Leave Records & Active Geotagged Floor Presence
+CREATE TABLE IF NOT EXISTS public.staff_shifts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+    staff_id UUID REFERENCES public.staff(id) ON DELETE CASCADE,
+    shift_name VARCHAR(64) NOT NULL, -- e.g. "Morning 6am-2pm", "Evening 2pm-10pm"
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    days_of_week INT[] DEFAULT '{1,2,3,4,5,6}'::int[] -- 1=Mon, 7=Sun
+);
+
+CREATE TABLE IF NOT EXISTS public.staff_leaves (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+    staff_id UUID REFERENCES public.staff(id) ON DELETE CASCADE,
+    leave_date DATE NOT NULL,
+    reason TEXT,
+    status VARCHAR(32) DEFAULT 'approved', -- 'pending', 'approved', 'rejected'
+    approved_by UUID REFERENCES public.tenants(id),
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 3. Offer Wall & Promotional Perks
+CREATE TABLE IF NOT EXISTS public.promotional_offers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id UUID NOT NULL REFERENCES public.tenants(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    category VARCHAR(64) NOT NULL, -- 'renewal', 'nutrition', 'referral'
+    discount_pct INT,
+    coupon_code VARCHAR(32),
+    valid_until TIMESTAMPTZ,
+    is_active BOOLEAN DEFAULT true
+);
+
+-- Enable RLS for newly introduced tables
+ALTER TABLE public.facility_wifi_geofences ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.staff_shifts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.staff_leaves ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.promotional_offers ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read access to active tenant wifi" ON public.facility_wifi_geofences FOR SELECT USING (true);
+CREATE POLICY "Allow public read access to staff shifts" ON public.staff_shifts FOR SELECT USING (true);
+CREATE POLICY "Allow public read access to promotional offers" ON public.promotional_offers FOR SELECT USING (true);
+CREATE POLICY "Allow tenant staff leaves read" ON public.staff_leaves FOR SELECT USING (true);

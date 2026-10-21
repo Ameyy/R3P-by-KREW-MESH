@@ -9,7 +9,7 @@
  * - Zero design/UI changes
  */
 
-const CACHE_NAME = 'r3p-pwa-v2.0';
+const CACHE_NAME = 'r3p-pwa-v2.1';
 
 // Core static assets representing the complete offline App Shell
 const STATIC_ASSETS = [

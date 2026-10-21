@@ -202,16 +202,18 @@ html, body {
 /* Phone Container Frame */
 #app {
   position: relative;
-  max-width: 420px;
+  width: 100%;
+  max-width: 480px;
   margin: 0 auto;
   min-height: 100vh;
   padding: 22px 18px 125px;
   background: var(--bg-app);
   background-image: var(--bg-app-gradient);
   color: inherit;
-  box-shadow: 0 0 60px rgba(0, 0, 0, 0.6), 0 20px 40px rgba(0, 0, 0, 0.4);
-  border-left: 1px solid var(--ln);
-  border-right: 1px solid var(--ln);
+  box-shadow: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  box-sizing: border-box;
 }
 
 /* Flex Row Utility */
@@ -1136,10 +1138,10 @@ body:not([data-theme="light"]) .hero-cta-btn .ic {
 }
 
 /* ==========================================================================
-   LIGHT MODE COMPREHENSIVE CONTRAST & TYPOGRAPHY FIXES (EMPLOYEE & MEMBER)
+   LIGHT MODE COMPREHENSIVE CONTRAST & TYPOGRAPHY FIXES (TRAINER & MEMBER)
    ========================================================================== */
 
-/* Universal Hero inside Light Mode (covers Admin, Employee & Member) */
+/* Universal Hero inside Light Mode (covers Admin, Trainer & Member) */
 body[data-theme="light"] .hero {
   background: #ff5500 !important;
   color: #ffffff !important;
@@ -1773,7 +1775,7 @@ body:not([data-theme="light"]) .card {
 /* Remove background gradients across entire app and apply micro dot matrix */
 #app {
   background-color: #05070a !important;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px) !important;
+  background-image: none !important;
   background-size: 16px 16px !important;
   background-attachment: fixed !important;
 }
@@ -1781,7 +1783,7 @@ body:not([data-theme="light"]) .card {
 /* Light Mode: Pure White Screen with Crisp Micro Dots for Maximum Contrast */
 body[data-theme="light"] #app {
   background-color: #ffffff !important;
-  background-image: radial-gradient(rgba(15, 23, 42, 0.14) 1px, transparent 1px) !important;
+  background-image: none !important;
   background-size: 16px 16px !important;
   background-attachment: fixed !important;
 }
@@ -1825,7 +1827,7 @@ body[data-theme="light"] .hero {
   margin: -22px -18px -125px;
   padding: 24px 22px 40px;
   background-color: #06080c !important;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px) !important;
+  background-image: none !important;
   background-size: 16px 16px !important;
   color: #ffffff;
   overflow: hidden;
@@ -1836,7 +1838,7 @@ body[data-theme="light"] .hero {
 
 body[data-theme="light"] .auth-wrapper {
   background-color: #ffffff !important;
-  background-image: radial-gradient(rgba(15, 23, 42, 0.15) 1px, transparent 1px) !important;
+  background-image: none !important;
   background-size: 16px 16px !important;
   color: #0f172a;
 }
@@ -2007,7 +2009,7 @@ body[data-theme="light"] .clean-theme-toggle {
   margin: 0 !important;
   padding: 24px 20px 36px !important;
   background-color: #06080c !important;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px) !important;
+  background-image: none !important;
   background-size: 16px 16px !important;
   display: flex;
   flex-direction: column;
@@ -2024,7 +2026,7 @@ body[data-theme="light"] .clean-login-hero-img {
 }
 body[data-theme="light"] .clean-login-wrapper {
   background-color: #ffffff !important;
-  background-image: radial-gradient(rgba(15, 23, 42, 0.15) 1px, transparent 1px) !important;
+  background-image: none !important;
   background-size: 16px 16px !important;
 }
 
@@ -2525,4 +2527,1065 @@ body[data-theme="light"] .photo-opt-btn:hover {
 .hero .btn {
   margin-top: 18px !important;
   width: 100%;
+}
+
+
+/* ==========================================================================
+   R3P SPECIFICATIONS FLOW: ONBOARDING, PAYWALL, IMPORT, AUTH MODES
+   Built with 100% fidelity to the existing R3P visual aesthetic & tokens
+   ========================================================================== */
+
+/* Flexible overflow for clean login wrapper when taller forms appear */
+.clean-login-wrapper.scrollable-auth {
+  justify-content: flex-start !important;
+  overflow-y: auto !important;
+  padding-top: 60px !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.auth-header-text {
+  text-align: center;
+  margin-bottom: 14px;
+}
+.auth-header-text h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 4px;
+}
+body[data-theme="light"] .auth-header-text h3 {
+  color: #0f172a;
+}
+.auth-header-text p {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+body[data-theme="light"] .auth-header-text p {
+  color: #64748b;
+}
+
+/* OAuth Google Button */
+.oauth-google-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+.oauth-google-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+body[data-theme="light"] .oauth-google-btn {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.14);
+  color: #0f172a;
+}
+body[data-theme="light"] .oauth-google-btn:hover {
+  background: #e2e8f0;
+}
+
+/* Auth Divider */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.4);
+}
+.auth-divider::before, .auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+body[data-theme="light"] .auth-divider {
+  color: #94a3b8;
+}
+body[data-theme="light"] .auth-divider::before, body[data-theme="light"] .auth-divider::after {
+  background: rgba(15, 23, 42, 0.1);
+}
+
+/* Auth Sublinks (Forgot Password / Switch to Register) */
+.auth-sublinks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  font-size: 12px;
+}
+.auth-link-btn {
+  background: transparent;
+  border: none;
+  color: #ff5500;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s;
+}
+.auth-link-btn:hover {
+  opacity: 0.85;
+  text-decoration: underline;
+}
+
+/* OTP Code Input Boxes */
+.otp-input-wrap {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 14px 0 16px;
+}
+.otp-digit {
+  width: 44px;
+  height: 48px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--font-mono, monospace);
+  background: #141822;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.otp-digit:focus {
+  border-color: #ff5500;
+  box-shadow: 0 0 0 2px rgba(255, 85, 0, 0.2);
+}
+body[data-theme="light"] .otp-digit {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.15);
+  color: #0f172a;
+}
+body[data-theme="light"] .otp-digit:focus {
+  background: #ffffff;
+}
+
+/* Onboarding Carousel Experience */
+.onboarding-screen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  padding: 24px 20px 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #06080c;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 16px 16px;
+  overflow: hidden;
+}
+body[data-theme="light"] .onboarding-screen {
+  background-color: #ffffff;
+  background-image: radial-gradient(rgba(15, 23, 42, 0.15) 1px, transparent 1px);
+}
+.onboarding-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 5;
+}
+.onboarding-skip-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 6px 12px;
+}
+body[data-theme="light"] .onboarding-skip-btn {
+  color: #64748b;
+}
+.onboarding-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 10px;
+  z-index: 3;
+}
+.onboarding-visual {
+  width: 90px;
+  height: 90px;
+  border-radius: 28px;
+  background: rgba(255, 85, 0, 0.12);
+  border: 1px solid rgba(255, 85, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  color: #ff5500;
+  box-shadow: 0 0 24px rgba(255, 85, 0, 0.2);
+}
+.onboarding-visual svg {
+  width: 44px;
+  height: 44px;
+}
+.onboarding-title {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #ffffff;
+  margin: 0 0 10px;
+}
+body[data-theme="light"] .onboarding-title {
+  color: #0f172a;
+}
+.onboarding-desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.65);
+  max-width: 310px;
+  margin: 0;
+}
+body[data-theme="light"] .onboarding-desc {
+  color: #64748b;
+}
+.onboarding-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  z-index: 3;
+}
+.onboarding-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.onboarding-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: all 0.25s ease;
+}
+.onboarding-dot.active {
+  width: 24px;
+  background: #ff5500;
+  box-shadow: 0 0 10px rgba(255, 85, 0, 0.45);
+}
+body[data-theme="light"] .onboarding-dot {
+  background: rgba(15, 23, 42, 0.2);
+}
+body[data-theme="light"] .onboarding-dot.active {
+  background: #ff5500;
+}
+
+/* Paywall Gate Screen */
+.paywall-card {
+  background: #0d1118;
+  border: 1px solid rgba(255, 85, 0, 0.35);
+  border-radius: 22px;
+  padding: 22px 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  margin-bottom: 16px;
+}
+body[data-theme="light"] .paywall-card {
+  background: #ffffff;
+  border: 1px solid rgba(255, 85, 0, 0.35);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+}
+.paywall-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: rgba(255, 85, 0, 0.15);
+  color: #ff5500;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+.paywall-price {
+  font-size: 32px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 4px 0 8px;
+}
+body[data-theme="light"] .paywall-price {
+  color: #0f172a;
+}
+.paywall-features {
+  list-style: none;
+  padding: 0;
+  margin: 14px 0 0;
+}
+.paywall-features li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+body[data-theme="light"] .paywall-features li {
+  color: #334155;
+  border-bottom-color: rgba(15, 23, 42, 0.06);
+}
+.paywall-features li:last-child {
+  border-bottom: none;
+}
+.paywall-features li svg {
+  color: #ff5500;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Hero High Contrast Typography Fix: ensure text is never hidden against dark backgrounds */
+body:not([data-theme="light"]) .hero {
+  background: #0f131a !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+body:not([data-theme="light"]) .hero .mut {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+body:not([data-theme="light"]) .hero .big,
+body:not([data-theme="light"]) .hero h1,
+body:not([data-theme="light"]) .hero b,
+body:not([data-theme="light"]) .hero strong,
+body:not([data-theme="light"]) .hero span {
+  color: #ffffff !important;
+}
+
+body:not([data-theme="light"]) .hero .bar {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+body:not([data-theme="light"]) .hero .bar i {
+  background: #ff5500 !important;
+}
+
+body[data-theme="light"] .hero {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08) !important;
+}
+
+body[data-theme="light"] .hero .mut {
+  color: #64748b !important;
+}
+
+body[data-theme="light"] .hero .big,
+body[data-theme="light"] .hero h1,
+body[data-theme="light"] .hero b,
+body[data-theme="light"] .hero strong,
+body[data-theme="light"] .hero span {
+  color: #0f172a !important;
+}
+
+body[data-theme="light"] .hero .bar {
+  background: rgba(15, 23, 42, 0.08) !important;
+}
+
+body[data-theme="light"] .hero .bar i {
+  background: #ff5500 !important;
+}
+
+/* ==========================================================================
+   UI/UX & FUNCTIONAL SPECIFICATIONS
+   1. Content Protection (Disable text selection & copy)
+   2. Instagram-Style Navigation Bar
+   3. Interactive Tooltips & Explanations
+   4. Offer Walls, Carousels & Data Filtering
+   5. Geofence & Wi-Fi Access Indicators
+   6. High-Contrast Typography & Accessibility
+   ========================================================================== */
+
+/* 1. Content Protection across application */
+*, *::before, *::after {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+}
+
+/* Allow selection inside form inputs and textareas so users can type */
+input, textarea, [contenteditable="true"] {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}
+
+/* 2. EXACT PILL ARCH NAVBAR (With Orange Active Indicator & Home Bar) */
+nav {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  max-width: 480px !important;
+  margin: 0 auto !important;
+  transform: none !important;
+  height: 82px !important;
+  background: #0d1118 !important;
+  border-top-left-radius: 28px !important;
+  border-top-right-radius: 28px !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-bottom: none !important;
+  padding: 0 10px 14px !important;
+  box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.55) !important;
+  z-index: 1000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  box-sizing: border-box !important;
+}
+
+body[data-theme="light"] nav {
+  background: #ffffff !important;
+  border-top: 1px solid rgba(15, 23, 42, 0.12) !important;
+  border-left: 1px solid rgba(15, 23, 42, 0.06) !important;
+  border-right: 1px solid rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 -8px 30px rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Bottom iOS-style home indicator line */
+nav::after {
+  content: "" !important;
+  position: absolute !important;
+  bottom: 8px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 120px !important;
+  height: 4px !important;
+  border-radius: 9999px !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+  pointer-events: none !important;
+}
+
+body[data-theme="light"] nav::after {
+  background: #cbd5e1 !important;
+}
+
+nav div {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-around !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  position: relative !important;
+}
+
+nav button {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding-top: 12px !important;
+  height: 100% !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  color: #8e95a5 !important;
+  cursor: pointer !important;
+  outline: none !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+body[data-theme="light"] nav button {
+  color: #64748b !important;
+}
+
+.nav-icon-wrap {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  margin-bottom: 3px !important;
+  transition: transform 0.2s ease !important;
+}
+
+nav button .ic {
+  width: 22px !important;
+  height: 22px !important;
+  fill: currentColor !important;
+  transition: fill 0.2s ease, transform 0.2s ease !important;
+}
+
+/* Label under icon */
+.nav-lbl {
+  display: block !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.01em !important;
+  color: inherit !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+  opacity: 1 !important;
+  transform: none !important;
+  margin: 0 !important;
+  transition: color 0.2s ease, font-weight 0.2s ease !important;
+}
+
+/* ACTIVE TAB: Top Orange Indicator Bar + Orange Icon + Orange Bold Text */
+nav button.on {
+  color: #ff5500 !important;
+  background: transparent !important;
+}
+
+body[data-theme="light"] nav button.on {
+  color: #ff5500 !important;
+}
+
+nav button.on .ic {
+  fill: #ff5500 !important;
+  transform: scale(1.05) !important;
+}
+
+nav button.on .nav-lbl {
+  color: #ff5500 !important;
+  font-weight: 700 !important;
+}
+
+/* Exact Top Accent Bar on Active Item */
+nav button.on::before {
+  content: "" !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 20% !important;
+  right: 20% !important;
+  height: 3px !important;
+  border-radius: 0 0 4px 4px !important;
+  background: #ff5500 !important;
+  box-shadow: 0 2px 10px rgba(255, 85, 0, 0.7) !important;
+  z-index: 5 !important;
+}
+
+body[data-theme="light"] nav button.on::before {
+  background: #ff5500 !important;
+  box-shadow: 0 2px 8px rgba(255, 85, 0, 0.45) !important;
+}
+
+/* Remove previous dot indicator */
+nav button.on::after {
+  display: none !important;
+}
+
+/* 3. Interactive Technical Tooltips at bottom */
+.tech-explainer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 14px;
+  margin: 20px 0 80px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+}
+body[data-theme="light"] .tech-explainer-bar {
+  background: rgba(15, 23, 42, 0.03);
+  border-color: rgba(15, 23, 42, 0.12);
+}
+.tech-term-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-mono, monospace);
+  background: rgba(255, 85, 0, 0.1);
+  color: #ff5500;
+  border: 1px solid rgba(255, 85, 0, 0.25);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tech-term-pill:hover {
+  background: rgba(255, 85, 0, 0.2);
+  transform: translateY(-1px);
+}
+.tech-tooltip-modal {
+  padding: 6px 4px;
+}
+.tech-tooltip-modal h3 {
+  font-size: 17px;
+  color: #ff5500;
+  margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tech-tooltip-modal p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 10px;
+}
+body[data-theme="light"] .tech-tooltip-modal p {
+  color: #334155;
+}
+
+/* 4. Rich Components: Offer Wall & Carousel */
+.offer-wall-carousel {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 4px 2px 14px;
+  margin-bottom: 12px;
+  -webkit-overflow-scrolling: touch;
+}
+.offer-card {
+  flex: 0 0 250px;
+  scroll-snap-align: start;
+  background: linear-gradient(135deg, rgba(255, 85, 0, 0.14) 0%, rgba(124, 58, 237, 0.1) 100%);
+  border: 1px solid rgba(255, 85, 0, 0.3);
+  border-radius: 18px;
+  padding: 16px;
+  position: relative;
+  box-sizing: border-box;
+}
+body[data-theme="light"] .offer-card {
+  background: linear-gradient(135deg, rgba(255, 85, 0, 0.08) 0%, rgba(124, 58, 237, 0.05) 100%);
+  border-color: rgba(255, 85, 0, 0.25);
+}
+.offer-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #ff5500;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+.offer-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 2px 0 4px;
+}
+body[data-theme="light"] .offer-title {
+  color: #0f172a;
+}
+.offer-desc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 8px;
+}
+body[data-theme="light"] .offer-desc {
+  color: #64748b;
+}
+
+/* 5. Subject-Relevant Filtering & Sorting Bar */
+.filter-sort-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+.filter-chips {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.filter-chip {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.filter-chip.active {
+  background: #ff5500;
+  border-color: #ff5500;
+  color: #ffffff;
+}
+body[data-theme="light"] .filter-chip {
+  background: #f1f5f9;
+  border-color: rgba(15, 23, 42, 0.1);
+  color: #64748b;
+}
+body[data-theme="light"] .filter-chip.active {
+  background: #ff5500;
+  color: #ffffff;
+}
+
+.sort-select {
+  padding: 5px 10px;
+  background: #141822;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 11px;
+  outline: none;
+}
+body[data-theme="light"] .sort-select {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.14);
+  color: #0f172a;
+}
+
+/* 6. Geofence Wi-Fi Status Badge */
+.geofence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.geofence-badge.connected {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+.geofence-badge.disconnected {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Explicit Light Mode Override for Pill Arch Navbar */
+body[data-theme="light"] nav {
+  background: #ffffff !important;
+  border-top: 1px solid rgba(15, 23, 42, 0.12) !important;
+  border-left: 1px solid rgba(15, 23, 42, 0.06) !important;
+  border-right: 1px solid rgba(15, 23, 42, 0.06) !important;
+  box-shadow: 0 -8px 30px rgba(15, 23, 42, 0.1) !important;
+}
+
+body[data-theme="light"] nav button {
+  color: #64748b !important;
+}
+
+body[data-theme="light"] nav button.on {
+  color: #ff5500 !important;
+}
+
+body[data-theme="light"] nav button.on .ic {
+  fill: #ff5500 !important;
+}
+
+body[data-theme="light"] nav button.on .nav-lbl {
+  color: #ff5500 !important;
+}
+
+body[data-theme="light"] nav button.on::before {
+  background: #ff5500 !important;
+}
+
+body[data-theme="light"] nav::after {
+  background: #cbd5e1 !important;
+}
+
+/* ==========================================================================
+   TRUE FULLSCREEN INTEGRATION (Zero Frame Shadows, Perfect Navbar Alignment)
+   ========================================================================== */
+
+/* Remove artificial desktop preview container shadow */
+#app {
+  box-shadow: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+/* Ensure background color is uniform across the entire viewport */
+body {
+  background: #06080c !important;
+}
+
+body[data-theme="light"] {
+  background: #ffffff !important;
+}
+
+/* Perfect alignment: both #app and nav share the exact same width constraints */
+#app, nav {
+  width: 100% !important;
+  max-width: 480px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* On mobile viewports or standalone installed PWA, stretch 100% edge-to-edge */
+@media (max-width: 480px) {
+  #app, nav {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  nav {
+    border-top-left-radius: 24px !important;
+    border-top-right-radius: 24px !important;
+  }
+}
+
+
+
+/* ==========================================================================
+   STANDARD MOBILE APP DIMENSION (ZERO EMPTY SIDES, ZERO SHADOWS, SEAMLESS VIEWPORT)
+   ========================================================================== */
+
+/* The entire browser canvas seamlessly shares the exact same background as the app */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh !important;
+  background-color: #06080c !important;
+  background-image: none !important;
+  background-size: 16px 16px !important;
+  color: var(--text-main) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+body[data-theme="light"] {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  background-size: 16px 16px !important;
+}
+
+/* App container: standard 420px mobile width, but background is transparent so canvas is 100% unified */
+#app {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 420px !important;
+  margin: 0 auto !important;
+  min-height: 100vh !important;
+  padding: 22px 18px 125px !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  box-sizing: border-box !important;
+}
+
+/* Navbar: spans the bottom of the active mobile container (420px), perfectly aligned with the app */
+nav {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  width: 100% !important;
+  max-width: 420px !important;
+  margin: 0 !important;
+  height: 82px !important;
+  background: #0d1118 !important;
+  border-top-left-radius: 28px !important;
+  border-top-right-radius: 28px !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4) !important;
+  padding: 0 10px 14px !important;
+  box-sizing: border-box !important;
+  z-index: 1000 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+body[data-theme="light"] nav {
+  background: #ffffff !important;
+  border-top: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* On actual mobile device viewports (<= 420px), stretch completely edge-to-edge with zero side gaps */
+@media (max-width: 420px) {
+  #app, nav {
+    max-width: 100% !important;
+    width: 100% !important;
+    left: 0 !important;
+    transform: none !important;
+  }
+}
+
+/* Completely hide technical explainer bar */
+.tech-explainer-bar {
+  display: none !important;
+}
+
+/* Hide visible horizontal scrollbars across all scrollable touch containers */
+.filter-chips,
+.offer-wall-carousel,
+.seg,
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important;  /* IE and Edge */
+}
+
+.filter-chips::-webkit-scrollbar,
+.offer-wall-carousel::-webkit-scrollbar,
+.seg::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* ==========================================================================
+   UNIFORM APP WIDTH & CLEAN SOLID CANVAS (NO EXTERNAL GRID, ZERO WIDTH DRIFT)
+   ========================================================================== */
+
+/* Remove any background grid pattern completely */
+html, body {
+  background-color: #06080c !important;
+  background-image: none !important;
+}
+
+body[data-theme="light"] {
+  background-color: #f8fafc !important;
+  background-image: none !important;
+}
+
+/* Ensure #app is rigidly uniform on ALL tabs, subviews, and forms */
+#app,
+#app > *,
+.app-header,
+.card,
+.hero,
+.seg,
+.filter-sort-bar,
+.clean-login-card {
+  box-sizing: border-box !important;
+}
+
+#app {
+  width: 100% !important;
+  max-width: 420px !important;
+  min-width: 320px !important;
+  margin: 0 auto !important;
+  padding: 20px 18px 125px !important;
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Ensure headers, inputs, and tab containers never cause width expansion */
+input, select, textarea {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.app-header {
+  width: 100% !important;
+  margin-bottom: 14px !important;
+}
+
+/* Navbar matches the exact uniform 420px container */
+nav {
+  width: 100% !important;
+  max-width: 420px !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 420px) {
+  #app, nav {
+    max-width: 100% !important;
+    width: 100% !important;
+    left: 0 !important;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   PERMANENT EXACT 420PX WIDTH FIX (PREVENTS FLEX SHRINK-TO-FIT COLLAPSE)
+   ========================================================================== */
+#app {
+  width: 420px !important;
+  min-width: 420px !important;
+  max-width: 420px !important;
+  box-sizing: border-box !important;
+  margin: 0 auto !important;
+}
+
+@media (max-width: 420px) {
+  #app {
+    width: 100% !important;
+    min-width: 320px !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Confetti Particle Burst Animation (Exact translation of framer-motion physics) */
+.confetti-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform, opacity;
+  animation: confettiExplode 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes confettiExplode {
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--tx, 0px), var(--ty, -60px)) scale(0) rotate(var(--tr, 360deg));
+    opacity: 0;
+  }
 }
