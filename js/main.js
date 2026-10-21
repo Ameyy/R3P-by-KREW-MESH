@@ -747,10 +747,11 @@ function setAuthView(v){
 }
 
 // Real Supabase Google OAuth Provider
-async function handleGoogleAuth() {
-  console.log("⚡ [R3P Auth] Initiating Google OAuth sign-in...");
+async function handleGoogleAuth(targetRole = "adm") {
+  console.log("⚡ [R3P Auth] Initiating Google OAuth sign-in with role intent:", targetRole);
   try {
     if (window.R3PSupabase && window.R3PSupabase.client) {
+      localStorage.setItem("r3p_oauth_role_intent", targetRole);
       const { data, error } = await window.R3PSupabase.client.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -2422,18 +2423,45 @@ async function initAppSecurityGate() {
         console.log("🔒 [Security Gate] First-time login detected for auth user:", authData.user.id);
         const meta = authData.user.user_metadata || {};
         const userEmail = authData.user.email || "";
-        const userFullName = meta.full_name || meta.name || userEmail.split("@")[0] || "Gym Member";
-        const defaultTenant = window.R3PSupabase.tenantId || "a0000000-0000-0000-0000-000000000001";
+        const userFullName = meta.full_name || meta.name || userEmail.split("@")[0] || "Gym Owner";
+        const targetIntent = localStorage.getItem("r3p_oauth_role_intent") || "adm";
+        localStorage.removeItem("r3p_oauth_role_intent");
+        
+        // Canonical role mapping: "adm" -> "owner"
+        const assignedRole = targetIntent === "adm" ? "owner" : "member";
+
+        // Auto-provision initial tenant for new gym owners if needed
+        let userTenantId = window.R3PSupabase.tenantId || "a0000000-0000-0000-0000-000000000001";
+        if (assignedRole === "owner") {
+          const gymSlug = (userFullName.toLowerCase().replace(/[^a-z0-9]/g, "-").slice(0, 40) || "club") + "-" + Date.now().toString().slice(-4);
+          const { data: tenantData } = await window.R3PSupabase.client
+            .from("tenants")
+            .insert([{
+              slug: gymSlug,
+              name: userFullName + " Fitness Club",
+              city: "Pune",
+              phone: authData.user.phone || meta.phone || "+91 98765 43210",
+              owner_email: userEmail,
+              status: "active"
+            }])
+            .select("id")
+            .single();
+
+          if (tenantData && tenantData.id) {
+            userTenantId = tenantData.id;
+            console.log("✅ [Security Gate] Auto-provisioned gym tenant:", userTenantId);
+          }
+        }
 
         const { data: newProfile, error: createErr } = await window.R3PSupabase.client
           .from("users")
           .insert([{
             auth_id: authData.user.id,
-            tenant_id: defaultTenant,
+            tenant_id: userTenantId,
             email: userEmail,
             full_name: userFullName,
-            phone: authData.user.phone || meta.phone || "+91 99999 00000",
-            role: "member",
+            phone: authData.user.phone || meta.phone || "+91 98765 43210",
+            role: assignedRole,
             is_active: true
           }])
           .select("id, tenant_id, role, full_name, is_active")
@@ -2446,6 +2474,7 @@ async function initAppSecurityGate() {
           return;
         }
         profile = newProfile;
+        localStorage.setItem("r3p_subscribed", "true"); // Unlock workspace for newly onboarded Admin
         toast("Welcome, " + userFullName + "!");
       }
 
@@ -2498,6 +2527,23 @@ async function initAppSecurityGate() {
 }
 
 initAppSecurityGate();
+
+// Reactive Session Listener for OAuth redirects & login/logout state changes
+if (window.R3PSupabase && window.R3PSupabase.client) {
+  window.R3PSupabase.client.auth.onAuthStateChange((event, session) => {
+    console.log("⚡ [Supabase Auth Event]:", event);
+    if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED" || event === "USER_UPDATED") {
+      if (!role) {
+        initAppSecurityGate();
+      }
+    } else if (event === "SIGNED_OUT") {
+      role = "";
+      authRole = "adm";
+      lr = "adm";
+      login();
+    }
+  });
+}
 
 // Load live members & staff from Supabase on launch
 if (window.R3PSupabase && window.R3PSupabase.client) {
