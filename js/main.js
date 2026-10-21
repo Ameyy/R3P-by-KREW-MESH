@@ -748,7 +748,7 @@ function setAuthView(v){
 
 // Real Supabase Google OAuth Provider
 async function handleGoogleAuth() {
-  toast("Redirecting to Google OAuth…");
+  console.log("⚡ [R3P Auth] Initiating Google OAuth sign-in...");
   try {
     if (window.R3PSupabase && window.R3PSupabase.client) {
       const { data, error } = await window.R3PSupabase.client.auth.signInWithOAuth({
@@ -2356,7 +2356,7 @@ const APP={adm:{n:"n-adm",t:[["home","home","Home"],["att","cc","Attendance"],["
 function go(t){tab=t;sub=null;fresh=1;draw()}
 function op(k){sub=k;fresh=1;draw()}
 function back(){sub=null;fresh=1;draw()}
-function draw(){const R=APP[role],A=$("#app"),body=sub?SV[sub]():R.v[tab](),o=pay?payHtml():sh;A.dataset.role=role;setArt();A.className=fresh?"fx":"";const footerExplainer = "";
+function draw(){if(!role || !APP[role]){const A=$("#app");if(A && ts){let tEl=document.querySelector(".toast");if(!tEl){tEl=document.createElement("div");tEl.className="toast";document.body.appendChild(tEl);}tEl.innerText=ts;tEl.style.display="block";}return;}const R=APP[role],A=$("#app"),body=sub?SV[sub]():(R.v&&R.v[tab]?R.v[tab]():""),o=pay?payHtml():sh;A.dataset.role=role;setArt();A.className=fresh?"fx":"";const footerExplainer = "";
 A.innerHTML=body+footerExplainer+`<nav class="${R.n}"><div>${R.t.map(([k,i,l])=>`<button class="${tab==k&&!sub?"on":""}" onclick="go('${k}')"><span class="nav-icon-wrap">${ic(i)}</span><span class="nav-lbl">${l}</span></button>`).join("")}</div></nav>`+(o?`<div class="ov" onclick="shut()"><div class="sheet" onclick="event.stopPropagation()">${o}</div></div>`:"")+(ts?`<div class="toast">${ts}</div>`:"");if(fresh)scrollTo(0,0);fresh=0}
 
 // Explicit Global Bindings for HTML onclick Handlers
@@ -2411,17 +2411,42 @@ async function initAppSecurityGate() {
       }
 
       // Verify active user profile and tenant assignment directly from public.users
-      const { data: profile, error: profErr } = await window.R3PSupabase.client
+      let { data: profile, error: profErr } = await window.R3PSupabase.client
         .from("users")
         .select("id, tenant_id, role, full_name, is_active")
         .eq("auth_id", authData.user.id)
         .maybeSingle();
 
       if (profErr || !profile) {
-        console.warn("🔒 [Security Gate] Authenticated account lacks valid user profile. Directing to login.");
-        toast("Account profile not found. Please log in again.");
-        login();
-        return;
+        // Automatic Onboarding for OAuth / First-time Logins (e.g., Google Sign-in)
+        console.log("🔒 [Security Gate] First-time login detected for auth user:", authData.user.id);
+        const meta = authData.user.user_metadata || {};
+        const userEmail = authData.user.email || "";
+        const userFullName = meta.full_name || meta.name || userEmail.split("@")[0] || "Gym Member";
+        const defaultTenant = window.R3PSupabase.tenantId || "a0000000-0000-0000-0000-000000000001";
+
+        const { data: newProfile, error: createErr } = await window.R3PSupabase.client
+          .from("users")
+          .insert([{
+            auth_id: authData.user.id,
+            tenant_id: defaultTenant,
+            email: userEmail,
+            full_name: userFullName,
+            phone: authData.user.phone || meta.phone || "+91 99999 00000",
+            role: "member",
+            is_active: true
+          }])
+          .select("id, tenant_id, role, full_name, is_active")
+          .single();
+
+        if (createErr || !newProfile) {
+          console.error("🔒 [Security Gate] Could not auto-provision profile:", createErr);
+          toast("Account profile setup error: " + (createErr ? createErr.message : "Profile missing"));
+          login();
+          return;
+        }
+        profile = newProfile;
+        toast("Welcome, " + userFullName + "!");
       }
 
       if (!profile.is_active) {
