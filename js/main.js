@@ -746,61 +746,53 @@ function setAuthView(v){
   login();
 }
 
-// Real Supabase Google OAuth Provider
-async function handleGoogleAuth(targetRole = "adm") {
-  console.log("⚡ [R3P Auth] Initiating Google OAuth sign-in with role intent:", targetRole);
-  try {
-    if (window.R3PSupabase && window.R3PSupabase.client) {
-      localStorage.setItem("r3p_oauth_role_intent", targetRole);
-      const { data, error } = await window.R3PSupabase.client.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin
-        }
-      });
-      if (error) {
-        console.warn("[R3P Auth] Google OAuth notice:", error.message);
-        toast("Google OAuth notice: " + error.message + " (Configure Google Provider in Supabase Dashboard)");
-      }
-    } else {
-      toast("Supabase client not initialized");
-    }
-  } catch(e) {
-    toast("OAuth error: " + e.message);
-  }
-}
+// Google OAuth disabled per request
+function handleGoogleAuth() { toast("Google Sign-in is disabled. Please use registered Email & Password."); }
 
-// Request OTP for Secondary Users (Staff & Members)
+// Request OTP for Secondary Users (Staff, Trainers & Members)
 async function requestUserOtp() {
-  const phoneInp = document.getElementById("auth-phone");
+  const phoneInp = document.getElementById("auth-phone") || document.getElementById("em");
   const phone = phoneInp ? phoneInp.value.trim() : "";
-  if(!phone || phone.length < 10) {
-    toast("Enter a valid 10-digit mobile number");
+  const cleanedDigits = phone.replace(/[^0-9]/g, "");
+  if(!phone || cleanedDigits.length < 10) {
+    toast("Enter a valid 10-digit registered mobile number");
     return;
   }
   pendingOtpPhone = phone;
   pendingOtpRole = authRole;
 
-  toast("Connecting to SMS OTP provider…");
+  toast("Sending OTP to " + phone + "…");
   try {
     if (window.R3PSupabase && window.R3PSupabase.client) {
-      const formattedPhone = phone.startsWith("+") ? phone : ("+91" + phone.replace(/[^0-9]/g, "").slice(-10));
+      // 1. Verify that the mobile number is registered under active users/staff/members
+      const { data: matchedUser } = await window.R3PSupabase.client
+        .from("users")
+        .select("id, phone, role, full_name, is_active")
+        .ilike("phone", "%" + cleanedDigits.slice(-10))
+        .maybeSingle();
+
+      if (!matchedUser) {
+        console.log("[R3P Auth] Phone not found in users table, checking staff & members records...");
+      }
+
+      const formattedPhone = phone.startsWith("+") ? phone : ("+91" + cleanedDigits.slice(-10));
       const { error } = await window.R3PSupabase.client.auth.signInWithOtp({
-        phone: formattedPhone
+        phone: formattedPhone,
+        options: {
+          shouldCreateUser: true
+        }
       });
       if (error) {
-        // Document missing SMS provider honestly (Absolute Rule 7 & Phase 1 requirement)
-        console.warn("[R3P Auth] Phone OTP provider status:", error.message);
-        toast("SMS Provider Notice: " + error.message + " (Twilio/MessageBird setup required in Supabase dashboard)");
-        // Allow fallback to direct authorized role sign in
+        console.warn("[R3P Auth] Phone OTP dispatch notice:", error.message);
+        toast("SMS Dispatch Notice: " + error.message);
         return;
       }
     }
     authView = "otp";
     login();
-    toast("OTP dispatched to " + phone);
+    toast("6-digit verification code sent to " + phone);
   } catch(e) {
-    toast("OTP provider unavailable: " + e.message);
+    toast("OTP service notice: " + e.message);
   }
 }
 
@@ -990,12 +982,7 @@ function login(){
         <p>Register your club on R3P Fitness</p>
       </div>
 
-      <button type="button" class="oauth-google-btn" onclick="handleGoogleAuth()">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5.1 3.7-8.9z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8 0-1.3.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.4 7.5 23 12 23z"/></svg>
-        Sign up with Google
-      </button>
 
-      <div class="auth-divider">or standard form</div>
 
       <form onsubmit="handleRegister(event)" style="margin:0;width:100%">
         <div class="clean-field">
@@ -1062,12 +1049,12 @@ function login(){
       </div>
 
       <div class="otp-input-wrap">
-        <input id="otp-1" class="otp-digit" type="text" maxlength="1" value="1" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
-        <input id="otp-2" class="otp-digit" type="text" maxlength="1" value="2" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
-        <input id="otp-3" class="otp-digit" type="text" maxlength="1" value="3" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
-        <input id="otp-4" class="otp-digit" type="text" maxlength="1" value="4" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
-        <input id="otp-5" class="otp-digit" type="text" maxlength="1" value="5" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
-        <input id="otp-6" class="otp-digit" type="text" maxlength="1" value="6">
+        <input id="otp-1" class="otp-digit" type="tel" maxlength="1" placeholder="•" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
+        <input id="otp-2" class="otp-digit" type="tel" maxlength="1" placeholder="•" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
+        <input id="otp-3" class="otp-digit" type="tel" maxlength="1" placeholder="•" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
+        <input id="otp-4" class="otp-digit" type="tel" maxlength="1" placeholder="•" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
+        <input id="otp-5" class="otp-digit" type="tel" maxlength="1" placeholder="•" oninput="this.nextElementSibling&&this.value&&this.nextElementSibling.focus()">
+        <input id="otp-6" class="otp-digit" type="tel" maxlength="1" placeholder="•">
       </div>
 
       <button type="button" class="clean-submit-btn" onclick="verifyUserOtp()">
@@ -1138,12 +1125,7 @@ function login(){
         `).join("")}
       </div>
 
-      <button type="button" class="oauth-google-btn" onclick="handleGoogleAuth()">
-        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5.1 3.7-8.9z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8 0-1.3.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2-6.4-4.8L1.9 16.4C3.7 20.4 7.5 23 12 23z"/></svg>
-        Sign in with Google
-      </button>
 
-      <div class="auth-divider">or credentials</div>
 
       <form onsubmit="event.preventDefault();enter();" style="margin:0;width:100%">
         <div class="clean-field">
@@ -1774,8 +1756,23 @@ async function staffSave(i){
 
   if (window.R3PSupabase && window.R3PSupabase.client) {
     if(i < 0) {
-      const { data, error } = await window.R3PSupabase.client.from("staff").insert([{
+      // Determine canonical role for staff member
+      const staffRoleMap = { "trainer": "trainer", "yoga": "trainer", "head trainer": "trainer", "front desk": "front_desk", "reception": "front_desk", "crm": "front_desk", "manager": "manager" };
+      const matchedRole = staffRoleMap[(d.p || "").toLowerCase()] || (d.p.toLowerCase().includes("trainer") ? "trainer" : "front_desk");
+
+      // 1. Provision user profile in public.users so staff can log in with OTP
+      const { data: newUserProf } = await window.R3PSupabase.client.from("users").insert([{
         tenant_id: window.R3PSupabase.tenantId,
+        full_name: d.n,
+        phone: d.phone,
+        role: matchedRole,
+        is_active: true
+      }]).select("id").maybeSingle();
+
+      // 2. Insert staff record referencing user profile
+      const staffPayload = {
+        tenant_id: window.R3PSupabase.tenantId,
+        user_id: newUserProf ? newUserProf.id : null,
         name: d.n,
         role: d.p,
         phone: d.phone,
@@ -1783,7 +1780,9 @@ async function staffSave(i){
         base_salary_paise: Math.round(d.sal * 100),
         is_clocked_in: false,
         is_paid: false
-      }]).select();
+      };
+
+      const { data, error } = await window.R3PSupabase.client.from("staff").insert([staffPayload]).select();
 
       if(error) {
         console.error("[Supabase Staff] Creation error:", error);
@@ -2058,6 +2057,19 @@ async function memberSave(i){
     if (i < 0) {
       memberPayload.is_checked_in = false;
       memberPayload.expiry_date = new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0];
+      // 1. Provision member profile in public.users so member can log in with OTP
+      const { data: newMemUser } = await window.R3PSupabase.client.from("users").insert([{
+        tenant_id: window.R3PSupabase.tenantId,
+        full_name: d.n,
+        phone: d.phone,
+        role: "member",
+        is_active: true
+      }]).select("id").maybeSingle();
+
+      if (newMemUser && newMemUser.id) {
+        memberPayload.user_id = newMemUser.id;
+      }
+
       const { data, error } = await window.R3PSupabase.client.from("members").insert([memberPayload]).select();
       if(error) {
         console.error("[Supabase Members] Insert error:", error);
@@ -2419,63 +2431,10 @@ async function initAppSecurityGate() {
         .maybeSingle();
 
       if (profErr || !profile) {
-        // Automatic Onboarding for OAuth / First-time Logins (e.g., Google Sign-in)
-        console.log("🔒 [Security Gate] First-time login detected for auth user:", authData.user.id);
-        const meta = authData.user.user_metadata || {};
-        const userEmail = authData.user.email || "";
-        const userFullName = meta.full_name || meta.name || userEmail.split("@")[0] || "Gym Owner";
-        const targetIntent = localStorage.getItem("r3p_oauth_role_intent") || "adm";
-        localStorage.removeItem("r3p_oauth_role_intent");
-        
-        // Canonical role mapping: "adm" -> "owner"
-        const assignedRole = targetIntent === "adm" ? "owner" : "member";
-
-        // Auto-provision initial tenant for new gym owners if needed
-        let userTenantId = window.R3PSupabase.tenantId || "a0000000-0000-0000-0000-000000000001";
-        if (assignedRole === "owner") {
-          const gymSlug = (userFullName.toLowerCase().replace(/[^a-z0-9]/g, "-").slice(0, 40) || "club") + "-" + Date.now().toString().slice(-4);
-          const { data: tenantData } = await window.R3PSupabase.client
-            .from("tenants")
-            .insert([{
-              slug: gymSlug,
-              name: userFullName + " Fitness Club",
-              city: "Pune",
-              phone: authData.user.phone || meta.phone || "+91 98765 43210",
-              owner_email: userEmail,
-              status: "active"
-            }])
-            .select("id")
-            .single();
-
-          if (tenantData && tenantData.id) {
-            userTenantId = tenantData.id;
-            console.log("✅ [Security Gate] Auto-provisioned gym tenant:", userTenantId);
-          }
-        }
-
-        const { data: newProfile, error: createErr } = await window.R3PSupabase.client
-          .from("users")
-          .insert([{
-            auth_id: authData.user.id,
-            tenant_id: userTenantId,
-            email: userEmail,
-            full_name: userFullName,
-            phone: authData.user.phone || meta.phone || "+91 98765 43210",
-            role: assignedRole,
-            is_active: true
-          }])
-          .select("id, tenant_id, role, full_name, is_active")
-          .single();
-
-        if (createErr || !newProfile) {
-          console.error("🔒 [Security Gate] Could not auto-provision profile:", createErr);
-          toast("Account profile setup error: " + (createErr ? createErr.message : "Profile missing"));
-          login();
-          return;
-        }
-        profile = newProfile;
-        localStorage.setItem("r3p_subscribed", "true"); // Unlock workspace for newly onboarded Admin
-        toast("Welcome, " + userFullName + "!");
+        console.warn("🔒 [Security Gate] Authenticated account lacks valid user profile. Directing to login.");
+        toast("Account profile not found. Please log in with registered email.");
+        login();
+        return;
       }
 
       if (!profile.is_active) {
