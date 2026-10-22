@@ -903,9 +903,26 @@ async function handleRegister(event) {
         return;
       }
 
-      // 2. Atomic Registration via register_gym_owner() RPC
+      // 1.1 Ensure active authenticated session before calling register_gym_owner
+      if (!authData || !authData.session) {
+        console.log("⚡ [R3P Auth] Establishing active session via signInWithPassword...");
+        const { data: signInData, error: signInErr } = await window.R3PSupabase.client.auth.signInWithPassword({
+          email: email,
+          password: pass
+        });
+        if (signInErr) {
+          console.warn("[R3P Auth] Auto-login notice after signup:", signInErr.message);
+          toast("Please check your email to confirm registration or sign in.");
+          if(submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Sign Up & Continue"; }
+          authView = "login";
+          login();
+          return;
+        }
+      }
+
+      // 2. Atomic Registration via register_gym_owner() RPC with active session
       const tenantSlug = gymName.toLowerCase().replace(/[^a-z0-9]/g, "-").slice(0, 50) + "-" + Date.now().toString().slice(-4);
-      const { data: rpcData, error: rpcError } = await window.R3PSupabase.client.rpc("register_gym_owner", {
+      let { data: rpcData, error: rpcError } = await window.R3PSupabase.client.rpc("register_gym_owner", {
         p_gym_name: gymName,
         p_slug: tenantSlug,
         p_phone: phone,
@@ -914,12 +931,27 @@ async function handleRegister(event) {
         p_full_name: name
       });
 
+      if (rpcError && rpcError.message && rpcError.message.includes("Authentication required")) {
+        // Fallback retry with fresh session token
+        await window.R3PSupabase.client.auth.signInWithPassword({ email: email, password: pass });
+        const retry = await window.R3PSupabase.client.rpc("register_gym_owner", {
+          p_gym_name: gymName,
+          p_slug: tenantSlug,
+          p_phone: phone,
+          p_address: addr || "Main Club",
+          p_city: "Pune",
+          p_full_name: name
+        });
+        rpcData = retry.data;
+        rpcError = retry.error;
+      }
+
       if (rpcError || !rpcData || !rpcData.tenant_id) {
         const errMsg = rpcError ? rpcError.message : "Tenant provisioning failed.";
         console.error("🔒 [R3P Auth] Registration RPC failed:", errMsg);
         toast("Registration error: " + errMsg);
         if(submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Sign Up & Continue"; }
-        return; // Abort: Never continue into application on failed registration
+        return;
       }
 
       window.R3PSupabase.tenantId = rpcData.tenant_id;
